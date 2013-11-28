@@ -19,3 +19,9 @@ pickle-email-*.html
 config/initializers/secret_token.rb
 *.gem
 /test/*
+
+.ruby-version
+.ruby-gemset
+
+*.swp
+*.swo

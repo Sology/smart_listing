@@ -34,13 +34,13 @@ $.fn.observeField = (opts = {}) ->
        keyChange()
      , 400)
 
-class SmartList
+class SmartListing
 	constructor: (e) ->
 		@container = e
 		@name = @container.attr('id')
 		@loading = @container.find('.loading')
 		@content = @container.find('.content')
-		@status = $(".smart_list_status[data-smart-list='#{@name}']")
+		@status = $(".smart_listing_status[data-smart-list='#{@name}']")
 		@confirmed = null
 
 		createPopover = (confirmation_elem, msg) =>
@@ -129,10 +129,10 @@ class SmartList
 		@container.find('.pagination_per_page .count').html(@itemCount() + value)
 
 	cancelEdit: (editable) =>
-		if editable.data('smart_list_edit_backup')
-			editable.html(editable.data('smart_list_edit_backup'))
+		if editable.data('smart_listing_edit_backup')
+			editable.html(editable.data('smart_listing_edit_backup'))
 			editable.removeClass('info')
-			editable.removeData('smart_list_edit_backup')
+			editable.removeData('smart_listing_edit_backup')
 	
 	# Callback called when record is added/deleted using ajax request
 	refresh: () =>
@@ -159,11 +159,11 @@ class SmartList
 				@container.find('.new_item_action .btn').removeClass('disabled')
 
 		@status.each (index, status) =>
-			$(status).find('.smart_list_limit').html(@maxCount() - @itemCount())
+			$(status).find('.smart_listing_limit').html(@maxCount() - @itemCount())
 			if @maxCount() - @itemCount() == 0
-				$(status).find('.smart_list_limit_alert').show()
+				$(status).find('.smart_listing_limit_alert').show()
 			else
-				$(status).find('.smart_list_limit_alert').hide()
+				$(status).find('.smart_listing_limit_alert').hide()
 	
 	# Trigger AJAX request to reload the list
 	reload: () =>
@@ -216,7 +216,7 @@ class SmartList
 		@container.find('.new_item_action').removeClass('disabled')
 
 		editable = @container.find(".editable[data-id=#{id}]")
-		editable.data('smart_list_edit_backup', editable.html())
+		editable.data('smart_listing_edit_backup', editable.html())
 		editable.html(content)
 		editable.addClass('info')
 
@@ -226,7 +226,7 @@ class SmartList
 		editable = @container.find(".editable[data-id=#{id}]")
 		if success
 			editable.removeClass('info')
-			editable.removeData('smart_list_edit_backup')
+			editable.removeData('smart_listing_edit_backup')
 			editable.html(content)
 
 			@refresh()
@@ -247,43 +247,43 @@ class SmartList
 		@refresh()
 		@fadeLoaded()
 
-$.fn.smart_list = () ->
+$.fn.smart_listing = () ->
 	map = $(this).map () ->
 		if !$(this).data('smart-list')
-			$(this).data('smart-list', new SmartList($(this)))
+			$(this).data('smart-list', new SmartListing($(this)))
 		$(this).data('smart-list')
 	if map.length == 1
 		map[0]
 	else
 		map
 
-$.fn.handleSmartListControls = () ->
+$.fn.handleSmartListingControls = () ->
 	$(this).each () ->
 		controls = $(this)
-		smart_list = $("##{controls.data('smart-list')}")
+		smart_listing = $("##{controls.data('smart-list')}")
 
 		controls.submit ->
 			# Merges smart list params with the form action url before submitting.
 			# This preserves smart list settings (page, sorting etc.).
 
-			prms = $.extend({}, smart_list.smart_list().params())
+			prms = $.extend({}, smart_listing.smart_listing().params())
 			if $(this).data('reset')
 				prms[$(this).data('reset')] = null
 
-			if $.rails.href(smart_list)
+			if $.rails.href(smart_listing)
 				# If smart list has different target url than current one
-				controls.attr('action', $.rails.href(smart_list) + "?" + jQuery.param(prms))
+				controls.attr('action', $.rails.href(smart_listing) + "?" + jQuery.param(prms))
 			else
 				controls.attr('action', "?" + jQuery.param(prms))
 
-			smart_list.trigger('ajax:before')
+			smart_listing.trigger('ajax:before')
 			true
 
 		controls.find('input, select').change () ->
 			unless $(this).data('observed') # do not submit controls form when changed field is observed (observing submits form by itself)
 				controls.submit()
 
-$.fn.handleSmartListFilter = () ->
+$.fn.handleSmartListingFilter = () ->
 	filter = $(this)
 	form = filter.closest('form')
 	button = filter.find('button')
@@ -312,6 +312,6 @@ $.fn.handleSmartListFilter = () ->
 			field.trigger('keydown')
 
 $ ->
-	$('.smart_list').smart_list()
-	$('.smart_list_controls').handleSmartListControls()
-	$('.smart_list_controls .filter').handleSmartListFilter()
+	$('.smart_listing').smart_listing()
+	$('.smart_listing_controls').handleSmartListingControls()
+	$('.smart_listing_controls .filter').handleSmartListingFilter()

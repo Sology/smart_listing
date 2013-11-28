@@ -11,4 +11,4 @@
 // about supported directives.
 //
 //= require_tree .
-//= require smart_list/smart_list
+//= require smart_listing/smart_listing

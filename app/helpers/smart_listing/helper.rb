@@ -1,62 +1,62 @@
-module SmartList
-	module SmartListHelper
+module SmartListing
+	module Helper
 		module ControllerExtensions
-			def smart_list_create name, collection, options = {}
+			def smart_listing_create name, collection, options = {}
 				name = name.to_sym
 
-				list = SmartList::Base.new(name, collection, options)
+				list = SmartListing::Base.new(name, collection, options)
 				list.setup(params, cookies)
 
-				@smart_lists ||= {}
-				@smart_lists[name] = list
+				@smart_listings ||= {}
+				@smart_listings[name] = list
 
 				list.collection
 			end
 
-			def smart_list name
-				@smart_lists[name.to_sym]
+			def smart_listing name
+				@smart_listings[name.to_sym]
 			end
 		end
 
-		class SmartListBuilder
+		class Builder
 			# Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
 			UNSAFE_PARAMS = {:authenticity_token => nil, :utf8 => nil}
 
-			class_attribute :smart_list_helpers
+			class_attribute :smart_listing_helpers
 
-			def initialize(smart_list_name, smart_list, template, options, proc)
-				@smart_list_name, @smart_list, @template, @options, @proc = smart_list_name, smart_list, template, options, proc
+			def initialize(smart_listing_name, smart_listing, template, options, proc)
+				@smart_listing_name, @smart_listing, @template, @options, @proc = smart_listing_name, smart_listing, template, options, proc
 			end
 
 			def paginate options = {}
-				if @smart_list.collection.respond_to? :current_page
-					@template.paginate @smart_list.collection, :remote => true, :param_name => @smart_list.param_names[:page], :params => UNSAFE_PARAMS
+				if @smart_listing.collection.respond_to? :current_page
+					@template.paginate @smart_listing.collection, :remote => true, :param_name => @smart_listing.param_names[:page], :params => UNSAFE_PARAMS
 				end
 			end
 
 			def collection
-				@smart_list.collection
+				@smart_listing.collection
 			end
 
 			def pagination_per_page_links options = {}
 				@template.content_tag(:div, :class => "pagination_per_page #{'disabled' if empty?}") do
-					if @smart_list.count > SmartList::Base::PAGE_SIZES.first
+					if @smart_listing.count > SmartListing::Base::PAGE_SIZES.first
 						@template.concat(@template.t('views.pagination.per_page'))
-						per_page_sizes = SmartList::Base::PAGE_SIZES.clone
-						per_page_sizes.push(0) if @smart_list.unlimited_per_page?
+						per_page_sizes = SmartListing::Base::PAGE_SIZES.clone
+						per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
 						per_page_sizes.each do |p|
 							name = p == 0 ? @template.t('views.pagination.unlimited') : p
-							if @smart_list.per_page.to_i != p
-								@template.concat(@template.link_to(name, sanitize_params(@template.params.merge(@smart_list.param_names[:per_page] => p, @smart_list.param_names[:page] => 1)), :remote => true))
+							if @smart_listing.per_page.to_i != p
+								@template.concat(@template.link_to(name, sanitize_params(@template.params.merge(@smart_listing.param_names[:per_page] => p, @smart_listing.param_names[:page] => 1)), :remote => true))
 							else 
 								@template.concat(@template.content_tag(:span, name))
 							end
-							break if p > @smart_list.count
+							break if p > @smart_listing.count
 						end
 						@template.concat ' | '
-					end if @smart_list.options[:paginate]
+					end if @smart_listing.options[:paginate]
 					@template.concat(@template.t('views.pagination.total'))
-					@template.concat(@template.content_tag(:span, @smart_list.count, :class => "count"))
+					@template.concat(@template.content_tag(:span, @smart_listing.count, :class => "count"))
 				end
 			end
 
@@ -64,15 +64,15 @@ module SmartList
 				extra = options.delete(:extra)
 
 				sort_params = {
-					@smart_list.param_names[:sort_attr] => attribute, 
-					@smart_list.param_names[:sort_order] => (@smart_list.sort_order == "asc") ? "desc" : "asc", 
-					@smart_list.param_names[:sort_extra] => extra
+					@smart_listing.param_names[:sort_attr] => attribute, 
+					@smart_listing.param_names[:sort_order] => (@smart_listing.sort_order == "asc") ? "desc" : "asc", 
+					@smart_listing.param_names[:sort_extra] => extra
 				}
 
 				@template.link_to(sanitize_params(@template.params.merge(sort_params)), :class => "sortable", :data => {:attr => attribute}, :remote => true) do
 					@template.concat(title)
-					if @smart_list.sort_attr == attribute && (!@smart_list.sort_extra || @smart_list.sort_extra == extra.to_s)
-						@template.concat(@template.content_tag(:span, "", :class => (@smart_list.sort_order == "asc" ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down"))) 
+					if @smart_listing.sort_attr == attribute && (!@smart_listing.sort_extra || @smart_listing.sort_extra == extra.to_s)
+						@template.concat(@template.content_tag(:span, "", :class => (@smart_listing.sort_order == "asc" ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down"))) 
 					else
 						@template.concat(@template.content_tag(:span, "", :class => "glyphicon glyphicon-resize-vertical"))
 					end
@@ -80,25 +80,25 @@ module SmartList
 			end
 
 			def update options = {}
-				part = options.delete(:partial) || @smart_list.partial || @smart_list_name
+				part = options.delete(:partial) || @smart_listing.partial || @smart_listing_name
 
-				@template.render(:partial => 'smart_list/update_list', :locals => {:name => @smart_list_name, :part => part, :smart_list => self})
+				@template.render(:partial => 'smart_listing/update_list', :locals => {:name => @smart_listing_name, :part => part, :smart_listing => self})
 			end
 
 			# Renders the main partial (whole list)
 			def render_list
-				if @smart_list.partial
-					@template.render :partial => @smart_list.partial, :locals => {:smart_list => self}
+				if @smart_listing.partial
+					@template.render :partial => @smart_listing.partial, :locals => {:smart_listing => self}
 				end
 			end
 
-			# Basic render block wrapper that adds smart_list reference to local variables
+			# Basic render block wrapper that adds smart_listing reference to local variables
 			def render options = {}, locals = {}, &block
 				if locals.empty?
 					options[:locals] ||= {}
-					options[:locals].merge!(:smart_list => self)
+					options[:locals].merge!(:smart_listing => self)
 				else
-					locals.merge!({:smart_list => self})
+					locals.merge!({:smart_listing => self})
 				end
 				@template.render options, locals, &block
 			end
@@ -123,13 +123,13 @@ module SmartList
 
 			# Check if smart list is empty
 			def empty?
-				@smart_list.count == 0
+				@smart_listing.count == 0
 			end
 
 			# Check if smart list reached its item max count
 			def max_count?
-				return false if @smart_list.max_count.nil?
-				@smart_list.count >= @smart_list.max_count
+				return false if @smart_listing.max_count.nil?
+				@smart_listing.count >= @smart_listing.max_count
 			end
 
 			private
@@ -140,24 +140,24 @@ module SmartList
 		end
 
 		# Outputs smart list container
-		def smart_list_for name, *args, &block
+		def smart_listing_for name, *args, &block
 			raise ArgumentError, "Missing block" unless block_given?
 			name = name.to_sym
 			options = args.extract_options!
 			bare = options.delete(:bare)
 
-			builder = SmartListBuilder.new(name, @smart_lists[name], self, options, block)
+			builder = Builder.new(name, @smart_listings[name], self, options, block)
 
 			output =""
 
 			data = {}
-			data['max-count'] = @smart_lists[name].max_count if @smart_lists[name].max_count && @smart_lists[name].max_count > 0
-			data['href'] = @smart_lists[name].href if @smart_lists[name].href
+			data['max-count'] = @smart_listings[name].max_count if @smart_listings[name].max_count && @smart_listings[name].max_count > 0
+			data['href'] = @smart_listings[name].href if @smart_listings[name].href
 
 			if bare
 				output = capture(builder, &block)
 			else
-				output = content_tag(:div, :class => "smart_list", :id => name, :data => data) do
+				output = content_tag(:div, :class => "smart_listing", :id => name, :data => data) do
 					concat(content_tag(:div, "", :class => "loading"))
 					concat(content_tag(:div, :class => "content") do
 						concat(capture(builder, &block))
@@ -169,7 +169,7 @@ module SmartList
 		end
 
 		# Render item action buttons (ie. edit, destroy and custom ones)
-		def smart_list_item_actions actions = []
+		def smart_listing_item_actions actions = []
 			content_tag(:span) do
 				actions.each do |action|
 					next unless action.is_a?(Hash)
@@ -187,7 +187,7 @@ module SmartList
 						html_options = {
 							:remote => true, 
 							:class => "edit",
-							:title => t("smart_list.actions.edit")
+							:title => t("smart_listing.actions.edit")
 						}.merge(action)
 
 						concat(link_to(url, html_options) do
@@ -200,8 +200,8 @@ module SmartList
 							:remote => true, 
 							:class => "destroy",
 							:method => :delete,
-							:title => t("smart_list.actions.destroy"),
-							:data => {:confirmation => action.delete(:confirmation) || t("smart_list.msgs.destroy_confirmation")},
+							:title => t("smart_listing.actions.destroy"),
+							:data => {:confirmation => action.delete(:confirmation) || t("smart_listing.msgs.destroy_confirmation")},
 						}.merge(action)
 
 						concat(link_to(url, html_options) do
@@ -220,40 +220,40 @@ module SmartList
 			end
 		end
 
-		def smart_list_limit_left name
+		def smart_listing_limit_left name
 			name = name.to_sym
-			smart_list = @smart_lists[name]
+			smart_listing = @smart_listings[name]
 
-			smart_list.max_count - smart_list.count
+			smart_listing.max_count - smart_listing.count
 		end
 
 		#################################################################################################
 		# JS helpers:
 
 		# Updates the smart list
-		def smart_list_update name
+		def smart_listing_update name
 			name = name.to_sym
-			smart_list = @smart_lists[name]
-			builder = SmartListBuilder.new(name, smart_list, self, {}, nil)
-			render(:partial => 'smart_list/update_list', :locals => {
-				:name => smart_list.name, 
-				:part => smart_list.partial, 
-				:smart_list => builder, 
-				:smart_list_data => {
-					:params => smart_list.all_params,
-					'max-count' => smart_list.max_count,
+			smart_listing = @smart_listings[name]
+			builder = Builder.new(name, smart_listing, self, {}, nil)
+			render(:partial => 'smart_listing/update_list', :locals => {
+				:name => smart_listing.name, 
+				:part => smart_listing.partial, 
+				:smart_listing => builder, 
+				:smart_listing_data => {
+					:params => smart_listing.all_params,
+					'max-count' => smart_listing.max_count,
 				}
 			})
 		end
 
 		# Renders single item (i.e for create, update actions)
-		def smart_list_item name, item_action, object = nil, partial = nil, options = {}
+		def smart_listing_item name, item_action, object = nil, partial = nil, options = {}
 			name = name.to_sym
 			type = object.class.name.downcase.to_sym if object
 			id = object.id if object
 			object_key = options.delete(:object_key) || :object
 
-			render(:partial => "smart_list/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :object_key => object_key, :object => object, :part => partial})
+			render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :object_key => object_key, :object => object, :part => partial})
 		end
 	end
 end

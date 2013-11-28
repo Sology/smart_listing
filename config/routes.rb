@@ -1,2 +1,2 @@
-SmartList::Engine.routes.draw do
+SmartListing::Engine.routes.draw do
 end

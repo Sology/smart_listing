@@ -1,6 +1,6 @@
-require "smart_list/engine"
+require "smart_listing/engine"
 require "kaminari"
-module SmartList
+module SmartListing
 	class Base
 		if Rails.env.development?
 			PAGE_SIZES = [3, 10, 20, 50, 100]

@@ -1,4 +1,4 @@
-smart_list
+smart_listing
 ==========
 
-Smart list utility gem
+Smart listing utility gem
