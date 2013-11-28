@@ -60,7 +60,7 @@ class SmartListing
 				)
 			)
 
-		@container.on 'ajax:before', () =>
+		@container.on 'ajax:before', (e) =>
 			@fadeLoading()
 
 		@container.on 'ajax:success', (e) =>
@@ -292,17 +292,14 @@ $.fn.handleSmartListingFilter = () ->
 
 	field.observeField(
 		onFilled: ->
-			console.log('onfilled')
 			icon.removeClass('icon-search')
 			icon.addClass('icon-remove')
 			button.removeClass('disabled')
 		onEmpty: ->
-			console.log('onempty')
 			icon.addClass('icon-search')
 			icon.removeClass('icon-remove')
 			button.addClass('disabled')
 		onChange: ->
-			console.log('onchange')
 			form.submit()
 	)
 

@@ -47,7 +47,7 @@ module SmartListing
 						per_page_sizes.each do |p|
 							name = p == 0 ? @template.t('views.pagination.unlimited') : p
 							if @smart_listing.per_page.to_i != p
-								@template.concat(@template.link_to(name, sanitize_params(@template.params.merge(@smart_listing.param_names[:per_page] => p, @smart_listing.param_names[:page] => 1)), :remote => true))
+								@template.concat(@template.link_to(name, @template.url_for(sanitize_params(@template.params.merge(@smart_listing.param_names[:per_page] => p, @smart_listing.param_names[:page] => 1))), :remote => true))
 							else 
 								@template.concat(@template.content_tag(:span, name))
 							end
@@ -69,7 +69,7 @@ module SmartListing
 					@smart_listing.param_names[:sort_extra] => extra
 				}
 
-				@template.link_to(sanitize_params(@template.params.merge(sort_params)), :class => "sortable", :data => {:attr => attribute}, :remote => true) do
+				@template.link_to(@template.url_for(sanitize_params(@template.params.merge(sort_params))), :class => "sortable", :data => {:attr => attribute}, :remote => true) do
 					@template.concat(title)
 					if @smart_listing.sort_attr == attribute && (!@smart_listing.sort_extra || @smart_listing.sort_extra == extra.to_s)
 						@template.concat(@template.content_tag(:span, "", :class => (@smart_listing.sort_order == "asc" ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down"))) 
