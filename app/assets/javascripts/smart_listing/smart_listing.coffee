@@ -40,7 +40,7 @@ class SmartListing
 		@name = @container.attr('id')
 		@loading = @container.find('.loading')
 		@content = @container.find('.content')
-		@status = $(".smart_listing_status[data-smart-list='#{@name}']")
+		@status = $(".smart_listing_status[data-smart-listing='#{@name}']")
 		@confirmed = null
 
 		createPopover = (confirmation_elem, msg) =>
@@ -249,9 +249,9 @@ class SmartListing
 
 $.fn.smart_listing = () ->
 	map = $(this).map () ->
-		if !$(this).data('smart-list')
-			$(this).data('smart-list', new SmartListing($(this)))
-		$(this).data('smart-list')
+		if !$(this).data('smart-listing')
+			$(this).data('smart-listing', new SmartListing($(this)))
+		$(this).data('smart-listing')
 	if map.length == 1
 		map[0]
 	else
@@ -260,7 +260,7 @@ $.fn.smart_listing = () ->
 $.fn.handleSmartListingControls = () ->
 	$(this).each () ->
 		controls = $(this)
-		smart_listing = $("##{controls.data('smart-list')}")
+		smart_listing = $("##{controls.data('smart-listing')}")
 
 		controls.submit ->
 			# Merges smart list params with the form action url before submitting.
