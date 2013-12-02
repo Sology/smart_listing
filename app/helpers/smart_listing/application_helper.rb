@@ -1,4 +1,4 @@
-require 'smart_listing/smart_listing_helper'
+require 'smart_listing/helper'
 module SmartListing
 	module ApplicationHelper
 	end
