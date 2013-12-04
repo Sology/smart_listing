@@ -40,9 +40,9 @@ module SmartListing
 
       def pagination_per_page_links options = {}
         @template.content_tag(:div, :class => "pagination_per_page #{'disabled' if empty?}") do
-          if @smart_listing.count > SmartListing::Base::PAGE_SIZES.first
+          if @smart_listing.count > @smart_listing.page_sizes.first
             @template.concat(@template.t('views.pagination.per_page'))
-            per_page_sizes = SmartListing::Base::PAGE_SIZES.clone
+            per_page_sizes = @smart_listing.page_sizes.clone
             per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
             per_page_sizes.each do |p|
               name = p == 0 ? @template.t('views.pagination.unlimited') : p
