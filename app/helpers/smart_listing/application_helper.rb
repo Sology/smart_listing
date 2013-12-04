@@ -1,5 +1,5 @@
 require 'smart_listing/helper'
 module SmartListing
-	module ApplicationHelper
-	end
+  module ApplicationHelper
+  end
 end
