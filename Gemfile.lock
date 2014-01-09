@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    smart_list (0.9)
+    smart_listing (0.9.2)
       coffee-rails
       kaminari
-      rails
+      rails (>= 3.2)
 
 GEM
   remote: https://rubygems.org/
@@ -102,5 +102,5 @@ PLATFORMS
 DEPENDENCIES
   coffee-rails
   jquery-rails
-  smart_list!
+  smart_listing!
   sqlite3
