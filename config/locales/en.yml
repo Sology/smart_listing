@@ -1,0 +1,12 @@
+en:
+  smart_listing:
+    msgs:
+      destroy_confirmation: Destroy?
+    actions:
+      destroy: Destroy
+      edit: Edit
+  views:
+    pagination:
+      per_page: Per page
+      unlimited: Unlimited
+      total: Total

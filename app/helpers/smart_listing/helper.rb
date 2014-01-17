@@ -53,7 +53,7 @@ module SmartListing
               end
               break if p > @smart_listing.count
             end
-            @template.concat ' | '
+           	@template.concat(@template.render(:partial => 'smart_listing/pagination_separator'))
           end if @smart_listing.options[:paginate]
           @template.concat(@template.t('views.pagination.total'))
           @template.concat(@template.content_tag(:span, @smart_listing.count, :class => "count"))
@@ -72,9 +72,9 @@ module SmartListing
         @template.link_to(@template.url_for(sanitize_params(@template.params.merge(sort_params))), :class => "sortable", :data => {:attr => attribute}, :remote => true) do
           @template.concat(title)
           if @smart_listing.sort_attr == attribute && (!@smart_listing.sort_extra || @smart_listing.sort_extra == extra.to_s)
-            @template.concat(@template.content_tag(:span, "", :class => (@smart_listing.sort_order == "asc" ? "glyphicon glyphicon-chevron-up" : "glyphicon glyphicon-chevron-down"))) 
+            @template.concat(@template.render(:partial => 'smart_listing/sort_order_icon', :locals => {:sort_order => @smart_listing.sort_order})) 
           else
-            @template.concat(@template.content_tag(:span, "", :class => "glyphicon glyphicon-resize-vertical"))
+            @template.concat(@template.render(:partial => 'smart_listing/unordered_sort_icon'))
           end
         end
       end
@@ -111,8 +111,7 @@ module SmartListing
             @template.concat(@template.content_tag(:p, :class => "no_records pull-left #{'disabled' unless empty?}") do
               @template.concat(options.delete(:no_items_text))
             end)
-            @template.concat(@template.link_to(options.delete(:link), :remote => true, :class => "btn pull-right #{'disabled' if max_count?}") do
-              @template.concat(@template.content_tag(:i, '', :class => "glyphicon glyphicon-plus"))
+            @template.concat(@template.render(:partial => 'smart_listing/pull_right_button', :locals => {:link => options.delete(:link), :max_count => max_count?}) do
               @template.concat(" ")
               @template.concat(options.delete(:text))
             end)
@@ -176,7 +175,7 @@ module SmartListing
 
           if action.has_key?(:if)
             unless action[:if]
-              concat(content_tag(:i, '', :class => "glyphicon glyphicon-remove-circle"))
+              concat(render(:partial => 'smart_listing/inactive_action_icon'))
               next
             end
           end
@@ -184,29 +183,16 @@ module SmartListing
           case action.delete(:name).to_sym
           when :edit
             url = action.delete(:url)
-            html_options = {
-              :remote => true, 
-              :class => "edit",
-              :title => t("smart_listing.actions.edit")
-            }.merge(action)
 
-            concat(link_to(url, html_options) do
-              concat(content_tag(:i, '', :class => "glyphicon glyphicon-pencil"))
-            end)
+						concat(render(:partial => 'smart_listing/edit_icon', :locals => {:edit_url => url}))
+
           when :destroy
             url = action.delete(:url)
-            icon = action.delete(:icon) || "glyphicon glyphicon-trash"
-            html_options = {
-              :remote => true, 
-              :class => "destroy",
-              :method => :delete,
-              :title => t("smart_listing.actions.destroy"),
-              :data => {:confirmation => action.delete(:confirmation) || t("smart_listing.msgs.destroy_confirmation")},
-            }.merge(action)
+            icon = action.delete(:icon)
+						delete_confirmation = action.delete(:confirmation)
 
-            concat(link_to(url, html_options) do
-              concat(content_tag(:i, '', :class => icon))
-            end)
+						concat(render(:partial => 'smart_listing/delete_icon', :locals => {:destroy_url => url, :icon => icon, :destroy_confirmation => delete_confirmation}))
+
           when :custom
             url = action.delete(:url)
             icon = action.delete(:icon)
