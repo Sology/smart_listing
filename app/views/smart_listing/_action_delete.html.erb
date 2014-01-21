@@ -1,0 +1,10 @@
+<%# 
+  Delete action.
+
+  Available local variables:
+    url:                destroy url
+    icon
+    confirmation:       confrimation text
+-%>
+
+<%= link_to(url, :remote => true, :class => "destroy", :method => :delete, :title => t("smart_listing.actions.destroy"), :data => {:confirmation => confirmation || t("smart_listing.msgs.destroy_confirmation")} ) do %><%= content_tag(:i, "", :class => icon || "glyphicon glyphicon-trash") %><% end %>
