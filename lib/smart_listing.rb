@@ -31,6 +31,7 @@ module SmartListing
         :default_sort_attr              => nil,                 # default sort by
         :memorize_per_page              => false,
         :page_sizes                     => DEFAULT_PAGE_SIZES,  # set available page sizes array
+        :kaminari_options               => {},                  # Kaminari's paginate helper options
       }.merge!(options)
 
       if @options[:array]
@@ -108,6 +109,10 @@ module SmartListing
 
     def page_sizes
       @options[:page_sizes]
+    end
+
+    def kaminari_options
+      @options[:kaminari_options]
     end
 
     def all_params

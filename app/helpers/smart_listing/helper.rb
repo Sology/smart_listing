@@ -30,7 +30,7 @@ module SmartListing
 
       def paginate options = {}
         if @smart_listing.collection.respond_to? :current_page
-          @template.paginate @smart_listing.collection, :remote => true, :param_name => @smart_listing.param_names[:page], :params => UNSAFE_PARAMS
+          @template.paginate @smart_listing.collection, {:remote => true, :param_name => @smart_listing.param_names[:page], :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
         end
       end
 
