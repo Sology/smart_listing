@@ -1,0 +1,10 @@
+<%# 
+  Custom action.
+
+  Available local variables:
+    url
+    icon
+    html_options:       custom html options
+-%>
+
+<%= link_to(url, html_options) do %><%= content_tag(:i, '', :class => icon) %><% end %>
