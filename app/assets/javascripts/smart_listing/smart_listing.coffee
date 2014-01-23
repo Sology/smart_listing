@@ -238,7 +238,7 @@ class SmartListing
   destroy: (id, destroyed) =>
     # No need to do anything here, already handled by ajax:success handler
 
-	remove: (id) =>
+  remove: (id) =>
     editable = @container.find(".editable[data-id=#{id}]").first()
     editable.remove()
   
