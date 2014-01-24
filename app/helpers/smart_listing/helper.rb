@@ -216,10 +216,10 @@ module SmartListing
 						concat(render(:partial => 'smart_listing/action_delete', :locals => locals))
           when :custom
             locals = {
-              :url => nil,
-              :icon => nil,
-              :html_options => nil,
-            }.merge(action)
+              :url => action.delete(:url),
+              :icon => action.delete(:icon),
+              :html_options => action,
+            }
 						concat(render(:partial => 'smart_listing/action_custom', :locals => locals))
           else
 						concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))
