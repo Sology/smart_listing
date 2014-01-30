@@ -171,6 +171,7 @@ module SmartListing
       data = {}
       data['max-count'] = @smart_listings[name].max_count if @smart_listings[name].max_count && @smart_listings[name].max_count > 0
       data['href'] = @smart_listings[name].href if @smart_listings[name].href
+      data.merge!(options[:data]) if options[:data]
 
       if bare
         output = capture(builder, &block)
