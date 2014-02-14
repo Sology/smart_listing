@@ -28,6 +28,7 @@ module SmartListing
         :sort                           => true,                # allow sorting
         :paginate                       => true,                # allow pagination
         :href                           => nil,                 # set smart list target url (in case when different than current url)
+        :callback_href                  => nil,                 # set smart list callback url (in case when different than current url)
         :default_sort_attr              => nil,                 # default sort by
         :memorize_per_page              => false,
         :page_sizes                     => DEFAULT_PAGE_SIZES,  # set available page sizes array
@@ -51,6 +52,12 @@ module SmartListing
       cookies[param_names[:per_page]] = @per_page if @options[:memorize_per_page]
 
       @count = @collection.size
+
+      # Reset @page if greater than total number of pages
+      no_pages = (@count.to_f / @per_page.to_f).ceil.to_i
+      if @page.to_i > no_pages
+        @page = no_pages
+      end
 
       if @options[:array]
         @collection = @collection.sort do |x, y|
@@ -105,6 +112,10 @@ module SmartListing
 
     def href
       @options[:href]
+    end
+
+    def callback_href
+      @options[:callback_href]
     end
 
     def page_sizes

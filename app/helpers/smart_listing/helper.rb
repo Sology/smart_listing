@@ -40,7 +40,7 @@ module SmartListing
 
       def pagination_per_page_links options = {}
         container_classes = ["pagination_per_page"]
-        container_classes << "disabled" if empty?
+        container_classes << "hidden" if empty?
 
         per_page_sizes = @smart_listing.page_sizes.clone
         per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
@@ -113,15 +113,15 @@ module SmartListing
 
       # Add new item button & placeholder to list
       def item_new options = {}
-        new_item_action_classes = %{new_item_action} 
-        new_item_action_classes << "disabled" if !empty? && max_count?
-        no_records_classes = %{no_records}
-        no_records_classes << "disabled" unless empty?
+        new_item_action_classes = %w{new_item_action} 
+        new_item_action_classes << "hidden" if !empty? && max_count?
+        no_records_classes = %w{no_records}
+        no_records_classes << "hidden" unless empty?
         new_item_button_classes = []
-        new_item_button_classes << "disabled" if max_count?
+        new_item_button_classes << "hidden" if max_count?
 
         locals = {
-          :placeholder_classes => %w{new_item_placeholder disabled},
+          :placeholder_classes => %w{new_item_placeholder hidden},
           :new_item_action_classes => new_item_action_classes,
           :colspan => options.delete(:colspan),
           :no_items_classes => no_records_classes,
@@ -132,7 +132,6 @@ module SmartListing
         }
 
         @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
-        nil
       end
 
       # Check if smart list is empty
@@ -171,6 +170,7 @@ module SmartListing
       data = {}
       data['max-count'] = @smart_listings[name].max_count if @smart_listings[name].max_count && @smart_listings[name].max_count > 0
       data['href'] = @smart_listings[name].href if @smart_listings[name].href
+      data['callback_href'] = @smart_listings[name].callback_href if @smart_listings[name].callback_href
       data.merge!(options[:data]) if options[:data]
 
       if bare

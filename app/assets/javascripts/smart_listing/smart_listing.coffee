@@ -54,6 +54,7 @@ class SmartListing
           $(confirmation_elem).click()
           $(confirmation_elem).popover('destroy')
         )
+        .append(" ")
         .append($('<button/>').html('No').addClass('btn btn-small').click (event) =>
           editable = $(event.currentTarget).closest('.editable')
           $(confirmation_elem).popover('destroy')
@@ -86,8 +87,8 @@ class SmartListing
         @cancelEdit(editable)
       else
         # Cancel new record
-        @container.find('.new_item_placeholder').addClass('disabled')
-        @container.find('.new_item_action').removeClass('disabled')
+        @container.find('.new_item_placeholder').addClass('hidden')
+        @container.find('.new_item_action').removeClass('hidden')
       false
 
     @container.on 'click', '.actions a[data-confirmation]', (event) =>
@@ -95,7 +96,7 @@ class SmartListing
       if(@confirmed != event.currentTarget)
         # We need confirmation
         @container.find('.actions a').popover('destroy')
-        $(event.currentTarget).popover(content: createPopover(event.currentTarget, $(event.currentTarget).data('confirmation')), html: true, trigger: 'manual')
+        $(event.currentTarget).popover(content: createPopover(event.currentTarget, $(event.currentTarget).data('confirmation')), html: true, trigger: 'manual', title: null)
         $(event.currentTarget).popover('show')
         false
       else
@@ -105,6 +106,17 @@ class SmartListing
 
     @container.on 'click', 'input[type=text].autoselect', (event) ->
       $(this).select()
+
+    @container.on 'change', '.callback', (event) =>
+      checkbox = $(event.currentTarget)
+      id = checkbox.closest("tr").data("id")
+      data = {}
+      data[checkbox.val()] = checkbox.is(":checked")
+      $.ajax({
+        url: @container.data("callback-href"),
+        type: "POST",
+        data: data,
+      })
 
   fadeLoading: =>
     @content.stop(true).fadeTo(500, 0.2)
@@ -152,11 +164,11 @@ class SmartListing
     if @maxCount()
       if @itemCount() >= @maxCount()
         if @itemCount()
-          @container.find('.new_item_action').addClass('disabled')
-        @container.find('.new_item_action .btn').addClass('disabled')
+          @container.find('.new_item_action').addClass('hidden')
+        @container.find('.new_item_action .btn').addClass('hidden')
       else
-        @container.find('.new_item_action').removeClass('disabled')
-        @container.find('.new_item_action .btn').removeClass('disabled')
+        @container.find('.new_item_action').removeClass('hidden')
+        @container.find('.new_item_action .btn').removeClass('hidden')
 
     @status.each (index, status) =>
       $(status).find('.smart_listing_limit').html(@maxCount() - @itemCount())
@@ -177,13 +189,13 @@ class SmartListing
 
   new_item: (content) =>
     new_item_action = @container.find('.new_item_action')
-    new_item_placeholder = @container.find('.new_item_placeholder').addClass('disabled')
+    new_item_placeholder = @container.find('.new_item_placeholder').addClass('hidden')
 
     @container.find('.editable').each (i, v) =>
       @cancelEdit($(v))
 
-    new_item_action.addClass('disabled')
-    new_item_placeholder.removeClass('disabled')
+    new_item_action.addClass('hidden')
+    new_item_placeholder.removeClass('hidden')
     new_item_placeholder.html(content)
     new_item_placeholder.addClass('info')
 
@@ -194,8 +206,8 @@ class SmartListing
     new_item_placeholder = @container.find('.new_item_placeholder')
 
     if success
-      new_item_placeholder.addClass('disabled')
-      new_item_action.removeClass('disabled')
+      new_item_placeholder.addClass('hidden')
+      new_item_action.removeClass('hidden')
 
       new_item = $('<tr />').addClass('editable')
       new_item.attr('data-id', id)
@@ -212,8 +224,8 @@ class SmartListing
   edit: (id, content) =>
     @container.find('.editable').each (i, v) =>
       @cancelEdit($(v))
-    @container.find('.new_item_placeholder').addClass('disabled')
-    @container.find('.new_item_action').removeClass('disabled')
+    @container.find('.new_item_placeholder').addClass('hidden')
+    @container.find('.new_item_action').removeClass('hidden')
 
     editable = @container.find(".editable[data-id=#{id}]")
     editable.data('smart_listing_edit_backup', editable.html())
@@ -265,6 +277,7 @@ $.fn.handleSmartListingControls = () ->
   $(this).each () ->
     controls = $(this)
     smart_listing = $("##{controls.data('smart-listing')}")
+    reset = controls.find(".reset")
 
     controls.submit ->
       # Merges smart list params with the form action url before submitting.
@@ -296,18 +309,18 @@ $.fn.handleSmartListingFilter = () ->
 
   field.observeField(
     onFilled: ->
-      icon.removeClass('icon-search')
-      icon.addClass('icon-remove')
+      icon.removeClass('glyphicon-search')
+      icon.addClass('glyphicon-remove')
       button.removeClass('disabled')
     onEmpty: ->
-      icon.addClass('icon-search')
-      icon.removeClass('icon-remove')
+      icon.addClass('glyphicon-search')
+      icon.removeClass('glyphicon-remove')
       button.addClass('disabled')
     onChange: ->
       form.submit()
   )
 
-  button.click ->
+  icon.click ->
     if field.val().length > 0
       field.val('')
       field.trigger('keydown')
