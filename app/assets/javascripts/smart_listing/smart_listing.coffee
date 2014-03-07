@@ -113,6 +113,8 @@ class SmartListing
       data = {}
       data[checkbox.val()] = checkbox.is(":checked")
       $.ajax({
+        beforeSend: (xhr, settings) ->
+          xhr.setRequestHeader "accept", "*/*;q=0.5, " + settings.accepts.script
         url: @container.data("callback-href"),
         type: "POST",
         data: data,
