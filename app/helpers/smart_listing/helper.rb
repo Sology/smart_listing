@@ -38,9 +38,13 @@ module SmartListing
         @smart_listing.collection
       end
 
+      def empty?
+        @smart_listing.count == 0
+      end
+
       def pagination_per_page_links options = {}
-        container_classes = ["pagination_per_page"]
-        container_classes << "hidden" if empty?
+        container_classes = [SmartListing.config.classes(:pagination_per_page)]
+        container_classes << SmartListing.config.classes(:hidden) if empty?
 
         per_page_sizes = @smart_listing.page_sizes.clone
         per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
@@ -78,7 +82,7 @@ module SmartListing
         locals = {
           :ordered => @smart_listing.sort_attr == attribute && (!@smart_listing.sort_extra || @smart_listing.sort_extra == extra.to_s),
           :url => @template.url_for(sanitize_params(@template.params.merge(sort_params))),
-          :container_classes => ["sortable"],
+          :container_classes => [SmartListing.config.classes(:sortable)],
           :attribute => attribute,
           :title => title
         }
@@ -113,15 +117,15 @@ module SmartListing
 
       # Add new item button & placeholder to list
       def item_new options = {}
-        new_item_action_classes = %w{new_item_action} 
-        new_item_action_classes << "hidden" if !empty? && max_count?
-        no_records_classes = %w{no_records}
-        no_records_classes << "hidden" unless empty?
+        new_item_action_classes = [SmartListing.config.classes(:new_item_action)] 
+        new_item_action_classes << SmartListing.config.classes(:hidden) if !empty? && max_count?
+        no_records_classes = [SmartListing.config.classes(:no_records)]
+        no_records_classes << SmartListing.config.classes(:hidden) unless empty?
         new_item_button_classes = []
-        new_item_button_classes << "hidden" if max_count?
+        new_item_button_classes << SmartListing.config.classes(:hidden) if max_count?
 
         locals = {
-          :placeholder_classes => %w{new_item_placeholder hidden},
+          :placeholder_classes => [SmartListing.config.classes(:new_item_placeholder), SmartListing.config.classes(:hidden)],
           :new_item_action_classes => new_item_action_classes,
           :colspan => options.delete(:colspan),
           :no_items_classes => no_records_classes,
@@ -168,17 +172,17 @@ module SmartListing
       output = ""
 
       data = {}
-      data['max-count'] = @smart_listings[name].max_count if @smart_listings[name].max_count && @smart_listings[name].max_count > 0
-      data['href'] = @smart_listings[name].href if @smart_listings[name].href
-      data['callback_href'] = @smart_listings[name].callback_href if @smart_listings[name].callback_href
+      data[SmartListing.config.data_attributes(:max_count)] = @smart_listings[name].max_count if @smart_listings[name].max_count && @smart_listings[name].max_count > 0
+      data[SmartListing.config.data_attributes(:href)] = @smart_listings[name].href if @smart_listings[name].href
+      data[SmartListing.config.data_attributes(:callback_href)] = @smart_listings[name].callback_href if @smart_listings[name].callback_href
       data.merge!(options[:data]) if options[:data]
 
       if bare
         output = capture(builder, &block)
       else
-        output = content_tag(:div, :class => "smart_listing", :id => name, :data => data) do
-          concat(content_tag(:div, "", :class => "loading"))
-          concat(content_tag(:div, :class => "content") do
+        output = content_tag(:div, :class => SmartListing.config.classes(:main), :id => name, :data => data) do
+          concat(content_tag(:div, "", :class => SmartListing.config.classes(:loading)))
+          concat(content_tag(:div, :class => SmartListing.config.classes(:content)) do
             concat(capture(builder, &block))
           end)
         end
@@ -202,6 +206,12 @@ module SmartListing
 
           action_name = action[:name].to_sym
           case action_name
+          when :show
+            locals = {
+              :url => action.delete(:url),
+              :icon => action.delete(:icon),
+            }
+						concat(render(:partial => 'smart_listing/action_show', :locals => locals))
           when :edit
             locals = {
               :url => action.delete(:url),
@@ -249,8 +259,8 @@ module SmartListing
         :part => smart_listing.partial, 
         :smart_listing => builder, 
         :smart_listing_data => {
-          :params => smart_listing.all_params,
-          'max-count' => smart_listing.max_count,
+          SmartListing.config.data_attributes(:params) => smart_listing.all_params,
+          SmartListing.config.data_attributes(:max_count) => smart_listing.max_count,
         }
       })
     end

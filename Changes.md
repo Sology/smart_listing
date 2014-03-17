@@ -1,3 +1,11 @@
+0.9.5
+-----------
+
+- Fix collection counting bug
+- Add builtin show action
+- Make CSS class and data attribute names generic and customizable (SmartListing.configure)
+- Make JavaScript more customizable
+
 0.9.4
 -----------
 

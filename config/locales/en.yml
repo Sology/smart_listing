@@ -5,6 +5,7 @@ en:
     actions:
       destroy: Destroy
       edit: Edit
+      show: Show
   views:
     pagination:
       per_page: Per page

@@ -1,5 +1,7 @@
+require 'smart_listing/config'
 require "smart_listing/engine"
 require "kaminari"
+
 module SmartListing
   class Base
     if Rails.env.development?
@@ -45,6 +47,7 @@ module SmartListing
     def setup params, cookies
       @page = params[param_names[:page]]
       @per_page = !params[param_names[:per_page]] || params[param_names[:per_page]].empty? ? (@options[:memorize_per_page] && cookies[param_names[:per_page]].to_i > 0 ? cookies[param_names[:per_page]].to_i : page_sizes.first) : params[param_names[:per_page]].to_i
+      @per_page = DEFAULT_PAGE_SIZES.first unless DEFAULT_PAGE_SIZES.include?(@per_page)
       @sort_attr = params[param_names[:sort_attr]] || @options[:default_sort_attr]
       @sort_order = ["asc", "desc"].include?(params[param_names[:sort_order]]) ? params[param_names[:sort_order]] : "desc"
       @sort_extra = params[param_names[:sort_extra]]
@@ -52,6 +55,7 @@ module SmartListing
       cookies[param_names[:per_page]] = @per_page if @options[:memorize_per_page]
 
       @count = @collection.size
+      @count = @count.length if @count.is_a?(Hash)
 
       # Reset @page if greater than total number of pages
       no_pages = (@count.to_f / @per_page.to_f).ceil.to_i

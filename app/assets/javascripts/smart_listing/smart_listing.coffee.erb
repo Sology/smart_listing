@@ -1,0 +1,339 @@
+# Useful when SmartListing target url is different than current one
+$.rails.href = (element) ->
+  element.attr('href') || element.data('<% SmartListing.config.data_attributes(:href) %>')
+
+class SmartListing
+  constructor: (e) ->
+    @container = e
+    @name = @container.attr('id')
+    @loading = @container.find(".<%= SmartListing.config.classes(:loading) %>")
+    @content = @container.find(".<%= SmartListing.config.classes(:content) %>")
+    @status = $(".<%= SmartListing.config.classes(:status) %>[data-<%= SmartListing.config.data_attributes(:main) %>='#{@name}']")
+    @confirmed = null
+
+    @container.on 'ajax:before', (e) =>
+      @fadeLoading()
+
+    @container.on 'ajax:success', (e) =>
+      if $(e.target).is('.<%= SmartListing.config.classes(:item_actions) %> <%= SmartListing.config.selectors(:item_action_destroy) %>')
+        # handle HEAD OK response for deletion request
+        editable = $(e.target).closest('.<%= SmartListing.config.classes(:editable) %>')
+        if @container.find(".<%= SmartListing.config.classes(:editable) %>").length == 1
+          @reload()
+          return false
+        else
+          editable.remove()
+
+        @changeItemCount(-1)
+        @refresh()
+
+        @fadeLoaded()
+        return false
+
+    @container.on 'click', '<%= SmartListing.config.selectors(:edit_cancel) %>', (event) =>
+      editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
+      if(editable.length > 0)
+        # Cancel edit
+        @cancelEdit(editable)
+      else
+        # Cancel new record
+        @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+      false
+
+    @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:confirmation) %>]', (event) =>
+      # Check if we are confirming the right element
+      if(@confirmed != event.currentTarget)
+        # We need confirmation
+        $.fn.smart_listing.showPopover $(event.currentTarget), $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:confirmation) %>'), (confirm_elem) =>
+          @confirmed = confirm_elem[0]
+        false
+      else
+        # Confirmed, reset flag and go ahead with deletion
+        @confirmed = null
+        true
+
+    @container.on 'click', 'input[type=text].<%= SmartListing.config.classes(:autoselect) %>', (event) ->
+      $(this).select()
+
+    @container.on 'change', '.<%= SmartListing.config.classes(:callback) %>', (event) =>
+      checkbox = $(event.currentTarget)
+      id = checkbox.closest("<%= SmartListing.config.selectors(:row) %>").data("<%= SmartListing.config.data_attributes(:id) %>")
+      data = {}
+      data[checkbox.val()] = checkbox.is(":checked")
+      $.ajax({
+        beforeSend: (xhr, settings) ->
+          xhr.setRequestHeader "accept", "*/*;q=0.5, " + settings.accepts.script
+        url: @container.data("<%= SmartListing.config.data_attributes(:callback_href) %>"),
+        type: "POST",
+        data: data,
+      })
+
+  fadeLoading: =>
+    $.fn.smart_listing.onLoading(@content, @loading)
+
+  fadeLoaded: =>
+    $.fn.smart_listing.onLoaded(@content, @loading)
+  
+  itemCount: =>
+    parseInt(@container.find('.<%= SmartListing.config.classes(:pagination_per_page) %> .<%= SmartListing.config.classes(:pagination_count) %>').html())
+
+  maxCount: =>
+    parseInt(@container.data('<%= SmartListing.config.data_attributes(:max_count) %>'))
+
+  changeItemCount: (value) =>
+    @container.find('.<%= SmartListing.config.classes(:pagination_per_page) %> .<%= SmartListing.config.classes(:pagination_count) %>').html(@itemCount() + value)
+
+  cancelEdit: (editable) =>
+    if editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
+      editable.html(editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>'))
+      editable.removeClass('<%= SmartListing.config.classes(:inline_editing) %>')
+      editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
+  
+  # Callback called when record is added/deleted using ajax request
+  refresh: () =>
+    header = @content.find('<%= SmartListing.config.selectors(:head) %>')
+    footer = @content.find('.<%= SmartListing.config.classes(:pagination_per_page) %>')
+    no_records = @content.find('.<%= SmartListing.config.classes(:no_records) %>')
+
+    if @itemCount() == 0
+      header.hide()
+      footer.hide()
+      no_records.show()
+    else
+      header.show()
+      footer.show()
+      no_records.hide()
+
+    if @maxCount()
+      if @itemCount() >= @maxCount()
+        if @itemCount()
+          @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find('.<%= SmartListing.config.classes(:new_item_action) %> .<%= SmartListing.config.classes(:new_item_button) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+      else
+        @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find('.<%= SmartListing.config.classes(:new_item_action) %> .<%= SmartListing.config.classes(:new_item_button) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+
+    @status.each (index, status) =>
+      $(status).find('.<%= SmartListing.config.classes(:limit) %>').html(@maxCount() - @itemCount())
+      if @maxCount() - @itemCount() == 0
+        $(status).find('.<%= SmartListing.config.classes(:limit_alert) %>').show()
+      else
+        $(status).find('.<%= SmartListing.config.classes(:limit_alert) %>').hide()
+  
+  # Trigger AJAX request to reload the list
+  reload: () =>
+    $.rails.handleRemote(@container)
+  
+  params: () =>
+    @container.data('<%= SmartListing.config.data_attributes(:params) %>')
+  
+  #################################################################################################
+  # Methods executed by rails UJS:
+
+  new_item: (content) =>
+    new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')
+    new_item_placeholder = @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+
+    @container.find('.<%= SmartListing.config.classes(:editable) %>').each (i, v) =>
+      @cancelEdit($(v))
+
+    new_item_action.addClass('<%= SmartListing.config.classes(:hidden) %>')
+    new_item_placeholder.removeClass('<%= SmartListing.config.classes(:hidden) %>')
+    new_item_placeholder.html(content)
+    new_item_placeholder.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
+
+    @fadeLoaded()
+
+  create: (id, success, content) =>
+    new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')
+    new_item_placeholder = @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>')
+
+    if success
+      new_item_placeholder.addClass('<%= SmartListing.config.classes(:hidden) %>')
+      new_item_action.removeClass('<%= SmartListing.config.classes(:hidden) %>')
+
+      new_item = $('<tr />').addClass('<%= SmartListing.config.classes(:editable) %>')
+      new_item.attr('data-<%= SmartListing.config.data_attributes(:id) %>', id)
+      new_item.html(content)
+      new_item_placeholder.before(new_item)
+
+      @changeItemCount(1)
+      @refresh()
+    else
+      new_item_placeholder.html(content)
+
+    @fadeLoaded()
+
+  edit: (id, content) =>
+    @container.find('.<%= SmartListing.config.classes(:editable) %>').each (i, v) =>
+      @cancelEdit($(v))
+    @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+    @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+
+    editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]")
+    editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>', editable.html())
+    editable.html(content)
+    editable.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
+
+    @fadeLoaded()
+
+  update: (id, success, content) =>
+    editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]")
+    if success
+      editable.removeClass('<%= SmartListing.config.classes(:inline_editing) %>')
+      editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
+      editable.html(content)
+
+      @refresh()
+    else
+      editable.html(content)
+
+    @fadeLoaded()
+  
+  destroy: (id, destroyed) =>
+    # No need to do anything here, already handled by ajax:success handler
+
+  remove: (id) =>
+    editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]").first()
+    editable.remove()
+  
+  update_list: (content, data) =>
+    $.each data, (key, value) =>
+      @container.data(key, value)
+
+    @content.html(content)
+
+    @refresh()
+    @fadeLoaded()
+
+$.fn.smart_listing = () ->
+  map = $(this).map () ->
+    if !$(this).data('<%= SmartListing.config.data_attributes(:main) %>')
+      $(this).data('<%= SmartListing.config.data_attributes(:main) %>', new SmartListing($(this)))
+    $(this).data('<%= SmartListing.config.data_attributes(:main) %>')
+  if map.length == 1
+    map[0]
+  else
+    map
+
+$.fn.smart_listing.observeField = (field, opts = {}) ->
+   key_timeout = null
+   last_value = null
+   options =
+     onFilled: () ->
+     onEmpty: () ->
+     onChange: () ->
+   options = $.extend(options, opts)
+ 
+   keyChange = () ->
+     if field.val().length > 0
+       options.onFilled()
+     else
+       options.onEmpty()
+
+     if field.val() == last_value && field.val().length != 0
+       return
+     lastValue = field.val()
+ 
+     options.onChange()
+ 
+   field.data('<%= SmartListing.config.data_attributes(:observed) %>', true)
+ 
+   field.bind 'keydown', (e) ->
+     if(key_timeout)
+       clearTimeout(key_timeout)
+ 
+     key_timeout = setTimeout(->
+       keyChange()
+     , 400)
+
+$.fn.smart_listing.showPopover = (confirmation_elem, msg, confirm) ->
+  buildPopover = (confirmation_elem, msg) ->
+    deletion_popover = $('<div/>').addClass('confirmation_box')
+    deletion_popover.append($('<p/>').html(msg))
+    deletion_popover.append($('<p/>')
+      .append($('<button/>').html('Yes').addClass('btn btn-danger ').click (event) =>
+        # set @confirmed element and emulate click on icon
+        editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
+        confirm(confirmation_elem)
+        $(confirmation_elem).click()
+        $(confirmation_elem).popover('destroy')
+      )
+      .append(" ")
+      .append($('<button/>').html('No').addClass('btn btn-small').click (event) =>
+        editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
+        $(confirmation_elem).popover('destroy')
+      )
+    )
+
+  confirmation_elem.popover('destroy')
+  confirmation_elem.popover(content: buildPopover(confirmation_elem, msg), html: true, trigger: 'manual', title: null)
+  confirmation_elem.popover('show')
+
+$.fn.smart_listing.onLoading = (content, loader) ->
+  content.stop(true).fadeTo(500, 0.2)
+  loading.show()
+  loading.stop(true).fadeTo(500, 1)
+
+$.fn.smart_listing.onLoaded = (content, loader) ->
+  content.stop(true).fadeTo(500, 1)
+  loading.stop(true).fadeTo 500, 0, () =>
+    loading.hide()
+
+$.fn.smart_listing_controls = () ->
+  $(this).each () ->
+    controls = $(this)
+    smart_listing = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
+    reset = controls.find(".<%= SmartListing.config.classes(:controls_reset) %>")
+
+    controls.submit ->
+      # Merges smart list params with the form action url before submitting.
+      # This preserves smart list settings (page, sorting etc.).
+
+      prms = $.extend({}, smart_listing.smart_listing().params())
+      if $(this).data('<%= SmartListing.config.classes(:controls_reset) %>')
+        prms[$(this).data('<%= SmartListing.config.classes(:controls_reset) %>')] = null
+
+      if $.rails.href(smart_listing)
+        # If smart list has different target url than current one
+        controls.attr('action', $.rails.href(smart_listing) + "?" + jQuery.param(prms))
+      else
+        controls.attr('action', "?" + jQuery.param(prms))
+
+      smart_listing.trigger('ajax:before')
+      true
+
+    controls.find('input, select').change () ->
+      unless $(this).data('<%= SmartListing.config.data_attributes(:observed) %>') # do not submit controls form when changed field is observed (observing submits form by itself)
+        controls.submit()
+
+    $.fn.smart_listing_controls.filter(controls.find('.<%= SmartListing.config.classes(:filtering) %>'))
+
+$.fn.smart_listing_controls.filter = (filter) ->
+  form = filter.closest('form')
+  button = filter.find('button')
+  icon = filter.find('<%= SmartListing.config.selectors(:filtering_icon) %>')
+  field = filter.find('input')
+
+  $.fn.smart_listing.observeField(field,
+    onFilled: ->
+      icon.removeClass('<%= SmartListing.config.classes(:filtering_search) %>')
+      icon.addClass('<%= SmartListing.config.classes(:filtering_cancel) %>')
+      button.removeClass('<%= SmartListing.config.classes(:filtering_disabled) %>')
+    onEmpty: ->
+      icon.addClass('<%= SmartListing.config.classes(:filtering_search) %>')
+      icon.removeClass('<%= SmartListing.config.classes(:filtering_cancel) %>')
+      button.addClass('<%= SmartListing.config.classes(:filtering_disabled) %>')
+    onChange: ->
+      form.submit()
+  )
+
+  icon.click ->
+    if field.val().length > 0
+      field.val('')
+      field.trigger('keydown')
+
+$ ->
+  $('.<%= SmartListing.config.classes(:main) %>').smart_listing()
+  $('.<%= SmartListing.config.classes(:controls) %>').smart_listing_controls()
