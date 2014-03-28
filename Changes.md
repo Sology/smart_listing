@@ -1,3 +1,9 @@
+0.9.6
+-----------
+
+- Some bugfixing
+- Initial setup generator
+
 0.9.5
 -----------
 

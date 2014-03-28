@@ -273,13 +273,13 @@ $.fn.smart_listing.showPopover = (confirmation_elem, msg, confirm) ->
 
 $.fn.smart_listing.onLoading = (content, loader) ->
   content.stop(true).fadeTo(500, 0.2)
-  loading.show()
-  loading.stop(true).fadeTo(500, 1)
+  loader.show()
+  loader.stop(true).fadeTo(500, 1)
 
 $.fn.smart_listing.onLoaded = (content, loader) ->
   content.stop(true).fadeTo(500, 1)
-  loading.stop(true).fadeTo 500, 0, () =>
-    loading.hide()
+  loader.stop(true).fadeTo 500, 0, () =>
+    loader.hide()
 
 $.fn.smart_listing_controls = () ->
   $(this).each () ->

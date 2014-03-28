@@ -6,4 +6,4 @@
     icon
 -%>
 
-<%= link_to(url, :class => "show", :title => t("smart_listing.actions.show") ) do %><%= content_tag(:i, '', :class => icon || "glyphicon glyphicon-share-alt") %><% end %>
+<%= link_to(url, :class => "show", :title => t("smart_listing.actions.show") ) do %><%= content_tag(:i, '', :class => icon || SmartListing.config.classes(:icon_show)) %><% end %>
