@@ -1,3 +1,11 @@
+0.9.7
+-----------
+
+- Some bugfixing
+- Fix listing sorting XSS bug
+- Add possibility to display new item form by default
+- "Save & continue" support
+
 0.9.6
 -----------
 

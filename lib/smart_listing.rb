@@ -91,7 +91,7 @@ module SmartListing
           end
         end
       else
-        @collection = @collection.order("#{@sort_attr} #{@sort_order}") if @options[:sort] && @sort_attr && !@sort_attr.empty? && @sort_order
+        @collection = @collection.order("#{@sort_attr} #{@sort_order}") if @options[:sort] && @sort_attr && !@sort_attr.empty? && @collection.column_names.include?(@sort_attr) && @sort_order
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)
         end

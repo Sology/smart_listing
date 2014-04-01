@@ -27,8 +27,8 @@ module SmartListing
           :pagination_count => "count",
           :inline_editing => "info",
           :no_records => "no-records",
-          :limit => "limit",
-          :limit_alert => "limit-alert",
+          :limit => "smart-listing-limit",
+          :limit_alert => "smart-listing-limit-alert",
           :controls => "smart-listing-controls",
           :controls_reset => "reset",
           :filtering => "filter",
@@ -56,6 +56,7 @@ module SmartListing
           :params => "params",
           :observed => "observed",
           :href => "href",
+          :autoshow => "autoshow",
         },
         :selectors => {
           :item_action_destroy => "a.destroy",

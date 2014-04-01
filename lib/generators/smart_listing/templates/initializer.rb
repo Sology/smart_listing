@@ -16,8 +16,8 @@ SmartListing.configure do |config|
     #:pagination_count      => "count",
     #:inline_editing        => "info",
     #:no_records            => "no-records",
-    #:limit                 => "limit",
-    #:limit_alert           => "limit-alert",
+    #:limit                 => "smart-listing-limit",
+    #:limit_alert           => "smart-listing-limit-alert",
     #:controls              => "smart-listing-controls",
     #:controls_reset        => "reset",
     #:filtering             => "filter",
@@ -46,6 +46,7 @@ SmartListing.configure do |config|
     #:params                => "params",
     #:observed              => "observed",
     #:href                  => "href",
+    #:autoshow              => "autoshow",
   }
 
   config.constants :selectors, {

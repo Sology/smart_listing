@@ -116,26 +116,37 @@ module SmartListing
       end
 
       # Add new item button & placeholder to list
-      def item_new options = {}
-        new_item_action_classes = [SmartListing.config.classes(:new_item_action)] 
-        new_item_action_classes << SmartListing.config.classes(:hidden) if !empty? && max_count?
+      def item_new options = {}, &block
         no_records_classes = [SmartListing.config.classes(:no_records)]
         no_records_classes << SmartListing.config.classes(:hidden) unless empty?
         new_item_button_classes = []
         new_item_button_classes << SmartListing.config.classes(:hidden) if max_count?
 
         locals = {
-          :placeholder_classes => [SmartListing.config.classes(:new_item_placeholder), SmartListing.config.classes(:hidden)],
-          :new_item_action_classes => new_item_action_classes,
           :colspan => options.delete(:colspan),
           :no_items_classes => no_records_classes,
           :no_items_text => options.delete(:no_items_text),
           :new_item_button_url => options.delete(:link),
           :new_item_button_classes => new_item_button_classes,
           :new_item_button_text => options.delete(:text),
+          :new_item_autoshow => block_given?,
+          :new_item_content => nil,
         }
 
-        @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
+        unless block_given?
+          locals[:placeholder_classes] = [SmartListing.config.classes(:new_item_placeholder), SmartListing.config.classes(:hidden)]
+          locals[:new_item_action_classes] = [SmartListing.config.classes(:new_item_action)]
+          locals[:new_item_action_classes] << SmartListing.config.classes(:hidden) if !empty? && max_count?
+
+          @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
+        else
+          locals[:placeholder_classes] = [SmartListing.config.classes(:new_item_placeholder)]
+          locals[:placeholder_classes] << SmartListing.config.classes(:hidden) if !empty? && max_count?
+          locals[:new_item_action_classes] = [SmartListing.config.classes(:new_item_action), SmartListing.config.classes(:hidden)]
+
+          locals[:new_item_content] = @template.capture(&block)
+          @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
+        end
       end
 
       # Check if smart list is empty
@@ -272,8 +283,9 @@ module SmartListing
       id = options[:id] || object.try(:id)
       valid = options[:valid] if options.has_key?(:valid)
       object_key = options.delete(:object_key) || :object
+      new = options.delete(:new)
 
-      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial})
+      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new})
     end
   end
 end

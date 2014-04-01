@@ -39,6 +39,8 @@ class SmartListing
         # Cancel new record
         @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
         @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+
+      @setAutoshow(false)
       false
 
     @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:confirmation) %>]', (event) =>
@@ -81,6 +83,9 @@ class SmartListing
   maxCount: =>
     parseInt(@container.data('<%= SmartListing.config.data_attributes(:max_count) %>'))
 
+  setAutoshow: (v) =>
+    @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').data('<%= SmartListing.config.data_attributes(:autoshow) %>', v)
+
   changeItemCount: (value) =>
     @container.find('.<%= SmartListing.config.classes(:pagination_per_page) %> .<%= SmartListing.config.classes(:pagination_count) %>').html(@itemCount() + value)
 
@@ -107,12 +112,15 @@ class SmartListing
 
     if @maxCount()
       if @itemCount() >= @maxCount()
-        if @itemCount()
-          @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
-        @container.find('.<%= SmartListing.config.classes(:new_item_action) %> .<%= SmartListing.config.classes(:new_item_button) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
       else
-        @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
-        @container.find('.<%= SmartListing.config.classes(:new_item_action) %> .<%= SmartListing.config.classes(:new_item_button) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+        if @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').data('<%= SmartListing.config.data_attributes(:autoshow) %>')
+          @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+          @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        else
+          @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+          @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
 
     @status.each (index, status) =>
       $(status).find('.<%= SmartListing.config.classes(:limit) %>').html(@maxCount() - @itemCount())
@@ -132,18 +140,19 @@ class SmartListing
   # Methods executed by rails UJS:
 
   new_item: (content) =>
-    new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')
-    new_item_placeholder = @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+    if !@maxCount() || (@itemCount() < @maxCount())
+      new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')
+      new_item_placeholder = @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
 
-    @container.find('.<%= SmartListing.config.classes(:editable) %>').each (i, v) =>
-      @cancelEdit($(v))
+      @container.find('.<%= SmartListing.config.classes(:editable) %>').each (i, v) =>
+        @cancelEdit($(v))
 
-    new_item_action.addClass('<%= SmartListing.config.classes(:hidden) %>')
-    new_item_placeholder.removeClass('<%= SmartListing.config.classes(:hidden) %>')
-    new_item_placeholder.html(content)
-    new_item_placeholder.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
+      new_item_action.addClass('<%= SmartListing.config.classes(:hidden) %>')
+      new_item_placeholder.removeClass('<%= SmartListing.config.classes(:hidden) %>')
+      new_item_placeholder.html(content)
+      new_item_placeholder.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
 
-    @fadeLoaded()
+      @fadeLoaded()
 
   create: (id, success, content) =>
     new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')

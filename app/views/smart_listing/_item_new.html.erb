@@ -10,9 +10,13 @@
     new_item_button_url:      argument to link_to (new item button)
     new_item_button_classes
     new_item_button_text
+    new_item_autoshow         automatically show new item placeholder
+    new_item_content          new item placeholder content (usually some form)
 -%>
 
-<%= content_tag(:tr, '', :class => placeholder_classes + %w{info}) %>
+<%= content_tag(:tr, '', :class => placeholder_classes + %w{info}, :data => {SmartListing.config.data_attributes(:autoshow) => new_item_autoshow}) do %>
+  <%= new_item_content %>
+<% end %>
 <%= content_tag(:tr, :class => new_item_action_classes + %w{info}) do %>
   <%= content_tag(:td, :colspan => colspan) do %>
     <%= content_tag(:p, :class => no_items_classes + %w{pull-left}) do %>
