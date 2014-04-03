@@ -10,6 +10,7 @@ class SmartListing
     @content = @container.find(".<%= SmartListing.config.classes(:content) %>")
     @status = $(".<%= SmartListing.config.classes(:status) %>[data-<%= SmartListing.config.data_attributes(:main) %>='#{@name}']")
     @confirmed = null
+    @popovers = {}
 
     @container.on 'ajax:before', (e) =>
       @fadeLoading()
@@ -47,13 +48,20 @@ class SmartListing
       # Check if we are confirming the right element
       if(@confirmed != event.currentTarget)
         # We need confirmation
-        $.fn.smart_listing.showPopover $(event.currentTarget), $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:confirmation) %>'), (confirm_elem) =>
+        $.fn.smart_listing.showConfirmation $(event.currentTarget), $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:confirmation) %>'), (confirm_elem) =>
           @confirmed = confirm_elem[0]
         false
       else
         # Confirmed, reset flag and go ahead with deletion
         @confirmed = null
         true
+
+    @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:popover) %>]', (event) =>
+      name = $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:popover) %>')
+      if jQuery.isFunction(@popovers[name])
+        @popovers[name]($(event.currentTarget))
+        false
+
 
     @container.on 'click', 'input[type=text].<%= SmartListing.config.classes(:autoselect) %>', (event) ->
       $(this).select()
@@ -135,6 +143,9 @@ class SmartListing
   
   params: () =>
     @container.data('<%= SmartListing.config.data_attributes(:params) %>')
+
+  registerPopover: (name, callback) =>
+    @popovers[name] = callback
   
   #################################################################################################
   # Methods executed by rails UJS:
@@ -257,7 +268,12 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
        keyChange()
      , 400)
 
-$.fn.smart_listing.showPopover = (confirmation_elem, msg, confirm) ->
+$.fn.smart_listing.showPopover = (elem, body) ->
+  elem.popover('destroy')
+  elem.popover(content: body, html: true, trigger: 'manual', title: null)
+  elem.popover('show')
+
+$.fn.smart_listing.showConfirmation = (confirmation_elem, msg, confirm_callback) ->
   buildPopover = (confirmation_elem, msg) ->
     deletion_popover = $('<div/>').addClass('confirmation_box')
     deletion_popover.append($('<p/>').html(msg))
@@ -265,7 +281,7 @@ $.fn.smart_listing.showPopover = (confirmation_elem, msg, confirm) ->
       .append($('<button/>').html('Yes').addClass('btn btn-danger ').click (event) =>
         # set @confirmed element and emulate click on icon
         editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
-        confirm(confirmation_elem)
+        confirm_callback(confirmation_elem)
         $(confirmation_elem).click()
         $(confirmation_elem).popover('destroy')
       )
@@ -276,9 +292,7 @@ $.fn.smart_listing.showPopover = (confirmation_elem, msg, confirm) ->
       )
     )
 
-  confirmation_elem.popover('destroy')
-  confirmation_elem.popover(content: buildPopover(confirmation_elem, msg), html: true, trigger: 'manual', title: null)
-  confirmation_elem.popover('show')
+  $.fn.smart_listing.showPopover confirmation_elem, buildPopover(confirmation_elem, msg)
 
 $.fn.smart_listing.onLoading = (content, loader) ->
   content.stop(true).fadeTo(500, 0.2)

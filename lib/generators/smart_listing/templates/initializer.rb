@@ -47,6 +47,7 @@ SmartListing.configure do |config|
     #:observed              => "observed",
     #:href                  => "href",
     #:autoshow              => "autoshow",
+    #:popover               => "slpopover",
   }
 
   config.constants :selectors, {
