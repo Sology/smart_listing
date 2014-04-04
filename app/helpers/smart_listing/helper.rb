@@ -154,6 +154,10 @@ module SmartListing
         @smart_listing.count == 0
       end
 
+      def count
+        @smart_listing.count
+      end
+
       # Check if smart list reached its item max count
       def max_count?
         return false if @smart_listing.max_count.nil?

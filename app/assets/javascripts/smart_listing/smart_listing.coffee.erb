@@ -45,16 +45,7 @@ class SmartListing
       false
 
     @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:confirmation) %>]', (event) =>
-      # Check if we are confirming the right element
-      if(@confirmed != event.currentTarget)
-        # We need confirmation
-        $.fn.smart_listing.showConfirmation $(event.currentTarget), $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:confirmation) %>'), (confirm_elem) =>
-          @confirmed = confirm_elem[0]
-        false
-      else
-        # Confirmed, reset flag and go ahead with deletion
-        @confirmed = null
-        true
+      $.fn.smart_listing.confirm $(event.currentTarget), $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:confirmation) %>')
 
     @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:popover) %>]', (event) =>
       name = $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:popover) %>')
@@ -293,6 +284,17 @@ $.fn.smart_listing.showConfirmation = (confirmation_elem, msg, confirm_callback)
     )
 
   $.fn.smart_listing.showPopover confirmation_elem, buildPopover(confirmation_elem, msg)
+
+$.fn.smart_listing.confirm = (elem, msg) ->
+  if !elem.data("confirmed")
+    # We need confirmation
+    $.fn.smart_listing.showConfirmation elem, msg, (confirm_elem) =>
+      confirm_elem.data("confirmed", true)
+    false
+  else
+    # Confirmed, reset flag and go ahead with deletion
+    elem.data("confirmed", false)
+    true
 
 $.fn.smart_listing.onLoading = (content, loader) ->
   content.stop(true).fadeTo(500, 0.2)
