@@ -1,4 +1,5 @@
 - Confirmation tweaks
+- Possibility to pass custom title to default actions
 
 0.9.8
 -----------

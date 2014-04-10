@@ -4,6 +4,7 @@
   Available local variables:
     url
     icon
+    title
 -%>
 
-<%= link_to(url, :remote => true, :class => "edit", :title => t("smart_listing.actions.edit") ) do %><%= content_tag(:i, '', :class => icon || SmartListing.config.classes(:icon_edit)) %><% end %>
+<%= link_to(url, :remote => true, :class => "edit", :title => title || t("smart_listing.actions.edit") ) do %><%= content_tag(:i, '', :class => icon || SmartListing.config.classes(:icon_edit)) %><% end %>

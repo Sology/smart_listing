@@ -225,12 +225,14 @@ module SmartListing
             locals = {
               :url => action.delete(:url),
               :icon => action.delete(:icon),
+              :title => action.delete(:title),
             }
 						concat(render(:partial => 'smart_listing/action_show', :locals => locals))
           when :edit
             locals = {
               :url => action.delete(:url),
               :icon => action.delete(:icon),
+              :title => action.delete(:title),
             }
 						concat(render(:partial => 'smart_listing/action_edit', :locals => locals))
           when :destroy
@@ -238,6 +240,7 @@ module SmartListing
               :url => action.delete(:url),
               :icon => action.delete(:icon),
               :confirmation => action.delete(:confirmation),
+              :title => action.delete(:title),
             }
 						concat(render(:partial => 'smart_listing/action_delete', :locals => locals))
           when :custom
