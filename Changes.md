@@ -1,6 +1,7 @@
 - Confirmation tweaks
 - Possibility to pass custom title to default actions
 - Fix new item autoshow
+- Fix filter resetting
 
 0.9.8
 -----------
