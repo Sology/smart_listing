@@ -83,7 +83,7 @@ class SmartListing
     parseInt(@container.data('<%= SmartListing.config.data_attributes(:max_count) %>'))
 
   setAutoshow: (v) =>
-    @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').data('<%= SmartListing.config.data_attributes(:autoshow) %>', v)
+    @container.data('<%= SmartListing.config.data_attributes(:autoshow) %>', v)
 
   changeItemCount: (value) =>
     @container.find('.<%= SmartListing.config.classes(:pagination_per_page) %> .<%= SmartListing.config.classes(:pagination_count) %>').html(@itemCount() + value)
@@ -114,7 +114,7 @@ class SmartListing
         @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
         @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
       else
-        if @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').data('<%= SmartListing.config.data_attributes(:autoshow) %>')
+        if @container.data('<%= SmartListing.config.data_attributes(:autoshow) %>')
           @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
           @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
         else

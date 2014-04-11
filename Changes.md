@@ -1,5 +1,6 @@
 - Confirmation tweaks
 - Possibility to pass custom title to default actions
+- Fix new item autoshow
 
 0.9.8
 -----------
