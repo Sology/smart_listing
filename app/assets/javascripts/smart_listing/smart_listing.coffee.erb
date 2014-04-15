@@ -25,6 +25,8 @@ class SmartListing
         else
           editable.remove()
 
+          @container.trigger("smart_listing:destroy", editable)
+
         @changeItemCount(-1)
         @refresh()
 
@@ -169,10 +171,14 @@ class SmartListing
       new_item.html(content)
       new_item_placeholder.before(new_item)
 
+      @container.trigger("smart_listing:create:success", new_item)
+
       @changeItemCount(1)
       @refresh()
     else
       new_item_placeholder.html(content)
+
+      @container.trigger("smart_listing:create:fail", new_item_placeholder)
 
     @fadeLoaded()
 
@@ -187,6 +193,8 @@ class SmartListing
     editable.html(content)
     editable.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
 
+    @container.trigger("smart_listing:edit", editable)
+
     @fadeLoaded()
 
   update: (id, success, content) =>
@@ -196,9 +204,13 @@ class SmartListing
       editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
       editable.html(content)
 
+      @container.trigger("smart_listing:update:success", editable)
+
       @refresh()
     else
       editable.html(content)
+
+      @container.trigger("smart_listing:update:fail", editable)
 
     @fadeLoaded()
   
@@ -208,6 +220,8 @@ class SmartListing
   remove: (id) =>
     editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]").first()
     editable.remove()
+
+    @container.trigger("smart_listing:remove", editable)
   
   update_list: (content, data) =>
     $.each data, (key, value) =>

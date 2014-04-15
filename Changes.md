@@ -2,6 +2,7 @@
 - Possibility to pass custom title to default actions
 - Fix new item autoshow
 - Fix filter resetting
+- Events triggered on item actions
 
 0.9.8
 -----------
