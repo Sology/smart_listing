@@ -39,7 +39,7 @@ module SmartListing
           :icon_new => "glyphicon glyphicon-plus",
           :icon_edit => "glyphicon glyphicon-pencil",
           :icon_trash => "glyphicon glyphicon-trash",
-          :icon_inactive => "glyphicon glyphicon-circle",
+          :icon_inactive => "glyphicon glyphicon-remove-circle text-muted",
           :icon_show => "glyphicon glyphicon-share-alt",
           :icon_sort_none => "glyphicon glyphicon-resize-vertical",
           :icon_sort_up => "glyphicon glyphicon-chevron-up",
