@@ -10,28 +10,31 @@ module SmartListing
       DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
     end
 
-    attr_reader :name, :collection, :options, :per_page, :page, :sort_attr, :sort_order, :sort_extra, :partial, :count
+    attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count
 
     def initialize name, collection, options = {}
       @name = name
+
+      sort_attributes = options.delete(:sort_attributes) || nil
+      if sort_attributes == :default
+        sort_attributes = collection.column_names.collect{|c| [c.to_sym, c]}
+      end
 
       @options = {
         :param_names  => {                                      # param names
           :page                         => "#{@name}_page".to_sym,
           :per_page                     => "#{@name}_per_page".to_sym,
-          :sort_attr                    => "#{@name}_sort_attr".to_sym,
-          :sort_order                   => "#{@name}_sort_order".to_sym,
-          :sort_extra                   => "#{@name}_sort_extra".to_sym,
+          :sort                         => "#{@name}_sort".to_sym,
         },
         :partial                        => @name,               # smart list partial name
         :array                          => false,               # controls whether smart list should be using arrays or AR collections
         :max_count                      => nil,                 # limit number of rows
         :unlimited_per_page             => false,               # allow infinite page size
-        :sort                           => true,                # allow sorting
+        :sort_attributes                => sort_attributes,
+        :default_sort                   => {},                  # default sorting
         :paginate                       => true,                # allow pagination
         :href                           => nil,                 # set smart list target url (in case when different than current url)
         :callback_href                  => nil,                 # set smart list callback url (in case when different than current url)
-        :default_sort_attr              => nil,                 # default sort by
         :memorize_per_page              => false,
         :page_sizes                     => DEFAULT_PAGE_SIZES,  # set available page sizes array
         :kaminari_options               => {},                  # Kaminari's paginate helper options
@@ -48,9 +51,9 @@ module SmartListing
       @page = params[param_names[:page]]
       @per_page = !params[param_names[:per_page]] || params[param_names[:per_page]].empty? ? (@options[:memorize_per_page] && cookies[param_names[:per_page]].to_i > 0 ? cookies[param_names[:per_page]].to_i : page_sizes.first) : params[param_names[:per_page]].to_i
       @per_page = DEFAULT_PAGE_SIZES.first unless DEFAULT_PAGE_SIZES.include?(@per_page)
-      @sort_attr = params[param_names[:sort_attr]] || @options[:default_sort_attr]
-      @sort_order = ["asc", "desc"].include?(params[param_names[:sort_order]]) ? params[param_names[:sort_order]] : "desc"
-      @sort_extra = params[param_names[:sort_extra]]
+      @sort = parse_sort(params[param_names[:sort]] || @options[:default_sort])
+      puts @options[:sort_attributes].to_yaml
+      puts @sort.to_yaml
 
       cookies[param_names[:per_page]] = @per_page if @options[:memorize_per_page]
 
@@ -64,26 +67,29 @@ module SmartListing
       end
 
       if @options[:array]
-        @collection = @collection.sort do |x, y|
-          xval = x
-          yval = y
-          @sort_attr.split(".").each do |m|
-            xval = xval.try(m)
-            yval = yval.try(m)
-          end
-          xval = xval.upcase if xval.is_a?(String)
-          yval = yval.upcase if yval.is_a?(String)
-
-          if xval.nil? || yval.nil?
-            xval.nil? ? 1 : -1
-          else
-            if @sort_order == "asc"
-              (xval <=> yval) || (xval && !yval ? 1 : -1)
-            else
-              (yval <=> xval) || (yval && !xval ? 1 : -1)
+        if @sort && @sort.any? # when array we sort only by first attribute
+          i = @options[:sort_attributes].index{|x| x[0] == @sort.first[0]}
+          @collection = @collection.sort do |x, y|
+            xval = x
+            yval = y
+            @options[:sort_attributes][i][1].split(".").each do |m|
+              xval = xval.try(m)
+              yval = yval.try(m)
             end
-          end
-        end if @options[:sort] && @sort_attr && !@sort_attr.empty?
+            xval = xval.upcase if xval.is_a?(String)
+            yval = yval.upcase if yval.is_a?(String)
+
+            if xval.nil? || yval.nil?
+              xval.nil? ? 1 : -1
+            else
+              if @sort.first[1] == "asc"
+                (xval <=> yval) || (xval && !yval ? 1 : -1)
+              else
+                (yval <=> xval) || (yval && !xval ? 1 : -1)
+              end
+            end 
+          end 
+        end
         if @options[:paginate] && @per_page > 0
           @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)
           if @collection.length == 0
@@ -91,7 +97,9 @@ module SmartListing
           end
         end
       else
-        @collection = @collection.order("#{@sort_attr} #{@sort_order}") if @options[:sort] && @sort_attr && !@sort_attr.empty? && @collection.column_names.include?(@sort_attr) && @sort_order
+        # let's sort by all attributes
+        @collection = @collection.order(@options[:sort_attributes].collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && @sort.any?
+
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)
         end
@@ -136,6 +144,29 @@ module SmartListing
         ap[v] = self.send(k)
       end
       ap
+    end
+
+    def sort_order attribute
+      @sort[attribute] if @sort
+    end
+
+    private
+
+    def parse_sort sort_params
+      sort = nil
+      @options[:sort_attributes].each do |a|
+        k, v = a
+        if sort_params[k.to_sym]
+          dir = %w{asc desc}.delete(sort_params[k.to_sym])
+
+          if dir
+            sort ||= {}
+            sort[k] = dir
+          end
+        end
+      end if @options[:sort_attributes]
+
+      sort
     end
   end
 end

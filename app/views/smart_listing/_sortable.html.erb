@@ -6,15 +6,15 @@
     url:                sortable link url
     attribute:          current attribute name
     title:              current attribute title
-    ordered:            defines whether column is sorted or not
+    order:              defines column sort order
     smart_listing:      current SmartListing instance
     builder:            current builder instance
 -%>
 
 <%= link_to url, :class => container_classes, :data => {:attr => attribute}, :remote => true do %>
   <%= title %>
-  <% if ordered %>
-    <span class="<%= smart_listing.sort_order == "asc" ? SmartListing.config.classes(:icon_sort_up) : SmartListing.config.classes(:icon_sort_down) %>"></span>
+  <% if order %>
+    <span class="<%= order == "asc" ? SmartListing.config.classes(:icon_sort_up) : SmartListing.config.classes(:icon_sort_down) %>"></span>
   <% else %>
     <span class="<%= SmartListing.config.classes(:icon_sort_none) %>"></span>
   <% end %>

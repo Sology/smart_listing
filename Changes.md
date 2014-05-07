@@ -1,3 +1,4 @@
+- New sorting architecture
 - Confirmation tweaks
 - Possibility to pass custom title to default actions
 - Fix new item autoshow
