@@ -22,9 +22,9 @@ module SmartListing
 
       @options = {
         :param_names  => {                                      # param names
-          :page                         => "#{@name}_page".to_sym,
-          :per_page                     => "#{@name}_per_page".to_sym,
-          :sort                         => "#{@name}_sort".to_sym,
+          :page                         => :page,
+          :per_page                     => :per_page,
+          :sort                         => :sort,
         },
         :partial                        => @name,               # smart list partial name
         :array                          => false,               # controls whether smart list should be using arrays or AR collections
@@ -48,14 +48,14 @@ module SmartListing
     end
 
     def setup params, cookies
-      @page = params[param_names[:page]]
-      @per_page = !params[param_names[:per_page]] || params[param_names[:per_page]].empty? ? (@options[:memorize_per_page] && cookies[param_names[:per_page]].to_i > 0 ? cookies[param_names[:per_page]].to_i : page_sizes.first) : params[param_names[:per_page]].to_i
-      @per_page = DEFAULT_PAGE_SIZES.first unless DEFAULT_PAGE_SIZES.include?(@per_page)
-      @sort = parse_sort(params[param_names[:sort]] || @options[:default_sort])
-      puts @options[:sort_attributes].to_yaml
-      puts @sort.to_yaml
+      @params = params
 
-      cookies[param_names[:per_page]] = @per_page if @options[:memorize_per_page]
+      @page = get_param :page
+      @per_page = !get_param(:per_page) || get_param(:per_page).empty? ? (@options[:memorize_per_page] && get_param(:per_page, cookies).to_i > 0 ? get_param(:per_page, cookies).to_i : page_sizes.first) : get_param(:per_page).to_i
+      @per_page = DEFAULT_PAGE_SIZES.first unless DEFAULT_PAGE_SIZES.include?(@per_page)
+      @sort = parse_sort(get_param(:sort)) || @options[:default_sort]
+
+      set_param(:per_page, @per_page, cookies) if @options[:memorize_per_page]
 
       @count = @collection.size
       @count = @count.length if @count.is_a?(Hash)
@@ -114,6 +114,10 @@ module SmartListing
       @options[:param_names]
     end
 
+    def param_name key
+      "#{base_param}[#{param_names[key]}]"
+    end
+
     def unlimited_per_page?
       !!@options[:unlimited_per_page]
     end
@@ -138,10 +142,14 @@ module SmartListing
       @options[:kaminari_options]
     end
 
-    def all_params
-      ap = {}
+    def all_params overrides = {}
+      ap = {base_param => {}}
       @options[:param_names].each do |k, v|
-        ap[v] = self.send(k)
+        if overrides[k]
+          ap[base_param][v] = overrides[k]
+        else
+          ap[base_param][v] = self.send(k)
+        end
       end
       ap
     end
@@ -150,13 +158,26 @@ module SmartListing
       @sort[attribute] if @sort
     end
 
+    def base_param
+      "#{name}_smart_listing"
+    end
+
     private
+
+    def get_param key, store = @params
+      store[base_param].try(:[], param_names[key])
+    end
+
+    def set_param key, value, store = @params
+      store[base_param] ||= {}
+      store[base_param][param_names[key]] = value
+    end
 
     def parse_sort sort_params
       sort = nil
       @options[:sort_attributes].each do |a|
         k, v = a
-        if sort_params[k.to_sym]
+        if sort_params && sort_params[k.to_sym]
           dir = %w{asc desc}.delete(sort_params[k.to_sym])
 
           if dir

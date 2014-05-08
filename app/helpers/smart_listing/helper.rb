@@ -30,7 +30,7 @@ module SmartListing
 
       def paginate options = {}
         if @smart_listing.collection.respond_to? :current_page
-          @template.paginate @smart_listing.collection, {:remote => true, :param_name => @smart_listing.param_names[:page], :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
+          @template.paginate @smart_listing.collection, {:remote => true, :param_name => @smart_listing.param_name(:page), :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
         end
       end
 
@@ -59,7 +59,7 @@ module SmartListing
 
       def pagination_per_page_link page
         if @smart_listing.per_page.to_i != page
-          url = @template.url_for(sanitize_params(@template.params.merge(@smart_listing.param_names[:per_page] => page, @smart_listing.param_names[:page] => 1)))
+          url = @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:per_page => page, :page => 1))))
         end
 
         locals = {
@@ -75,14 +75,13 @@ module SmartListing
         dirs = [nil, "asc", "desc"]
         next_index = (dirs.index(@smart_listing.sort_order(attribute)) + 1) % dirs.length
 
-        sort_params = {}
-        sort_params[@smart_listing.param_names[:sort]] = {
+        sort_params = {
           attribute => dirs[next_index]
         }
 
         locals = {
           :order => @smart_listing.sort_order(attribute),
-          :url => @template.url_for(sanitize_params(@template.params.merge(sort_params))),
+          :url => @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:sort => sort_params)))),
           :container_classes => [SmartListing.config.classes(:sortable)],
           :attribute => attribute,
           :title => title
@@ -272,6 +271,10 @@ module SmartListing
     def smart_listing_update name
       name = name.to_sym
       smart_listing = @smart_listings[name]
+
+      # don't update list if params are missing (prevents interfering with other lists)
+      return unless params[smart_listing.base_param]
+
       builder = Builder.new(name, smart_listing, self, {}, nil)
       render(:partial => 'smart_listing/update_list', :locals => {
         :name => smart_listing.name, 
