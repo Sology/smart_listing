@@ -71,7 +71,6 @@ module SmartListing
       end
 
       def sortable title, attribute, options = {}
-        order = @smart_listing.sort_order(attribute)
         dirs = [nil, "asc", "desc"]
         next_index = (dirs.index(@smart_listing.sort_order(attribute)) + 1) % dirs.length
 
@@ -204,6 +203,19 @@ module SmartListing
       end
 
       output
+    end
+
+    def smart_listing_controls_for name, *args, &block
+      smart_listing = @smart_listings[name]
+
+      classes = [SmartListing.config.classes(:controls), args.first[:class]]
+
+      form_tag(smart_listing.href || {}, :remote => true, :method => :get, :class => classes, :data => {:smart_listing => name}) do
+        concat(content_tag(:div, :style => "margin:0;padding:0;display:inline") do
+          concat(hidden_field_tag("#{smart_listing.base_param}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
+        end)
+        concat(capture(&block))
+      end
     end
 
     # Render item action buttons (ie. edit, destroy and custom ones)

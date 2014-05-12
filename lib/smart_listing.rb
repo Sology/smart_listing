@@ -15,11 +15,6 @@ module SmartListing
     def initialize name, collection, options = {}
       @name = name
 
-      sort_attributes = options.delete(:sort_attributes) || nil
-      if sort_attributes == :default
-        sort_attributes = collection.column_names.collect{|c| [c.to_sym, c]}
-      end
-
       @options = {
         :param_names  => {                                      # param names
           :page                         => :page,
@@ -30,7 +25,7 @@ module SmartListing
         :array                          => false,               # controls whether smart list should be using arrays or AR collections
         :max_count                      => nil,                 # limit number of rows
         :unlimited_per_page             => false,               # allow infinite page size
-        :sort_attributes                => sort_attributes,
+        :sort_attributes                => :implicit,           # allow implicitly setting sort attributes
         :default_sort                   => {},                  # default sorting
         :paginate                       => true,                # allow pagination
         :href                           => nil,                 # set smart list target url (in case when different than current url)
@@ -53,7 +48,9 @@ module SmartListing
       @page = get_param :page
       @per_page = !get_param(:per_page) || get_param(:per_page).empty? ? (@options[:memorize_per_page] && get_param(:per_page, cookies).to_i > 0 ? get_param(:per_page, cookies).to_i : page_sizes.first) : get_param(:per_page).to_i
       @per_page = DEFAULT_PAGE_SIZES.first unless DEFAULT_PAGE_SIZES.include?(@per_page)
+
       @sort = parse_sort(get_param(:sort)) || @options[:default_sort]
+      sort_keys = (@options[:sort_attributes] == :implicit ? @sort.keys.collect{|s| [s, s]} : @options[:sort_attributes])
 
       set_param(:per_page, @per_page, cookies) if @options[:memorize_per_page]
 
@@ -68,11 +65,11 @@ module SmartListing
 
       if @options[:array]
         if @sort && @sort.any? # when array we sort only by first attribute
-          i = @options[:sort_attributes].index{|x| x[0] == @sort.first[0]}
+          i = sort_keys.index{|x| x[0] == @sort.first[0]}
           @collection = @collection.sort do |x, y|
             xval = x
             yval = y
-            @options[:sort_attributes][i][1].split(".").each do |m|
+            sort_keys[i][1].split(".").each do |m|
               xval = xval.try(m)
               yval = yval.try(m)
             end
@@ -98,7 +95,7 @@ module SmartListing
         end
       else
         # let's sort by all attributes
-        @collection = @collection.order(@options[:sort_attributes].collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && @sort.any?
+        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && @sort.any?
 
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)
@@ -155,7 +152,7 @@ module SmartListing
     end
 
     def sort_order attribute
-      @sort[attribute] if @sort
+      @sort && @sort[attribute].present? ? @sort[attribute] : nil
     end
 
     def base_param
@@ -165,27 +162,40 @@ module SmartListing
     private
 
     def get_param key, store = @params
-      store[base_param].try(:[], param_names[key])
+      if store.is_a?(ActionDispatch::Cookies::CookieJar)
+        store["#{base_param}_#{param_names[key]}"]
+      else
+        store[base_param].try(:[], param_names[key])
+      end
     end
 
     def set_param key, value, store = @params
-      store[base_param] ||= {}
-      store[base_param][param_names[key]] = value
+      if store.is_a?(ActionDispatch::Cookies::CookieJar)
+        store["#{base_param}_#{param_names[key]}"] = value
+      else
+        store[base_param] ||= {}
+        store[base_param][param_names[key]] = value
+      end
     end
 
     def parse_sort sort_params
       sort = nil
-      @options[:sort_attributes].each do |a|
-        k, v = a
-        if sort_params && sort_params[k.to_sym]
-          dir = %w{asc desc}.delete(sort_params[k.to_sym])
 
-          if dir
-            sort ||= {}
-            sort[k] = dir
+      if @options[:sort_attributes] == :implicit
+        sort = sort_params.dup if sort_params
+      elsif @options[:sort_attributes]
+        @options[:sort_attributes].each do |a|
+          k, v = a
+          if sort_params && sort_params[k.to_s]
+            dir = ["asc", "desc", ""].delete(sort_params[k.to_s])
+
+            if dir
+              sort ||= {}
+              sort[k] = dir
+            end
           end
         end
-      end if @options[:sort_attributes]
+      end
 
       sort
     end

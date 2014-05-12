@@ -1,4 +1,5 @@
-- New sorting architecture
+- Controls helper
+- New sorting architecture (and implicit sorting attributes)
 - Multiple smart listings isolation
 - Confirmation tweaks
 - Possibility to pass custom title to default actions
