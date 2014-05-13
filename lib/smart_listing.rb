@@ -47,7 +47,7 @@ module SmartListing
 
       @page = get_param :page
       @per_page = !get_param(:per_page) || get_param(:per_page).empty? ? (@options[:memorize_per_page] && get_param(:per_page, cookies).to_i > 0 ? get_param(:per_page, cookies).to_i : page_sizes.first) : get_param(:per_page).to_i
-      @per_page = DEFAULT_PAGE_SIZES.first unless DEFAULT_PAGE_SIZES.include?(@per_page)
+      @per_page = page_sizes.first unless page_sizes.include?(@per_page)
 
       @sort = parse_sort(get_param(:sort)) || @options[:default_sort]
       sort_keys = (@options[:sort_attributes] == :implicit ? @sort.keys.collect{|s| [s, s]} : @options[:sort_attributes])

@@ -280,12 +280,14 @@ module SmartListing
     # JS helpers:
 
     # Updates the smart list
-    def smart_listing_update name
+    def smart_listing_update name, options = {}
       name = name.to_sym
       smart_listing = @smart_listings[name]
 
       # don't update list if params are missing (prevents interfering with other lists)
-      return unless params[smart_listing.base_param]
+      if params.keys.select{|k| k.include?("smart_listing")}.any? && !params[smart_listing.base_param]
+        return unless options[:force]
+      end
 
       builder = Builder.new(name, smart_listing, self, {}, nil)
       render(:partial => 'smart_listing/update_list', :locals => {
