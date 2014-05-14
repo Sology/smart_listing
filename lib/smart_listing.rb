@@ -21,15 +21,16 @@ module SmartListing
           :per_page                     => :per_page,
           :sort                         => :sort,
         },
-        :partial                        => @name,               # smart list partial name
+        :partial                        => @name,               # SmartListing partial name
         :array                          => false,               # controls whether smart list should be using arrays or AR collections
         :max_count                      => nil,                 # limit number of rows
         :unlimited_per_page             => false,               # allow infinite page size
         :sort_attributes                => :implicit,           # allow implicitly setting sort attributes
         :default_sort                   => {},                  # default sorting
         :paginate                       => true,                # allow pagination
-        :href                           => nil,                 # set smart list target url (in case when different than current url)
-        :callback_href                  => nil,                 # set smart list callback url (in case when different than current url)
+        :href                           => nil,                 # set SmartListing target url (in case when different than current url)
+        :remote                         => true,                # SmartListing is remote by default
+        :callback_href                  => nil,                 # set SmartListing callback url (in case when different than current url)
         :memorize_per_page              => false,
         :page_sizes                     => DEFAULT_PAGE_SIZES,  # set available page sizes array
         :kaminari_options               => {},                  # Kaminari's paginate helper options
@@ -129,6 +130,10 @@ module SmartListing
 
     def callback_href
       @options[:callback_href]
+    end
+
+    def remote?
+      @options[:remote]
     end
 
     def page_sizes

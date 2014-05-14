@@ -30,7 +30,7 @@ module SmartListing
 
       def paginate options = {}
         if @smart_listing.collection.respond_to? :current_page
-          @template.paginate @smart_listing.collection, {:remote => true, :param_name => @smart_listing.param_name(:page), :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
+          @template.paginate @smart_listing.collection, {:remote => @smart_listing.remote?, :param_name => @smart_listing.param_name(:page), :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
         end
       end
 
@@ -38,6 +38,7 @@ module SmartListing
         @smart_listing.collection
       end
 
+      # Check if smart list is empty
       def empty?
         @smart_listing.count == 0
       end
@@ -124,10 +125,10 @@ module SmartListing
         locals = {
           :colspan => options.delete(:colspan),
           :no_items_classes => no_records_classes,
-          :no_items_text => options.delete(:no_items_text),
+          :no_items_text => options.delete(:no_items_text) || @template.t("smart_listing.msgs.no_items"),
           :new_item_button_url => options.delete(:link),
           :new_item_button_classes => new_item_button_classes,
-          :new_item_button_text => options.delete(:text),
+          :new_item_button_text => options.delete(:text) || @template.t("smart_listing.actions.new"),
           :new_item_autoshow => block_given?,
           :new_item_content => nil,
         }
@@ -146,11 +147,6 @@ module SmartListing
           locals[:new_item_content] = @template.capture(&block)
           @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
         end
-      end
-
-      # Check if smart list is empty
-      def empty?
-        @smart_listing.count == 0
       end
 
       def count
@@ -205,14 +201,20 @@ module SmartListing
       output
     end
 
+    def smart_listing_render name
+      smart_listing_for name do |smart_listing|
+        concat(smart_listing.render_list)
+      end
+    end
+
     def smart_listing_controls_for name, *args, &block
-      smart_listing = @smart_listings[name]
+      smart_listing = @smart_listings.try(:[], name)
 
       classes = [SmartListing.config.classes(:controls), args.first[:class]]
 
-      form_tag(smart_listing.href || {}, :remote => true, :method => :get, :class => classes, :data => {:smart_listing => name}) do
+      form_tag(smart_listing.try(:href) || {}, :remote => smart_listing.try(:remote?) || true, :method => :get, :class => classes, :data => {:smart_listing => name}) do
         concat(content_tag(:div, :style => "margin:0;padding:0;display:inline") do
-          concat(hidden_field_tag("#{smart_listing.base_param}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
+          concat(hidden_field_tag("#{smart_listing.try(:base_param)}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
         end)
         concat(capture(&block))
       end
