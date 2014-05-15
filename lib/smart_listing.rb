@@ -187,7 +187,7 @@ module SmartListing
       sort = nil
 
       if @options[:sort_attributes] == :implicit
-        sort = sort_params.dup if sort_params
+        sort = sort_params.dup if sort_params.present?
       elsif @options[:sort_attributes]
         @options[:sort_attributes].each do |a|
           k, v = a
