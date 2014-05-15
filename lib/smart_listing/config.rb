@@ -23,7 +23,7 @@ module SmartListing
           :hidden => "hidden",
           :autoselect => "autoselect",
           :callback => "callback",
-          :pagination_per_page => "pagination-per-page",
+          :pagination_per_page => "pagination-per-page text-center",
           :pagination_count => "count",
           :inline_editing => "info",
           :no_records => "no-records",

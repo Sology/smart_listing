@@ -1,6 +1,6 @@
 # SmartListing
 
-SmartListing helps creating AJAX-enabled sortable lists of ActiveRecord collections or arrays with pagination, filtering, sorting and in-place editing.
+SmartListing helps creating AJAX-enabled lists of ActiveRecord collections or arrays with pagination, filtering, sorting and in-place editing.
 
 ## Installation
 
@@ -14,6 +14,12 @@ Then run:
 
 ```sh
 $ bundle install
+```
+
+Also, you need to add SmartListing to your asset pipeline:
+
+```
+//= require smart_listing
 ```
 
 ### Initializer
@@ -202,9 +208,10 @@ Partial name supplied to `smart_listing_item` (`users/form`) references `@user` 
     %p= f.submit "Save"
 ```
 
-And one last thing is `update` controller action JS view:
+And one last thing are `create` and `update` controller actions JS view:
 
 ```ruby
+<%= smart_listing_item :users, :create, @user, @user.persisted? ? "users/user" : "users/form" %>
 <%= smart_listing_item :users, :update, @user, @user.valid? ? "users/user" : "users/form" %>
 ```
 

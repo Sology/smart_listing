@@ -2,6 +2,23 @@ require 'smart_listing/config'
 require "smart_listing/engine"
 require "kaminari"
 
+# Fix parsing nester params
+module Kaminari
+  module Helpers
+    class Tag
+      def page_url_for(page)
+        @template.url_for @params.deep_merge(page_param(page)).merge(:only_path => true)
+      end
+
+      private
+
+      def page_param(page)
+        Rack::Utils.parse_nested_query("#{@param_name}=#{page <= 1 ? nil : page}").symbolize_keys
+      end
+    end
+  end
+end
+
 module SmartListing
   class Base
     if Rails.env.development?
@@ -21,19 +38,19 @@ module SmartListing
           :per_page                     => :per_page,
           :sort                         => :sort,
         },
-        :partial                        => @name,               # SmartListing partial name
-        :array                          => false,               # controls whether smart list should be using arrays or AR collections
-        :max_count                      => nil,                 # limit number of rows
-        :unlimited_per_page             => false,               # allow infinite page size
-        :sort_attributes                => :implicit,           # allow implicitly setting sort attributes
-        :default_sort                   => {},                  # default sorting
-        :paginate                       => true,                # allow pagination
-        :href                           => nil,                 # set SmartListing target url (in case when different than current url)
-        :remote                         => true,                # SmartListing is remote by default
-        :callback_href                  => nil,                 # set SmartListing callback url (in case when different than current url)
+        :partial                        => @name,                       # SmartListing partial name
+        :array                          => false,                       # controls whether smart list should be using arrays or AR collections
+        :max_count                      => nil,                         # limit number of rows
+        :unlimited_per_page             => false,                       # allow infinite page size
+        :sort_attributes                => :implicit,                   # allow implicitly setting sort attributes
+        :default_sort                   => {},                          # default sorting
+        :paginate                       => true,                        # allow pagination
+        :href                           => nil,                         # set SmartListing target url (in case when different than current url)
+        :remote                         => true,                        # SmartListing is remote by default
+        :callback_href                  => nil,                         # set SmartListing callback url (in case when different than current url)
         :memorize_per_page              => false,
-        :page_sizes                     => DEFAULT_PAGE_SIZES,  # set available page sizes array
-        :kaminari_options               => {},                  # Kaminari's paginate helper options
+        :page_sizes                     => DEFAULT_PAGE_SIZES,          # set available page sizes array
+        :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
       }.merge!(options)
 
       if @options[:array]
