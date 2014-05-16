@@ -1,5 +1,18 @@
 <%# 
   Inactive action.
 -%>
+<% if action.has_key?(:icon) %>
+  <%= content_tag(:i, '', :class => "#{action[:icon]} #{SmartListing.config.classes(:muted)}") %>
+<% else %>
+  <% case action[:name] %>
+  <% when :show %>
+    <%= content_tag(:i, '', :class => "#{SmartListing.config.classes(:icon_show)} #{SmartListing.config.classes(:muted)}") %>
+  <% when :edit %>
+    <%= content_tag(:i, '', :class => "#{SmartListing.config.classes(:icon_edit)} #{SmartListing.config.classes(:muted)}") %>
+  <% when :destroy %>
+    <%= content_tag(:i, '', :class => "#{SmartListing.config.classes(:icon_trash)} #{SmartListing.config.classes(:muted)}") %>
+  <% else %>
+    <%= content_tag(:i, '', :class => SmartListing.config.classes(:icon_inactive)) %>
+  <% end %>
+<% end %>
 
-<%= content_tag(:i, '', :class => SmartListing.config.classes(:icon_inactive)) %>

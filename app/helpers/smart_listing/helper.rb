@@ -228,7 +228,7 @@ module SmartListing
 
           if action.has_key?(:if)
             unless action[:if]
-              concat(render(:partial => 'smart_listing/action_inactive'))
+              concat(render(:partial => 'smart_listing/action_inactive', :locals => {:action => action}))
               next
             end
           end

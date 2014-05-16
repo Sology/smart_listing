@@ -44,6 +44,7 @@ module SmartListing
           :icon_sort_none => "glyphicon glyphicon-resize-vertical",
           :icon_sort_up => "glyphicon glyphicon-chevron-up",
           :icon_sort_down => "glyphicon glyphicon-chevron-down",
+          :muted => "text-muted",
         },
         :data_attributes => {
           :main => "smart-listing",
