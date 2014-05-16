@@ -210,7 +210,7 @@ module SmartListing
     def smart_listing_controls_for name, *args, &block
       smart_listing = @smart_listings.try(:[], name)
 
-      classes = [SmartListing.config.classes(:controls), args.first.try(:[], "class")]
+      classes = [SmartListing.config.classes(:controls), args.first.try(:[], :class)]
 
       form_tag(smart_listing.try(:href) || {}, :remote => smart_listing.try(:remote?) || true, :method => :get, :class => classes, :data => {:smart_listing => name}) do
         concat(content_tag(:div, :style => "margin:0;padding:0;display:inline") do
