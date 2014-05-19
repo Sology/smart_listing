@@ -8,7 +8,27 @@ module SmartListing
   end
 
   class Configuration
+    if Rails.env.development?
+      DEFAULT_PAGE_SIZES = [3, 10, 20, 50, 100]
+    else
+      DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
+    end
+
     DEFAULTS = {
+      :global_options => {
+        :param_names  => {                                      # param names
+          :page                         => :page,
+          :per_page                     => :per_page,
+          :sort                         => :sort,
+        },
+        :array                          => false,                       # controls whether smart list should be using arrays or AR collections
+        :max_count                      => nil,                         # limit number of rows
+        :unlimited_per_page             => false,                       # allow infinite page size
+        :paginate                       => true,                        # allow pagination
+        :memorize_per_page              => false,
+        :page_sizes                     => DEFAULT_PAGE_SIZES,          # set available page sizes array
+        :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
+      },
       :constants => {
         :classes => {
           :main => "smart-listing",
@@ -79,11 +99,10 @@ module SmartListing
     end
     
     def constants key, value = nil
-      if value == nil
-        @options[:constants][key]
-      else
+      if value
         @options[:constants][key].merge!(value)
       end
+      @options[:constants][key]
     end
 
     def classes key
@@ -96,6 +115,13 @@ module SmartListing
 
     def selectors key
       @options[:constants][:selectors][key]
+    end
+
+    def global_options value = nil
+      if value
+        @options[:global_options].merge!(value)
+      end
+      @options[:global_options]
     end
   end
 end

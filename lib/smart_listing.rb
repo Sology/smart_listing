@@ -33,25 +33,13 @@ module SmartListing
       @name = name
 
       @options = {
-        :param_names  => {                                      # param names
-          :page                         => :page,
-          :per_page                     => :per_page,
-          :sort                         => :sort,
-        },
         :partial                        => @name,                       # SmartListing partial name
-        :array                          => false,                       # controls whether smart list should be using arrays or AR collections
-        :max_count                      => nil,                         # limit number of rows
-        :unlimited_per_page             => false,                       # allow infinite page size
         :sort_attributes                => :implicit,                   # allow implicitly setting sort attributes
         :default_sort                   => {},                          # default sorting
-        :paginate                       => true,                        # allow pagination
         :href                           => nil,                         # set SmartListing target url (in case when different than current url)
         :remote                         => true,                        # SmartListing is remote by default
         :callback_href                  => nil,                         # set SmartListing callback url (in case when different than current url)
-        :memorize_per_page              => false,
-        :page_sizes                     => DEFAULT_PAGE_SIZES,          # set available page sizes array
-        :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
-      }.merge!(options)
+      }.merge(SmartListing.config.global_options).merge(options)
 
       if @options[:array]
         @collection = collection.to_a
