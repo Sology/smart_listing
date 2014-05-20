@@ -226,43 +226,29 @@ module SmartListing
         actions.each do |action|
           next unless action.is_a?(Hash)
 
-          if action.has_key?(:if)
-            unless action[:if]
-              concat(render(:partial => 'smart_listing/action_inactive', :locals => {:action => action}))
-              next
-            end
-          end
+          locals = {
+            :action_if => action.has_key?(:if) ? action[:if] : true, 
+            :url => action.delete(:url),
+            :icon => action.delete(:icon),
+            :title => action.delete(:title),
+          }
+          locals[:icon] = [locals[:icon], SmartListing.config.classes(:muted)] if !locals[:action_if]
 
           action_name = action[:name].to_sym
           case action_name
           when :show
-            locals = {
-              :url => action.delete(:url),
-              :icon => action.delete(:icon),
-              :title => action.delete(:title),
-            }
 						concat(render(:partial => 'smart_listing/action_show', :locals => locals))
           when :edit
-            locals = {
-              :url => action.delete(:url),
-              :icon => action.delete(:icon),
-              :title => action.delete(:title),
-            }
 						concat(render(:partial => 'smart_listing/action_edit', :locals => locals))
           when :destroy
-            locals = {
-              :url => action.delete(:url),
-              :icon => action.delete(:icon),
+            locals.merge!(
               :confirmation => action.delete(:confirmation),
-              :title => action.delete(:title),
-            }
+            )
 						concat(render(:partial => 'smart_listing/action_delete', :locals => locals))
           when :custom
-            locals = {
-              :url => action.delete(:url),
-              :icon => action.delete(:icon),
+            locals.merge!(
               :html_options => action,
-            }
+            )
 						concat(render(:partial => 'smart_listing/action_custom', :locals => locals))
           else
 						concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))

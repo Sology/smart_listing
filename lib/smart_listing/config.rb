@@ -85,7 +85,9 @@ module SmartListing
           :edit_cancel => "button.cancel",
           :row => "tr",
           :head => "thead",
-          :filtering_icon => "i"
+          :filtering_button => "button",
+          :filtering_icon => "button span",
+          :filtering_input => ".filter input"
         }
       }
     }

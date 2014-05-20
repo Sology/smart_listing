@@ -351,9 +351,9 @@ $.fn.smart_listing_controls = () ->
 
 $.fn.smart_listing_controls.filter = (filter) ->
   form = filter.closest('form')
-  button = filter.find('button')
-  icon = filter.find('<%= SmartListing.config.selectors(:filtering_icon) %>')
-  field = filter.find('input')
+  button = form.find('<%= SmartListing.config.selectors(:filtering_button) %>')
+  icon = form.find('<%= SmartListing.config.selectors(:filtering_icon) %>')
+  field = form.find('<%= SmartListing.config.selectors(:filtering_input) %>')
 
   $.fn.smart_listing.observeField(field,
     onFilled: ->
@@ -372,6 +372,7 @@ $.fn.smart_listing_controls.filter = (filter) ->
     if field.val().length > 0
       field.val('')
       field.trigger('keydown')
+    return false
 
 $ ->
   $('.<%= SmartListing.config.classes(:main) %>').smart_listing()
