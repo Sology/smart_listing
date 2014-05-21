@@ -54,10 +54,10 @@ helper  SmartListing::Helper
 Next, put following code in controller action you desire:
 
 ```ruby
-@users = smart_listing_create(:users, User.active, :partial => "users/listing")
+@users = smart_listing_create(:users, User.active, partial: "users/listing")
 ```
 
-This will create SmartListing named `:users` consisting of ActiveRecord scope `User.active` elements and rendered by partial `users/listing`. You can also use arrays instead of ActiveRecord collections. Just put @:array => true@ option just like for Kaminari.
+This will create SmartListing named `:users` consisting of ActiveRecord scope `User.active` elements and rendered by partial `users/listing`. You can also use arrays instead of ActiveRecord collections. Just put @array: true@ option just like for Kaminari.
 
 In the main view (typically something like `index.html.erb` or `index.html.haml`), use this method to render listing:
 
@@ -129,14 +129,14 @@ In this case `"name"` and `"email"` are sorting column names. `Builder#sortable`
 You can also specify default sort order in the controller:
 
 ```ruby
-@users = smart_listing_create(:users, User.active, :partial => "users/listing", :default_sort => {"name" => "asc"})
+@users = smart_listing_create(:users, User.active, partial: "users/listing", default_sort: {:name: "asc"})
 ```
 
 Implicit mode is convenient with simple data sets. In case you want to sort by joined column names, we advise you to use explicit sorting:
 ```ruby
-@users = smart_listing_create :users, User.active.joins(:stats), :partial => "users/listing", 
-                              :sort_attributes => [[:last_signin, "stats.last_signin_at"]],
-                              :default_sort => {:last_signin => "desc"}
+@users = smart_listing_create :users, User.active.joins(:stats), partial: "users/listing", 
+                              sort_attributes: [[:last_signin, "stats.last_signin_at"]],
+                              default_sort: {last_signin: "desc"}
 ```
 
 Note that `:sort_attributes` are array which of course means, that order of attributes matters.
@@ -155,9 +155,9 @@ In order to allow managing and editing list items, we need to reorganize our vie
         %th
     %tbody
       - smart_listing.collection.each do |user|
-        %tr.editable{:data => {"id" => user.id}}
-          = smart_listing.render :partial => 'users/user', :locals => {:user => user}
-      = smart_listing.item_new :colspan => 3, :link => new_user_path 
+        %tr.editable{data: {id: user.id}}
+          = smart_listing.render partial: 'users/user', locals: {user: user}
+      = smart_listing.item_new colspan: 3, link: new_user_path 
 
   = smart_listing.paginate 
 - else
@@ -176,7 +176,7 @@ New partial for user (`users/user`) may look like this:
 ```haml
 %td= user.name
 %td= user.email
-%td.actions= smart_listing_item_actions [{:name => :edit, :url => edit_user_path(user)}, {:name => :destroy, :url => user_path(user)}]
+%td.actions= smart_listing_item_actions [{name: :edit, url: edit_user_path(user)}, {name: :destroy, url: user_path(user)}]
 ```
 
 `smart_listing_item_actions` renders here links that allow to edit and destroy user item. `:edit` and `:destroy` are built-in actions, you can also define your `:custom` actions. Again. `<td>`'s class `actions` is important.
@@ -192,13 +192,13 @@ Controller actions referenced by above urls are again plain Ruby on Rails action
 Partial name supplied to `smart_listing_item` (`users/form`) references `@user` as `object` and may look like this:
 
 ```haml
-%td{:colspan => 3}
+%td{colspan: 3}
   - if object.persisted?
     %p Edit user
   - else
     %p Add user
 
-  = form_for object, :url => object.new_record? ? users_path : user_path(object), :remote => true do |f|
+  = form_for object, url: object.new_record? ? users_path : user_path(object), remote: true do |f|
     %p
       Name: 
       = f.text_field :name
@@ -222,8 +222,8 @@ SmartListing controls allow you to change somehow presented data. This is typica
 ```haml
 = smart_listing_controls_for(:users) do
   .filter.input-append
-    = text_field_tag :filter, '', :class => "search", :placeholder => "Type name here", :autocomplete => "off"
-    %button.btn.disabled{:type => "submit"}
+    = text_field_tag :filter, '', class: "search", placeholder: "Type name here", autocomplete: "off"
+    %button.btn.disabled{type: "submit"}
       %i.icon.icon-search
 ```
 
@@ -234,7 +234,7 @@ When form field changes its value, form is submitted and request is made. This n
 ```ruby
 users_scope = User.active.joins(:stats)
 users_scope = users_scope.like(params[:filter]) if params[:filter]
-@users = smart_listing_create :users, users_scope, :partial => "users/listing"
+@users = smart_listing_create :users, users_scope, partial: "users/listing"
 ```
 
 Then, JS view is rendered and your SmartListing updated. That's it!

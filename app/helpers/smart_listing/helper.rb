@@ -172,6 +172,7 @@ module SmartListing
 
     # Outputs smart list container
     def smart_listing_for name, *args, &block
+      puts args.to_yaml
       raise ArgumentError, "Missing block" unless block_given?
       name = name.to_sym
       options = args.extract_options!
@@ -201,8 +202,8 @@ module SmartListing
       output
     end
 
-    def smart_listing_render name
-      smart_listing_for name do |smart_listing|
+    def smart_listing_render name, *args
+      smart_listing_for(name, *args) do |smart_listing|
         concat(smart_listing.render_list)
       end
     end
