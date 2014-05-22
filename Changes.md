@@ -1,11 +1,15 @@
-- Controls helper
-- New sorting architecture (and implicit sorting attributes)
-- Multiple smart listings isolation
-- Confirmation tweaks
-- Possibility to pass custom title to default actions
-- Fix new item autoshow
+1.0.0
+-----------
+
+- JS Events triggered on item actions
 - Fix filter resetting
-- Events triggered on item actions
+- Fix new item autoshow
+- Possibility to pass custom title to default actions
+- Confirmation tweaks
+- Multiple smart listings isolation
+- New sorting architecture (and implicit sorting attributes)
+- Controls helper
+- Slightly changed item action templates
 
 0.9.8
 -----------
