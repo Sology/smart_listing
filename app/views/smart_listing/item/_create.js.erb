@@ -1,3 +1,3 @@
 var smart_listing = $('#<%= name %>').smart_listing();
 smart_listing.setAutoshow(false);
-smart_listing.create(<%= id || 0 %>, <%= object.persisted? %>, "<%= escape_javascript(render(:partial => part, :locals => {object_key => object})) %>");
+smart_listing.create(<%= id || 0 %>, <%= object.persisted? %>, "<%= escape_javascript(render(partial: part, locals: {object_key => object})) %>");

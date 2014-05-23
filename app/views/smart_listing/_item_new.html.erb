@@ -14,16 +14,16 @@
     new_item_content          new item placeholder content (usually some form)
 -%>
 
-<%= content_tag(:tr, '', :class => placeholder_classes + %w{info}, :data => {SmartListing.config.data_attributes(:autoshow) => new_item_autoshow}) do %>
+<%= content_tag(:tr, '', class: placeholder_classes + %w{info}, data: {SmartListing.config.data_attributes(:autoshow) => new_item_autoshow}) do %>
   <%= new_item_content %>
 <% end %>
-<%= content_tag(:tr, :class => new_item_action_classes + %w{info}) do %>
-  <%= content_tag(:td, :colspan => colspan) do %>
-    <%= content_tag(:p, :class => no_items_classes + %w{pull-left}) do %>
+<%= content_tag(:tr, class: new_item_action_classes + %w{info}) do %>
+  <%= content_tag(:td, colspan: colspan) do %>
+    <%= content_tag(:p, class: no_items_classes + %w{pull-left}) do %>
       <%= no_items_text %>
     <% end %>
-    <%= link_to(new_item_button_url, :remote => true, :class => new_item_button_classes + %w{btn pull-right}) do %>
-      <%= content_tag(:i, '', :class => SmartListing.config.classes(:icon_new)) %>
+    <%= link_to(new_item_button_url, remote: true, class: new_item_button_classes + %w{btn pull-right}) do %>
+      <%= content_tag(:i, '', class: SmartListing.config.classes(:icon_new)) %>
       <%= new_item_button_text %>
     <% end %>
   <% end %>
