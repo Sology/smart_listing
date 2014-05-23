@@ -72,7 +72,11 @@ module SmartListing
       end
 
       def sortable title, attribute, options = {}
-        dirs = [nil, "asc", "desc"]
+        if !options[:reverse]
+          dirs = [nil, "asc", "desc"]
+        else
+          dirs = [nil, "desc", "asc"]
+        end
         next_index = (dirs.index(@smart_listing.sort_order(attribute)) + 1) % dirs.length
 
         sort_params = {
