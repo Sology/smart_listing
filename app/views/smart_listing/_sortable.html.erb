@@ -11,7 +11,7 @@
     builder:            current builder instance
 -%>
 
-<%= link_to url, :class => container_classes, :data => {:attr => attribute}, :remote => true do %>
+<%= link_to url, class: container_classes, data: {attr: attribute}, remote: true do %>
   <%= title %>
   <% if order %>
     <span class="<%= order == "asc" ? SmartListing.config.classes(:icon_sort_up) : SmartListing.config.classes(:icon_sort_down) %>"></span>

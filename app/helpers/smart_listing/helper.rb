@@ -20,7 +20,7 @@ module SmartListing
 
     class Builder
       # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
-      UNSAFE_PARAMS = {:authenticity_token => nil, :utf8 => nil}
+      UNSAFE_PARAMS = {authenticity_token: nil, utf8: nil}
 
       class_attribute :smart_listing_helpers
 
@@ -30,7 +30,7 @@ module SmartListing
 
       def paginate options = {}
         if @smart_listing.collection.respond_to? :current_page
-          @template.paginate @smart_listing.collection, {:remote => @smart_listing.remote?, :param_name => @smart_listing.param_name(:page), :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
+          @template.paginate @smart_listing.collection, {remote: @smart_listing.remote?, param_name: @smart_listing.param_name(:page), params: UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
         end
       end
 
@@ -51,24 +51,24 @@ module SmartListing
         per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
 
         locals = {
-          :container_classes => container_classes, 
-          :per_page_sizes => per_page_sizes,
+          container_classes: container_classes, 
+          per_page_sizes: per_page_sizes,
         }
 
-        @template.render(:partial => 'smart_listing/pagination_per_page_links', :locals => default_locals.merge(locals))
+        @template.render(partial: 'smart_listing/pagination_per_page_links', locals: default_locals.merge(locals))
       end
 
       def pagination_per_page_link page
         if @smart_listing.per_page.to_i != page
-          url = @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:per_page => page, :page => 1))))
+          url = @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(per_page: page, page: 1))))
         end
 
         locals = {
-          :page => page, 
-          :url => url,
+          page: page, 
+          url: url,
         }
 
-        @template.render(:partial => 'smart_listing/pagination_per_page_link', :locals => default_locals.merge(locals))
+        @template.render(partial: 'smart_listing/pagination_per_page_link', locals: default_locals.merge(locals))
       end
 
       def sortable title, attribute, options = {}
@@ -80,26 +80,26 @@ module SmartListing
         }
 
         locals = {
-          :order => @smart_listing.sort_order(attribute),
-          :url => @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:sort => sort_params)))),
-          :container_classes => [SmartListing.config.classes(:sortable)],
-          :attribute => attribute,
-          :title => title
+          order: @smart_listing.sort_order(attribute),
+          url: @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(sort: sort_params)))),
+          container_classes: [SmartListing.config.classes(:sortable)],
+          attribute: attribute,
+          title: title
         }
 
-        @template.render(:partial => 'smart_listing/sortable', :locals => default_locals.merge(locals))
+        @template.render(partial: 'smart_listing/sortable', locals: default_locals.merge(locals))
       end
 
       def update options = {}
         part = options.delete(:partial) || @smart_listing.partial || @smart_listing_name
 
-        @template.render(:partial => 'smart_listing/update_list', :locals => {:name => @smart_listing_name, :part => part, :smart_listing => self})
+        @template.render(partial: 'smart_listing/update_list', locals: {name: @smart_listing_name, part: part, smart_listing: self})
       end
 
       # Renders the main partial (whole list)
       def render_list
         if @smart_listing.partial
-          @template.render :partial => @smart_listing.partial, :locals => {:smart_listing => self}
+          @template.render partial: @smart_listing.partial, locals: {smart_listing: self}
         end
       end
 
@@ -107,9 +107,9 @@ module SmartListing
       def render options = {}, locals = {}, &block
         if locals.empty?
           options[:locals] ||= {}
-          options[:locals].merge!(:smart_listing => self)
+          options[:locals].merge!(smart_listing: self)
         else
-          locals.merge!({:smart_listing => self})
+          locals.merge!({smart_listing: self})
         end
 
         @template.render options, locals, &block
@@ -123,14 +123,14 @@ module SmartListing
         new_item_button_classes << SmartListing.config.classes(:hidden) if max_count?
 
         locals = {
-          :colspan => options.delete(:colspan),
-          :no_items_classes => no_records_classes,
-          :no_items_text => options.delete(:no_items_text) || @template.t("smart_listing.msgs.no_items"),
-          :new_item_button_url => options.delete(:link),
-          :new_item_button_classes => new_item_button_classes,
-          :new_item_button_text => options.delete(:text) || @template.t("smart_listing.actions.new"),
-          :new_item_autoshow => block_given?,
-          :new_item_content => nil,
+          colspan: options.delete(:colspan),
+          no_items_classes: no_records_classes,
+          no_items_text: options.delete(:no_items_text) || @template.t("smart_listing.msgs.no_items"),
+          new_item_button_url: options.delete(:link),
+          new_item_button_classes: new_item_button_classes,
+          new_item_button_text: options.delete(:text) || @template.t("smart_listing.actions.new"),
+          new_item_autoshow: block_given?,
+          new_item_content: nil,
         }
 
         unless block_given?
@@ -138,14 +138,14 @@ module SmartListing
           locals[:new_item_action_classes] = [SmartListing.config.classes(:new_item_action)]
           locals[:new_item_action_classes] << SmartListing.config.classes(:hidden) if !empty? && max_count?
 
-          @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
+          @template.render(partial: 'smart_listing/item_new', locals: default_locals.merge(locals))
         else
           locals[:placeholder_classes] = [SmartListing.config.classes(:new_item_placeholder)]
           locals[:placeholder_classes] << SmartListing.config.classes(:hidden) if !empty? && max_count?
           locals[:new_item_action_classes] = [SmartListing.config.classes(:new_item_action), SmartListing.config.classes(:hidden)]
 
           locals[:new_item_content] = @template.capture(&block)
-          @template.render(:partial => 'smart_listing/item_new', :locals => default_locals.merge(locals))
+          @template.render(partial: 'smart_listing/item_new', locals: default_locals.merge(locals))
         end
       end
 
@@ -166,7 +166,7 @@ module SmartListing
       end
 
       def default_locals
-        {:smart_listing => @smart_listing, :builder => self}
+        {smart_listing: @smart_listing, builder: self}
       end
     end
 
@@ -191,9 +191,9 @@ module SmartListing
       if bare
         output = capture(builder, &block)
       else
-        output = content_tag(:div, :class => SmartListing.config.classes(:main), :id => name, :data => data) do
-          concat(content_tag(:div, "", :class => SmartListing.config.classes(:loading)))
-          concat(content_tag(:div, :class => SmartListing.config.classes(:content)) do
+        output = content_tag(:div, class: SmartListing.config.classes(:main), id: name, data: data) do
+          concat(content_tag(:div, "", class: SmartListing.config.classes(:loading)))
+          concat(content_tag(:div, class: SmartListing.config.classes(:content)) do
             concat(capture(builder, &block))
           end)
         end
@@ -213,9 +213,9 @@ module SmartListing
 
       classes = [SmartListing.config.classes(:controls), args.first.try(:[], :class)]
 
-      form_tag(smart_listing.try(:href) || {}, :remote => smart_listing.try(:remote?) || true, :method => :get, :class => classes, :data => {:smart_listing => name}) do
-        concat(content_tag(:div, :style => "margin:0;padding:0;display:inline") do
-          concat(hidden_field_tag("#{smart_listing.try(:base_param)}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
+      form_tag(smart_listing.try(:href) || {}, remote: smart_listing.try(:remote?) || true, method: :get, class: classes, data: {smart_listing: name}) do
+        concat(content_tag(:div, style: "margin:0;padding:0;display:inline") do
+          concat(hidden_field_tag("#{smart_listing.try(:base_param)}[_]", 1, id: nil)) # this forces smart_listing_update to refresh the list
         end)
         concat(capture(&block))
       end
@@ -228,31 +228,31 @@ module SmartListing
           next unless action.is_a?(Hash)
 
           locals = {
-            :action_if => action.has_key?(:if) ? action[:if] : true, 
-            :url => action.delete(:url),
-            :icon => action.delete(:icon),
-            :title => action.delete(:title),
+            action_if: action.has_key?(:if) ? action[:if] : true, 
+            url: action.delete(:url),
+            icon: action.delete(:icon),
+            title: action.delete(:title),
           }
           locals[:icon] = [locals[:icon], SmartListing.config.classes(:muted)] if !locals[:action_if]
 
           action_name = action[:name].to_sym
           case action_name
           when :show
-						concat(render(:partial => 'smart_listing/action_show', :locals => locals))
+						concat(render(partial: 'smart_listing/action_show', locals: locals))
           when :edit
-						concat(render(:partial => 'smart_listing/action_edit', :locals => locals))
+						concat(render(partial: 'smart_listing/action_edit', locals: locals))
           when :destroy
             locals.merge!(
-              :confirmation => action.delete(:confirmation),
+              confirmation: action.delete(:confirmation),
             )
-						concat(render(:partial => 'smart_listing/action_delete', :locals => locals))
+						concat(render(partial: 'smart_listing/action_delete', locals: locals))
           when :custom
             locals.merge!(
-              :html_options => action,
+              html_options: action,
             )
-						concat(render(:partial => 'smart_listing/action_custom', :locals => locals))
+						concat(render(partial: 'smart_listing/action_custom', locals: locals))
           else
-						concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))
+						concat(render(partial: "smart_listing/action_#{action_name}", locals: {action: action}))
           end
         end
       end
@@ -279,11 +279,11 @@ module SmartListing
       end
 
       builder = Builder.new(name, smart_listing, self, {}, nil)
-      render(:partial => 'smart_listing/update_list', :locals => {
-        :name => smart_listing.name, 
-        :part => smart_listing.partial, 
-        :smart_listing => builder, 
-        :smart_listing_data => {
+      render(partial: 'smart_listing/update_list', locals: {
+        name: smart_listing.name, 
+        part: smart_listing.partial, 
+        smart_listing: builder, 
+        smart_listing_data: {
           SmartListing.config.data_attributes(:params) => smart_listing.all_params,
           SmartListing.config.data_attributes(:max_count) => smart_listing.max_count,
         }
@@ -299,7 +299,7 @@ module SmartListing
       object_key = options.delete(:object_key) || :object
       new = options.delete(:new)
 
-      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new})
+      render(partial: "smart_listing/item/#{item_action.to_s}", locals: {name: name, id: id, valid: valid, object_key: object_key, object: object, part: partial, new: new})
     end
   end
 end

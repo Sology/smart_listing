@@ -7,7 +7,7 @@ module Kaminari
   module Helpers
     class Tag
       def page_url_for(page)
-        @template.url_for @params.deep_merge(page_param(page)).merge(:only_path => true)
+        @template.url_for @params.deep_merge(page_param(page)).merge(only_path: true)
       end
 
       private
@@ -33,12 +33,12 @@ module SmartListing
       @name = name
 
       @options = {
-        :partial                        => @name,                       # SmartListing partial name
-        :sort_attributes                => :implicit,                   # allow implicitly setting sort attributes
-        :default_sort                   => {},                          # default sorting
-        :href                           => nil,                         # set SmartListing target url (in case when different than current url)
-        :remote                         => true,                        # SmartListing is remote by default
-        :callback_href                  => nil,                         # set SmartListing callback url (in case when different than current url)
+        partial:                        @name,                       # SmartListing partial name
+        sort_attributes:                :implicit,                   # allow implicitly setting sort attributes
+        default_sort:                   {},                          # default sorting
+        href:                           nil,                         # set SmartListing target url (in case when different than current url)
+        remote:                         true,                        # SmartListing is remote by default
+        callback_href:                  nil,                         # set SmartListing callback url (in case when different than current url)
       }.merge(SmartListing.config.global_options).merge(options)
 
       if @options[:array]
