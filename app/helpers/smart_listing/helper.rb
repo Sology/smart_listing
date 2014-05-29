@@ -72,8 +72,7 @@ module SmartListing
       end
 
       def sortable title, attribute, options = {}
-        dirs = options[:sort_dirs] ? options[:sort_dirs] : [nil, "asc", "desc"]
-        puts attribute + ": " + dirs.to_yaml
+        dirs = options[:sort_dirs] || @smart_listing.sort_dirs || [nil, "asc", "desc"]
         
         next_index = dirs.index(@smart_listing.sort_order(attribute)).nil? ? 0 : (dirs.index(@smart_listing.sort_order(attribute)) + 1) % dirs.length
 

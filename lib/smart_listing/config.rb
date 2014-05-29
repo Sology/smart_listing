@@ -28,6 +28,7 @@ module SmartListing
         :memorize_per_page              => false,
         :page_sizes                     => DEFAULT_PAGE_SIZES,          # set available page sizes array
         :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
+        :sort_dirs                      => [nil, "asc", "desc"],        # Default sorting directions cycle of sortables
       },
       :constants => {
         :classes => {

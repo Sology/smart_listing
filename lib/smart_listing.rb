@@ -149,6 +149,10 @@ module SmartListing
       @options[:kaminari_options]
     end
 
+    def sort_dirs
+      @options[:sort_dirs]
+    end
+
     def all_params overrides = {}
       ap = {base_param => {}}
       @options[:param_names].each do |k, v|
