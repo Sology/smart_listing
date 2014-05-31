@@ -202,6 +202,25 @@ module SmartListing
       output
     end
 
+    def smart_listing_remote_for name, href, *args
+      puts args.to_yaml
+      name = name.to_sym
+      options = args.extract_options!
+      output = ""
+      data = {}
+      data[SmartListing.config.data_attributes(:max_count)] = @smart_listings[name].max_count if @smart_listings[name].try(:max_count) && @smart_listings[name].max_count > 0
+      data[SmartListing.config.data_attributes(:href)] = href
+      data[SmartListing.config.data_attributes(:callback_href)] = @smart_listings[name].callback_href if @smart_listings[name].try(:callback_href)
+      data.merge!(options[:data]) if options[:data]
+
+      output = content_tag(:div, :class => SmartListing.config.classes(:main), :id => name, :data => data) do
+        concat(content_tag(:div, "", :class => SmartListing.config.classes(:loading)))
+        concat(content_tag(:div, "", :class => SmartListing.config.classes(:content)))
+      end
+
+      output
+    end
+
     def smart_listing_render name, *args
       smart_listing_for(name, *args) do |smart_listing|
         concat(smart_listing.render_list)
