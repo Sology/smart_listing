@@ -29,7 +29,6 @@ SmartListing.configure do |config|
     #:autoselect            => "autoselect",
     #:callback              => "callback",
     #:pagination_per_page   => "pagination-per-page text-center",
-    #:pagination_count      => "count",
     #:inline_editing        => "info",
     #:no_records            => "no-records",
     #:limit                 => "smart-listing-limit",
@@ -49,6 +48,7 @@ SmartListing.configure do |config|
     #:icon_sort_none        => "glyphicon glyphicon-resize-vertical",
     #:icon_sort_up          => "glyphicon glyphicon-chevron-up",
     #:icon_sort_down        => "glyphicon glyphicon-chevron-down",
+    #:muted                 => "text-muted",
   }
 
   config.constants :data_attributes, {
@@ -58,6 +58,7 @@ SmartListing.configure do |config|
     #:href                  => "href",
     #:callback_href         => "callback-href",
     #:max_count             => "max-count",
+    #:item_count            => "item-count",
     #:inline_edit_backup    => "smart-listing-edit-backup",
     #:params                => "params",
     #:observed              => "observed",
@@ -72,5 +73,9 @@ SmartListing.configure do |config|
     #:row                   => "tr",
     #:head                  => "thead",
     #:filtering_icon        => "i"
+    #:filtering_button      => "button",
+    #:filtering_icon        => "button span",
+    #:filtering_input       => ".filter input",
+    #:pagination_count      => ".pagination-per-page .count",
   }
 end

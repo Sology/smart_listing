@@ -79,16 +79,19 @@ class SmartListing
     $.fn.smart_listing.onLoaded(@content, @loading)
   
   itemCount: =>
-    parseInt(@container.find('.<%= SmartListing.config.classes(:pagination_per_page) %> .<%= SmartListing.config.classes(:pagination_count) %>').html())
+    parseInt(@container.data('<%= SmartListing.config.data_attributes(:item_count) %>'))
 
   maxCount: =>
     parseInt(@container.data('<%= SmartListing.config.data_attributes(:max_count) %>'))
 
   setAutoshow: (v) =>
+
     @container.data('<%= SmartListing.config.data_attributes(:autoshow) %>', v)
 
   changeItemCount: (value) =>
-    @container.find('.<%= SmartListing.config.classes(:pagination_per_page) %> .<%= SmartListing.config.classes(:pagination_count) %>').html(@itemCount() + value)
+    count = @container.data('<%= SmartListing.config.data_attributes(:item_count) %>') + value
+    @container.data('<%= SmartListing.config.data_attributes(:item_count) %>', count)
+    @container.find('<%= SmartListing.config.selectors(:pagination_count) %>').html(count)
 
   cancelEdit: (editable) =>
     if editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')

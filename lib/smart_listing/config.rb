@@ -45,7 +45,6 @@ module SmartListing
           :autoselect => "autoselect",
           :callback => "callback",
           :pagination_per_page => "pagination-per-page text-center",
-          :pagination_count => "count",
           :inline_editing => "info",
           :no_records => "no-records",
           :limit => "smart-listing-limit",
@@ -74,6 +73,7 @@ module SmartListing
           :href => "href",
           :callback_href => "callback-href",
           :max_count => "max-count",
+          :item_count => "item-count",
           :inline_edit_backup => "smart-listing-edit-backup",
           :params => "params",
           :observed => "observed",
@@ -88,7 +88,8 @@ module SmartListing
           :head => "thead",
           :filtering_button => "button",
           :filtering_icon => "button span",
-          :filtering_input => ".filter input"
+          :filtering_input => ".filter input",
+          :pagination_count => ".pagination-per-page .count",
         }
       }
     }

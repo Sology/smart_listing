@@ -185,6 +185,7 @@ module SmartListing
 
       data = {}
       data[SmartListing.config.data_attributes(:max_count)] = @smart_listings[name].max_count if @smart_listings[name].max_count && @smart_listings[name].max_count > 0
+      data[SmartListing.config.data_attributes(:item_count)] = @smart_listings[name].count
       data[SmartListing.config.data_attributes(:href)] = @smart_listings[name].href if @smart_listings[name].href
       data[SmartListing.config.data_attributes(:callback_href)] = @smart_listings[name].callback_href if @smart_listings[name].callback_href
       data.merge!(options[:data]) if options[:data]
@@ -287,6 +288,7 @@ module SmartListing
         :smart_listing_data => {
           SmartListing.config.data_attributes(:params) => smart_listing.all_params,
           SmartListing.config.data_attributes(:max_count) => smart_listing.max_count,
+          SmartListing.config.data_attributes(:item_count) => smart_listing.count,
         }
       })
     end
