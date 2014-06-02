@@ -143,6 +143,8 @@ Implicit mode is convenient with simple data sets. In case you want to sort by j
 
 Note that `:sort_attributes` are array which of course means, that order of attributes matters.
 
+There's also a possibility to specify available sort directions using `:sort_dirs` option which is by default `[nil, "asc", "desc"]`.
+
 ### List item management and in-place editing
 
 In order to allow managing and editing list items, we need to reorganize our views a bit. Basically, each item needs to have its own partial:
