@@ -9,12 +9,7 @@ class SmartListing
     @loading = @container.find(".<%= SmartListing.config.classes(:loading) %>")
     @content = @container.find(".<%= SmartListing.config.classes(:content) %>")
     if @content.html() == ""
-      $.ajax({
-        url: @container.data('<%= SmartListing.config.data_attributes(:href) %>'),
-        type: "GET",
-        success: (data) =>
-          $("#" + @name + " .<%= SmartListing.config.classes(:content) %>").html(data)
-      })
+      @reload()
     @status = $(".<%= SmartListing.config.classes(:status) %>[data-<%= SmartListing.config.data_attributes(:main) %>='#{@name}']")
     @confirmed = null
     @popovers = {}
