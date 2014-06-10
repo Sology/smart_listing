@@ -1,3 +1,4 @@
+- Better form controls handling
 - Possibility to specify sort directions
 
 1.0.0

@@ -137,8 +137,11 @@ class SmartListing
   reload: () =>
     $.rails.handleRemote(@container)
   
-  params: () =>
-    @container.data('<%= SmartListing.config.data_attributes(:params) %>')
+  params: (value) =>
+    if value
+      @container.data('<%= SmartListing.config.data_attributes(:params) %>', value)
+    else
+      @container.data('<%= SmartListing.config.data_attributes(:params) %>')
 
   registerPopover: (name, callback) =>
     @popovers[name] = callback
@@ -227,8 +230,9 @@ class SmartListing
     @container.trigger("smart_listing:remove", editable)
   
   update_list: (content, data) =>
-    $.each data, (key, value) =>
-      @container.data(key, value)
+    @container.data("<%= SmartListing.config.data_attributes(:params) %>", $.extend(@container.data("<%= SmartListing.config.data_attributes(:params) %>"), data["<%= SmartListing.config.data_attributes(:params) %>"]))
+    @container.data("<%= SmartListing.config.data_attributes(:max_count) %>", data["<%= SmartListing.config.data_attributes(:max_count) %>"])
+    @container.data("<%= SmartListing.config.data_attributes(:item_count) %>", data["<%= SmartListing.config.data_attributes(:item_count) %>"])
 
     @content.html(content)
 
@@ -324,31 +328,33 @@ $.fn.smart_listing.onLoaded = (content, loader) ->
     loader.hide()
 
 $.fn.smart_listing_controls = () ->
+  reload = (controls) ->
+    container = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
+    smart_listing = container.smart_listing()
+
+    # serialize form and merge it with smart listing params
+    prms = {}
+    $.each controls.serializeArray(), (i, field) ->
+      prms[field.name] = field.value
+    prms = $.extend(smart_listing.params(), prms)
+    smart_listing.params(prms)
+
+    container.trigger('ajax:before')
+    smart_listing.reload()
+
   $(this).each () ->
     controls = $(this)
     smart_listing = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
     reset = controls.find(".<%= SmartListing.config.classes(:controls_reset) %>")
 
     controls.submit ->
-      # Merges smart list params with the form action url before submitting.
-      # This preserves smart list settings (page, sorting etc.).
-
-      prms = $.extend({}, smart_listing.smart_listing().params())
-      if $(this).data('<%= SmartListing.config.classes(:controls_reset) %>')
-        prms[$(this).data('<%= SmartListing.config.classes(:controls_reset) %>')] = null
-
-      if $.rails.href(smart_listing)
-        # If smart list has different target url than current one
-        controls.attr('action', $.rails.href(smart_listing) + "?" + jQuery.param(prms))
-      else
-        controls.attr('action', "?" + jQuery.param(prms))
-
-      smart_listing.trigger('ajax:before')
-      true
+      # setup smart listing params, reload and don't actually submit controls form
+      reload(controls)
+      false
 
     controls.find('input, select').change () ->
       unless $(this).data('<%= SmartListing.config.data_attributes(:observed) %>') # do not submit controls form when changed field is observed (observing submits form by itself)
-        controls.submit()
+        reload(controls)
 
     $.fn.smart_listing_controls.filter(controls.find('.<%= SmartListing.config.classes(:filtering) %>'))
 
