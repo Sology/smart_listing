@@ -214,7 +214,7 @@ module SmartListing
 
       classes = [SmartListing.config.classes(:controls), args.first.try(:[], :class)]
 
-      form_tag(smart_listing.try(:href) || {}, :remote => smart_listing.try(:remote?) || true, :method => :get, :class => classes, :data => {:smart_listing => name}) do
+      form_tag(smart_listing.try(:href) || {}, :remote => smart_listing.try(:remote?) || true, :method => :get, :class => classes, :data => {SmartListing.config.data_attributes(:main) => name}) do
         concat(content_tag(:div, :style => "margin:0;padding:0;display:inline") do
           concat(hidden_field_tag("#{smart_listing.try(:base_param)}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
         end)

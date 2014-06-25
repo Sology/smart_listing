@@ -1,3 +1,4 @@
+- Avoid smart listing controls double initialization [lacco]
 - Turbolinks support [wynksaiddestroy]
 - Better form controls handling
 - Possibility to specify sort directions

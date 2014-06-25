@@ -343,6 +343,10 @@ $.fn.smart_listing_controls = () ->
     smart_listing.reload()
 
   $(this).each () ->
+    # avoid double initialization
+    return if $(this).data('<%= SmartListing.config.data_attributes(:controls_initialized) %>')
+    $(this).data('<%= SmartListing.config.data_attributes(:controls_initialized) %>', true)
+
     controls = $(this)
     smart_listing = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
     reset = controls.find(".<%= SmartListing.config.classes(:controls_reset) %>")
@@ -383,7 +387,7 @@ $.fn.smart_listing_controls.filter = (filter) ->
       field.trigger('keydown')
     return false
 
-ready ->
+ready = ->
   $('.<%= SmartListing.config.classes(:main) %>').smart_listing()
   $('.<%= SmartListing.config.classes(:controls) %>').smart_listing_controls()
 

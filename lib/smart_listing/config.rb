@@ -68,6 +68,7 @@ module SmartListing
         },
         :data_attributes => {
           :main => "smart-listing",
+          :controls_initialized => "smart-listing-controls-initialized",
           :confirmation => "confirmation",
           :id => "id",
           :href => "href",
