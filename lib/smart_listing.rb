@@ -21,11 +21,7 @@ end
 
 module SmartListing
   class Base
-    if Rails.env.development?
-      DEFAULT_PAGE_SIZES = [3, 10, 20, 50, 100]
-    else
-      DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
-    end
+    DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
 
     attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count
 
