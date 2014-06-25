@@ -343,6 +343,10 @@ $.fn.smart_listing_controls = () ->
     smart_listing.reload()
 
   $(this).each () ->
+    # avoid double initialization
+    return if $(this).data('<%= SmartListing.config.data_attributes(:controls) %>')
+    $(this).data('<%= SmartListing.config.data_attributes(:controls) %>', true)
+
     controls = $(this)
     smart_listing = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
     reset = controls.find(".<%= SmartListing.config.classes(:controls_reset) %>")
