@@ -383,6 +383,9 @@ $.fn.smart_listing_controls.filter = (filter) ->
       field.trigger('keydown')
     return false
 
-$ ->
+ready ->
   $('.<%= SmartListing.config.classes(:main) %>').smart_listing()
   $('.<%= SmartListing.config.classes(:controls) %>').smart_listing_controls()
+
+$(document).ready ready
+$(document).on "page:load", ready
