@@ -113,8 +113,8 @@ SmartListing supports two modes of sorting: implicit and explicit. Implicit mode
   %table
     %thead
       %tr 
-        %th= smart_listing.sortable "User name", "name"
-        %th= smart_listing.sortable "Email", "email"
+        %th= smart_listing.sortable "User name", :name
+        %th= smart_listing.sortable "Email", :email
     %tbody
       - smart_listing.collection.each do |user|
         %tr
@@ -126,12 +126,12 @@ SmartListing supports two modes of sorting: implicit and explicit. Implicit mode
   %p.warning No records!
 ```
 
-In this case `"name"` and `"email"` are sorting column names. `Builder#sortable` renders special link containing column name and sort order (either `asc`, `desc`, or empty value). 
+In this case `:name` and `:email` are sorting column names. `Builder#sortable` renders special link containing column name and sort order (either `asc`, `desc`, or empty value). 
 
 You can also specify default sort order in the controller:
 
 ```ruby
-@users = smart_listing_create(:users, User.active, partial: "users/listing", default_sort: {:name: "asc"})
+@users = smart_listing_create(:users, User.active, partial: "users/listing", default_sort: {name: "asc"})
 ```
 
 Implicit mode is convenient with simple data sets. In case you want to sort by joined column names, we advise you to use explicit sorting:

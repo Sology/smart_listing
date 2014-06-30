@@ -2,9 +2,10 @@
   Edit action.
 
   Available local variables:
-    url
-    icon
+    action_if:          false if action is disabled
+    url:                edit url
+    icon:               icon css classes
     title
 -%>
 
-<%= link_to_if(action_if, content_tag(:i, '', :class => icon || SmartListing.config.classes(:icon_edit)), url, :remote => true, :class => "edit", :title => title || t("smart_listing.actions.edit") ) %>
+<%= link_to_if(action_if, content_tag(:i, '', :class => icon), url, :remote => true, :class => "edit", :title => title || t("smart_listing.actions.edit") ) %>

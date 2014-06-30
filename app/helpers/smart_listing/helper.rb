@@ -234,24 +234,34 @@ module SmartListing
             :icon => action.delete(:icon),
             :title => action.delete(:title),
           }
-          locals[:icon] = [locals[:icon], SmartListing.config.classes(:muted)] if !locals[:action_if]
 
+          template = nil
           action_name = action[:name].to_sym
+
           case action_name
           when :show
-						concat(render(:partial => 'smart_listing/action_show', :locals => locals))
+            locals[:icon] ||= SmartListing.config.classes(:icon_show)
+						template = 'action_show'
           when :edit
-						concat(render(:partial => 'smart_listing/action_edit', :locals => locals))
+            locals[:icon] ||= SmartListing.config.classes(:icon_edit)
+						template = 'action_edit'
           when :destroy
+            locals[:icon] ||= SmartListing.config.classes(:icon_trash)
             locals.merge!(
               :confirmation => action.delete(:confirmation),
             )
-						concat(render(:partial => 'smart_listing/action_delete', :locals => locals))
+						template = 'action_delete'
           when :custom
             locals.merge!(
               :html_options => action,
             )
-						concat(render(:partial => 'smart_listing/action_custom', :locals => locals))
+						template = 'action_custom'
+          end
+
+          locals[:icon] = [locals[:icon], SmartListing.config.classes(:muted)] if !locals[:action_if]
+
+          if template
+						concat(render(:partial => "smart_listing/#{template}", :locals => locals))
           else
 						concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))
           end
