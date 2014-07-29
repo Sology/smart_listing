@@ -146,6 +146,9 @@ class SmartListing
   registerPopover: (name, callback) =>
     @popovers[name] = callback
 
+  editable: (id) =>
+    @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]")
+
   #################################################################################################
   # Methods executed by rails UJS:
 
@@ -194,7 +197,7 @@ class SmartListing
     @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
     @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
 
-    editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]")
+    editable = @editable(id)
     editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>', editable.html())
     editable.html(content)
     editable.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
@@ -204,7 +207,7 @@ class SmartListing
     @fadeLoaded()
 
   update: (id, success, content) =>
-    editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]")
+    editable = @editable(id)
     if success
       editable.removeClass('<%= SmartListing.config.classes(:inline_editing) %>')
       editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
@@ -224,7 +227,7 @@ class SmartListing
     # No need to do anything here, already handled by ajax:success handler
 
   remove: (id) =>
-    editable = @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]").first()
+    editable = @editable(id)
     editable.remove()
 
     @container.trigger("smart_listing:remove", editable)
