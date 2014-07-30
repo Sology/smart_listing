@@ -28,6 +28,10 @@ module SmartListing
         @smart_listing_name, @smart_listing, @template, @options, @proc = smart_listing_name, smart_listing, template, options, proc
       end
 
+      def name
+        @smart_listing_name
+      end
+
       def paginate options = {}
         if @smart_listing.collection.respond_to? :current_page
           @template.paginate @smart_listing.collection, {:remote => @smart_listing.remote?, :param_name => @smart_listing.param_name(:page), :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
