@@ -8,11 +8,7 @@ module SmartListing
   end
 
   class Configuration
-    if Rails.env.development?
-      DEFAULT_PAGE_SIZES = [3, 10, 20, 50, 100]
-    else
-      DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
-    end
+    DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
 
     DEFAULTS = {
       :global_options => {

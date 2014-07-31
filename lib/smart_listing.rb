@@ -21,8 +21,6 @@ end
 
 module SmartListing
   class Base
-    DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
-
     attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count
 
     def initialize name, collection, options = {}
