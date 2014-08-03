@@ -307,8 +307,8 @@ module SmartListing
     end
 
     # Renders single item (i.e for create, update actions)
-    def smart_listing_item name, item_action, object = nil, partial = nil, options = {}
-      name = name.to_sym
+    def smart_listing_item item_action, object = nil, partial = nil, options = {}
+      name = object.class.name.underscore.pluralize.to_sym
       type = object.class.name.downcase.to_sym if object
       id = options[:id] || object.try(:id)
       valid = options[:valid] if options.has_key?(:valid)
