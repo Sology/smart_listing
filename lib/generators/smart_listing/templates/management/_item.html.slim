@@ -1,0 +1,6 @@
+<% columns.each do |column| %>td
+  = object.<%= column %><% end %>
+td.actions
+  = smart_listing_item_actions [ { name: :edit, url: <%= edit_path %> },
+    { name: :destroy, url: <%= resource_path %>,
+      confirmation: t('smart_listing.msgs.destroy_confirmation') }]
