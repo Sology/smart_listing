@@ -2,7 +2,8 @@ td colspan="<%= columns.length + 1 %>"
   = simple_form_for(object, html: {class: 'form-horizontal' }, remote: true) do |f|
     .container
       .row
-        = f.input :name
+        <% columns.each do |arg| %>
+        = f.input :<%= arg %> <% end %>
     .control-group
       .controls
         = f.submit t('shared.submit'), class: 'btn btn-primary'
