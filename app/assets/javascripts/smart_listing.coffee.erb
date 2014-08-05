@@ -77,7 +77,7 @@ class SmartListing
 
   fadeLoaded: =>
     $.fn.smart_listing.onLoaded(@content, @loading)
-  
+
   itemCount: =>
     parseInt(@container.data('<%= SmartListing.config.data_attributes(:item_count) %>'))
 
@@ -98,7 +98,7 @@ class SmartListing
       editable.html(editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>'))
       editable.removeClass('<%= SmartListing.config.classes(:inline_editing) %>')
       editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
-  
+
   # Callback called when record is added/deleted using ajax request
   refresh: () =>
     header = @content.find('<%= SmartListing.config.selectors(:head) %>')
@@ -132,11 +132,11 @@ class SmartListing
         $(status).find('.<%= SmartListing.config.classes(:limit_alert) %>').show()
       else
         $(status).find('.<%= SmartListing.config.classes(:limit_alert) %>').hide()
-  
+
   # Trigger AJAX request to reload the list
   reload: () =>
     $.rails.handleRemote(@container)
-  
+
   params: (value) =>
     if value
       @container.data('<%= SmartListing.config.data_attributes(:params) %>', value)
@@ -222,7 +222,7 @@ class SmartListing
       @container.trigger("smart_listing:update:fail", editable)
 
     @fadeLoaded()
-  
+
   destroy: (id, destroyed) =>
     # No need to do anything here, already handled by ajax:success handler
 
@@ -231,7 +231,7 @@ class SmartListing
     editable.remove()
 
     @container.trigger("smart_listing:remove", editable)
-  
+
   update_list: (content, data) =>
     @container.data("<%= SmartListing.config.data_attributes(:params) %>", $.extend(@container.data("<%= SmartListing.config.data_attributes(:params) %>"), data["<%= SmartListing.config.data_attributes(:params) %>"]))
     @container.data("<%= SmartListing.config.data_attributes(:max_count) %>", data["<%= SmartListing.config.data_attributes(:max_count) %>"])
@@ -260,7 +260,7 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      onEmpty: () ->
      onChange: () ->
    options = $.extend(options, opts)
- 
+
    keyChange = () ->
      if field.val().length > 0
        options.onFilled()
@@ -270,15 +270,15 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      if field.val() == last_value && field.val().length != 0
        return
      lastValue = field.val()
- 
+
      options.onChange()
- 
+
    field.data('<%= SmartListing.config.data_attributes(:observed) %>', true)
- 
+
    field.bind 'keydown', (e) ->
      if(key_timeout)
        clearTimeout(key_timeout)
- 
+
      key_timeout = setTimeout(->
        keyChange()
      , 400)

@@ -55,7 +55,7 @@ module SmartListing
         per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
 
         locals = {
-          :container_classes => container_classes, 
+          :container_classes => container_classes,
           :per_page_sizes => per_page_sizes,
         }
 
@@ -68,7 +68,7 @@ module SmartListing
         end
 
         locals = {
-          :page => page, 
+          :page => page,
           :url => url,
         }
 
@@ -77,7 +77,7 @@ module SmartListing
 
       def sortable title, attribute, options = {}
         dirs = options[:sort_dirs] || @smart_listing.sort_dirs || [nil, "asc", "desc"]
-        
+
         next_index = dirs.index(@smart_listing.sort_order(attribute)).nil? ? 0 : (dirs.index(@smart_listing.sort_order(attribute)) + 1) % dirs.length
 
         sort_params = {
@@ -233,7 +233,7 @@ module SmartListing
           next unless action.is_a?(Hash)
 
           locals = {
-            :action_if => action.has_key?(:if) ? action[:if] : true, 
+            :action_if => action.has_key?(:if) ? action[:if] : true,
             :url => action.delete(:url),
             :icon => action.delete(:icon),
             :title => action.delete(:title),
@@ -295,9 +295,9 @@ module SmartListing
 
       builder = Builder.new(name, smart_listing, self, {}, nil)
       render(:partial => 'smart_listing/update_list', :locals => {
-        :name => smart_listing.name, 
-        :part => smart_listing.partial, 
-        :smart_listing => builder, 
+        :name => smart_listing.name,
+        :part => smart_listing.partial,
+        :smart_listing => builder,
         :smart_listing_data => {
           SmartListing.config.data_attributes(:params) => smart_listing.all_params,
           SmartListing.config.data_attributes(:max_count) => smart_listing.max_count,

@@ -98,7 +98,7 @@ module SmartListing
     def method_missing(sym, *args, &block)
       @options[sym] = *args
     end
-    
+
     def constants key, value = nil
       if value
         @options[:constants][key].merge!(value)
