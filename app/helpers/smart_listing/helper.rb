@@ -307,15 +307,15 @@ module SmartListing
     end
 
     # Renders single item (i.e for create, update actions)
-    def smart_listing_item name, item_action, object = nil, partial = nil, options = {}
-      name = name.to_sym
-      type = object.class.name.downcase.to_sym if object
-      id = options[:id] || object.try(:id)
-      valid = options[:valid] if options.has_key?(:valid)
-      object_key = options.delete(:object_key) || :object
-      new = options.delete(:new)
+    def smart_listing_item item_action, options = {}
+      object = options[:object]
 
-      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new})
+      options[:name]        ||= object.class.name.underscore.pluralize.to_sym
+      options[:type]        ||= object.class.name.downcase.to_sym if object
+      options[:id]          ||= object.try(:id)
+      options[:object_key]  ||= :object
+
+      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => options)
     end
   end
 end
