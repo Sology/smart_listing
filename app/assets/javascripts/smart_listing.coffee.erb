@@ -242,6 +242,8 @@ class SmartListing
     @refresh()
     @fadeLoaded()
 
+    @container.trigger("smart_listing:update_list", @container)
+
 $.fn.smart_listing = () ->
   map = $(this).map () ->
     if !$(this).data('<%= SmartListing.config.data_attributes(:main) %>')
