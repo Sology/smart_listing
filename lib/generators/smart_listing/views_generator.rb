@@ -5,7 +5,7 @@ module SmartListing
 
       def self.banner #:nodoc:
         <<-BANNER.chomp
-rails g smart_listing:views 
+rails g smart_listing:views
 
     Copies all smart listing partials templates to your application.
 BANNER

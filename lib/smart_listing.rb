@@ -37,7 +37,7 @@ module SmartListing
 
       if @options[:array]
         @collection = collection.to_a
-      else 
+      else
         @collection = collection
       end
     end
@@ -86,8 +86,8 @@ module SmartListing
               else
                 (yval <=> xval) || (yval && !xval ? 1 : -1)
               end
-            end 
-          end 
+            end
+          end
         end
         if @options[:paginate] && @per_page > 0
           @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)

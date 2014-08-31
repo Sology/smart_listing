@@ -5,7 +5,7 @@ module SmartListing
 
       def self.banner #:nodoc:
         <<-BANNER.chomp
-rails g smart_listing:install 
+rails g smart_listing:install
 
     Copies initializer file
 BANNER
