@@ -36,6 +36,8 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
+    bootstrap-sass (3.2.0.1)
+      sass (~> 3.2)
     builder (3.2.2)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
@@ -96,6 +98,7 @@ GEM
       rspec-mocks (~> 3.0.0)
       rspec-support (~> 3.0.0)
     rspec-support (3.0.4)
+    sass (3.4.3)
     sprockets (2.12.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -109,6 +112,8 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
+    turbolinks (2.5.1)
+      coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
 
@@ -116,8 +121,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bootstrap-sass
   coffee-rails
   jquery-rails
   rspec-rails
   smart_listing!
   sqlite3
+  turbolinks
