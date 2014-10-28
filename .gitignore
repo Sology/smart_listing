@@ -25,3 +25,7 @@ config/initializers/secret_token.rb
 
 *.swp
 *.swo
+
+spec/dummy/db/*.sqlite3
+spec/dummy/log/*.log
+spec/dummy/tmp/
