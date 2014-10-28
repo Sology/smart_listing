@@ -1,0 +1,24 @@
+<% unless smart_listing.empty? %>
+  <table class="table table-striped">
+    <thead>
+      <th class="col-md-6 name">
+        <%= smart_listing.sortable "Name", "name" %>
+      </th>
+      <th class="col-md-6 email">
+        <%= smart_listing.sortable "Email", "email" %>
+      </th>
+    </thead>
+    <tbody>
+      <% smart_listing.collection.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= smart_listing.paginate %>
+  <%= smart_listing.pagination_per_page_links %>
+<% else %>
+  <p class="warning">No records!</p>
+<% end %>

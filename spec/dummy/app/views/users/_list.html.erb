@@ -1,0 +1,21 @@
+<% unless smart_listing.empty? %>
+  <table class="table table-striped">
+    <thead>
+      <th class="col-md-6">Name</th>
+      <th class="col-md-6">Email</th>
+    </thead>
+    <tbody>
+      <% smart_listing.collection.each do |user| %>
+        <tr>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <% # Render nice pagination links fitted for Bootstrap 3 by default %>
+  <%= smart_listing.paginate %>
+  <%= smart_listing.pagination_per_page_links %>
+<% else %>
+  <p class="warning">No records!</p>
+<% end %>
