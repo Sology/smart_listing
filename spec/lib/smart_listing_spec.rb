@@ -153,6 +153,45 @@ module SmartListing
     end
 
     describe '#collection' do
+      context 'when the collection is an array' do
+        it 'sort the collection by the first attribute' do
+          user1 = User.create(name: '1')
+          user2 = User.create(name: '2')
+          options = { array: true }
+          list = build_list(options: options)
+
+          params = {"users_smart_listing"=>{sort: {"name"=>"desc"}}}
+          list.setup(params, {})
+
+          expect(list.collection.first).to eq user2
+          expect(list.collection.last).to eq user1
+        end
+
+        it 'give only the given number per page' do
+          user1 = User.create(name: '1')
+          user2 = User.create(name: '2')
+          options = { page_sizes: [1], array: true }
+          list = build_list(options: options)
+
+          list.setup({},{})
+
+          expect(list.collection).to include user1
+          expect(list.collection).to_not include user2
+        end
+
+        it 'give the right page' do
+          user1 = User.create(name: '1')
+          user2 = User.create(name: '2')
+          options = { page_sizes: [1], array: true }
+          list = build_list(options: options)
+
+          list.setup({"users_smart_listing" => {page: "2"}}, {})
+
+          expect(list.collection).to include user2
+          expect(list.collection).to_not include user1
+        end
+      end
+
       context 'when the collection is not an array' do
         it 'sort the collection by the given option' do
           user1 = User.create(name: '1')
@@ -192,12 +231,8 @@ module SmartListing
       end
     end
 
-    def build_values
-      User.all
-    end
-
     def build_list(options: {})
-      Base.new(:users, build_values, options)
+      Base.new(:users, User.all, options)
     end
   end
 end
