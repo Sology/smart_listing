@@ -6,9 +6,9 @@ module SmartListing
 
       context "when there is no specification in params or cookies" do
         it 'take first value in the page sizes' do
-          SmartListing.config.global_options[:page_sizes] = [1]
+          options = {page_sizes: [1]}
+          list = build_list(options: options)
 
-          list = build_list
           list.setup({}, {})
 
           expect(list.per_page).to eq 1
@@ -18,9 +18,9 @@ module SmartListing
       context 'when a value is in params' do
         context 'when the value is in the list of page_sizes' do
           it 'set the per_page as in the value' do
-            SmartListing.config.global_options[:page_sizes] = [1, 2]
+            options = {page_sizes: [1, 2]}
+            list = build_list(options: options)
 
-            list = build_list
             list.setup({"users_smart_listing" => {per_page: "2"}}, {})
 
             expect(list.per_page).to eq 2
@@ -29,9 +29,9 @@ module SmartListing
 
         context 'when the value is not in the list of page_sizes' do
           it 'take first value in the page sizes' do
-            SmartListing.config.global_options[:page_sizes] = [1, 2]
+            options = {page_sizes: [1, 2]}
+            list = build_list(options: options)
 
-            list = build_list
             list.setup({"users_smart_listing" => {per_page: "3"}}, {})
 
             expect(list.per_page).to eq 1
@@ -42,10 +42,9 @@ module SmartListing
       context 'when a value is in cookies' do
         context 'when the memorization is enabled' do
           it 'set the value in the cookies' do
-            SmartListing.config.global_options[:page_sizes] = [1, 2]
-            SmartListing.config.global_options[:memorize_per_page] = true
+            options = {page_sizes: [1, 2], memorize_per_page: true}
+            list = build_list(options: options)
 
-            list = build_list
             list.setup({}, {"users_smart_listing" => {per_page: "2"}})
 
             expect(list.per_page).to eq 2
@@ -54,10 +53,9 @@ module SmartListing
 
         context 'when the memorization is disabled' do
           it 'take first value in the page sizes' do
-            SmartListing.config.global_options[:page_sizes] = [1, 2]
-            SmartListing.config.global_options[:memorize_per_page] = false
+            options = {page_sizes: [1, 2], memorize_per_page: false}
+            list = build_list(options: options)
 
-            list = build_list
             list.setup({}, {"users_smart_listing" => {per_page: "2"}})
 
             expect(list.per_page).to eq 1
@@ -68,10 +66,9 @@ module SmartListing
       context 'when the per page value is at 0' do
         context 'when the unlimited per page option is enabled' do
           it 'set the per page at 0' do
-            SmartListing.config.global_options[:page_sizes] = [1, 2]
-            SmartListing.config.global_options[:unlimited_per_page] = true
+            options = {page_sizes: [1, 2], unlimited_per_page: true}
+            list = build_list(options: options)
 
-            list = build_list
             list.setup({"users_smart_listing" => {per_page: "0"}}, {})
 
             expect(list.per_page).to eq 0
@@ -80,10 +77,9 @@ module SmartListing
 
         context 'when the unlimited per page option is disabled' do
           it 'take first value in the page sizes' do
-            SmartListing.config.global_options[:page_sizes] = [1, 2]
-            SmartListing.config.global_options[:unlimited_per_page] = false
+            options = {page_sizes: [1, 2], unlimited_per_page: false}
+            list = build_list(options: options)
 
-            list = build_list
             list.setup({}, {})
 
             expect(list.per_page).to eq 1
@@ -97,6 +93,7 @@ module SmartListing
         it 'set sort with the given value' do
           list = build_list
           params = {"users_smart_listing"=>{sort: {"name"=>"asc"}}}
+
           list.setup(params, {})
 
           expect(list.sort).to eq 'name' => 'asc'
@@ -106,7 +103,7 @@ module SmartListing
       context 'when there is no value in params' do
         it 'take the value in options' do
           options = { default_sort: { 'email' => 'asc' } }
-          list = Base.new(:users, build_values, options)
+          list = build_list(options: options)
           list.setup({}, {})
 
           expect(list.sort).to eq 'email' => 'asc'
@@ -118,8 +115,8 @@ module SmartListing
       User.all
     end
 
-    def build_list
-      Base.new(:users, build_values)
+    def build_list(options: {})
+      Base.new(:users, build_values, options)
     end
   end
 end
