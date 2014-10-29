@@ -6,7 +6,7 @@ module SmartListing
 
       context "when there is no specification in params or cookies" do
         it 'take first value in the page sizes' do
-          options = {page_sizes: [1]}
+          options = { page_sizes: [1] }
           list = build_list(options: options)
 
           list.setup({}, {})
@@ -18,10 +18,10 @@ module SmartListing
       context 'when a value is in params' do
         context 'when the value is in the list of page_sizes' do
           it 'set the per_page as in the value' do
-            options = {page_sizes: [1, 2]}
+            options = { page_sizes: [1, 2] }
             list = build_list(options: options)
 
-            list.setup({"users_smart_listing" => {per_page: "2"}}, {})
+            list.setup({ "users_smart_listing" => { per_page: "2" } }, {})
 
             expect(list.per_page).to eq 2
           end
@@ -29,10 +29,10 @@ module SmartListing
 
         context 'when the value is not in the list of page_sizes' do
           it 'take first value in the page sizes' do
-            options = {page_sizes: [1, 2]}
+            options = { page_sizes: [1, 2] }
             list = build_list(options: options)
 
-            list.setup({"users_smart_listing" => {per_page: "3"}}, {})
+            list.setup({ "users_smart_listing" => { per_page: "3" } }, {})
 
             expect(list.per_page).to eq 1
           end
@@ -42,10 +42,10 @@ module SmartListing
       context 'when a value is in cookies' do
         context 'when the memorization is enabled' do
           it 'set the value in the cookies' do
-            options = {page_sizes: [1, 2], memorize_per_page: true}
+            options = { page_sizes: [1, 2], memorize_per_page: true }
             list = build_list(options: options)
 
-            list.setup({}, {"users_smart_listing" => {per_page: "2"}})
+            list.setup({}, { "users_smart_listing" => { per_page: "2" } })
 
             expect(list.per_page).to eq 2
           end
@@ -53,10 +53,10 @@ module SmartListing
 
         context 'when the memorization is disabled' do
           it 'take first value in the page sizes' do
-            options = {page_sizes: [1, 2], memorize_per_page: false}
+            options = { page_sizes: [1, 2], memorize_per_page: false }
             list = build_list(options: options)
 
-            list.setup({}, {"users_smart_listing" => {per_page: "2"}})
+            list.setup({}, { "users_smart_listing" => { per_page: "2" } })
 
             expect(list.per_page).to eq 1
           end
@@ -66,10 +66,10 @@ module SmartListing
       context 'when the per page value is at 0' do
         context 'when the unlimited per page option is enabled' do
           it 'set the per page at 0' do
-            options = {page_sizes: [1, 2], unlimited_per_page: true}
+            options = { page_sizes: [1, 2], unlimited_per_page: true }
             list = build_list(options: options)
 
-            list.setup({"users_smart_listing" => {per_page: "0"}}, {})
+            list.setup({ "users_smart_listing" => { per_page: "0" } }, {})
 
             expect(list.per_page).to eq 0
           end
@@ -77,7 +77,7 @@ module SmartListing
 
         context 'when the unlimited per page option is disabled' do
           it 'take first value in the page sizes' do
-            options = {page_sizes: [1, 2], unlimited_per_page: false}
+            options = { page_sizes: [1, 2], unlimited_per_page: false }
             list = build_list(options: options)
 
             list.setup({}, {})
@@ -89,7 +89,7 @@ module SmartListing
 
       context 'when the memorization of per page is enabled' do
         it 'save the perpage in the cookies' do
-          options = {page_sizes: [1], memorize_per_page: true}
+          options = { page_sizes: [1], memorize_per_page: true }
           list = build_list(options: options)
           cookies = {}
 
@@ -104,7 +104,7 @@ module SmartListing
       context 'when there is a value in params' do
         it 'set sort with the given value' do
           list = build_list
-          params = {"users_smart_listing"=>{sort: {"name"=>"asc"}}}
+          params = { "users_smart_listing" => { sort: { "name" => "asc" } } }
 
           list.setup(params, {})
 
@@ -132,7 +132,7 @@ module SmartListing
           options = { page_sizes: [1] }
           list = build_list(options: options)
 
-          list.setup({"users_smart_listing" => {page: 2}}, {})
+          list.setup({ "users_smart_listing" => { page: 2 } }, {})
 
           expect(list.page).to eq 2
         end
@@ -145,7 +145,7 @@ module SmartListing
           options = { page_sizes: [1] }
           list = build_list(options: options)
 
-          list.setup({"users_smart_listing" => {page: 3}}, {})
+          list.setup({ "users_smart_listing" => { page: 3 } }, {})
 
           expect(list.page).to eq 2
         end
@@ -160,7 +160,7 @@ module SmartListing
           options = { array: true }
           list = build_list(options: options)
 
-          params = {"users_smart_listing"=>{sort: {"name"=>"desc"}}}
+          params = { "users_smart_listing" => { sort: { "name" => "desc" } } }
           list.setup(params, {})
 
           expect(list.collection.first).to eq user2
@@ -185,7 +185,7 @@ module SmartListing
           options = { page_sizes: [1], array: true }
           list = build_list(options: options)
 
-          list.setup({"users_smart_listing" => {page: "2"}}, {})
+          list.setup({ "users_smart_listing" => { page: 2 } }, {})
 
           expect(list.collection).to include user2
           expect(list.collection).to_not include user1
@@ -223,7 +223,7 @@ module SmartListing
           options = { page_sizes: [1] }
           list = build_list(options: options)
 
-          list.setup({"users_smart_listing" => {page: "2"}}, {})
+          list.setup({ "users_smart_listing" => { page: 2 } }, {})
 
           expect(list.collection).to include user2
           expect(list.collection).to_not include user1
