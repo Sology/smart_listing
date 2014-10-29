@@ -1,0 +1,19 @@
+<table class="table table-striped">
+  <thead>
+    <th class="col-md-5">Name</th>
+    <th class="col-md-5">Email</th>
+    <th class="col-md-2"></th>
+  </thead>
+  <tbody>
+    <% smart_listing.collection.each do |user| %>
+      <tr class="editable" data-id="<%= user.id %>">
+        <%= smart_listing.render object: user, partial: "admin/users/user",
+          locals: { object: user } %>
+      </tr>
+    <% end %>
+    <%= smart_listing.item_new colspan: 3, link: new_admin_user_path %>
+  </tbody>
+</table>
+<% # Render nice pagination links fitted for Bootstrap 3 by default %>
+<%= smart_listing.paginate %>
+<%= smart_listing.pagination_per_page_links %>
