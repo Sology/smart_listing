@@ -124,6 +124,46 @@ module SmartListing
       end
     end
 
+    describe '#collection' do
+      context 'when the collection is not an array' do
+        it 'sort the collection by the given option' do
+          user1 = User.create(name: '1')
+          user2 = User.create(name: '2')
+          options = { default_sort: { 'name' => 'desc' } }
+          list = build_list(options: options)
+
+          list.setup({},{})
+
+          expect(list.collection.first).to eq user2
+          expect(list.collection.last).to eq user1
+        end
+
+        it 'give only the given number per page' do
+          user1 = User.create(name: '1')
+          user2 = User.create(name: '2')
+          options = { page_sizes: [1] }
+          list = build_list(options: options)
+
+          list.setup({},{})
+
+          expect(list.collection).to include user1
+          expect(list.collection).to_not include user2
+        end
+
+        it 'give the right page' do
+          user1 = User.create(name: '1')
+          user2 = User.create(name: '2')
+          options = { page_sizes: [1] }
+          list = build_list(options: options)
+
+          list.setup({"users_smart_listing" => {page: "2"}}, {})
+
+          expect(list.collection).to include user2
+          expect(list.collection).to_not include user1
+        end
+      end
+    end
+
     def build_values
       User.all
     end
