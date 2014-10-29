@@ -14,4 +14,19 @@ feature 'View a list of items' do
     expect(page).to have_content("Name10")
     expect(page).to_not have_content("Name0")
   end
+
+  scenario "The user sort users", js: true do
+    User.create(name: "aaaName", email: "bbbEmail")
+    User.create(name: "bbbName", email: "aaaEmail")
+
+    visit sortable_users_path
+
+    expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("bbbName")
+    expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("aaaName")
+
+    find('.name a').click
+
+    expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("aaaName")
+    expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("bbbName")
+  end
 end
