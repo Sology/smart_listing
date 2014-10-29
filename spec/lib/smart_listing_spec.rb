@@ -124,6 +124,34 @@ module SmartListing
       end
     end
 
+    describe '#page' do
+      context 'when the page is in the range' do
+        it 'set the value with the given params' do
+          User.create
+          User.create
+          options = { page_sizes: [1] }
+          list = build_list(options: options)
+
+          list.setup({"users_smart_listing" => {page: 2}}, {})
+
+          expect(list.page).to eq 2
+        end
+      end
+
+      context 'when the page is out of range' do
+        it 'set the value to the last page' do
+          User.create
+          User.create
+          options = { page_sizes: [1] }
+          list = build_list(options: options)
+
+          list.setup({"users_smart_listing" => {page: 3}}, {})
+
+          expect(list.page).to eq 2
+        end
+      end
+    end
+
     describe '#collection' do
       context 'when the collection is not an array' do
         it 'sort the collection by the given option' do
