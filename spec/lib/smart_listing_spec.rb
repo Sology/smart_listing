@@ -92,8 +92,30 @@ module SmartListing
       end
     end
 
+    describe '#sort' do
+      context 'when there is a value in params' do
+        it 'set sort with the given value' do
+          list = Base.new(:users, build_values)
+          params = {"users_smart_listing"=>{sort: {"name"=>"asc"}}}
+          list.setup(params, {})
+
+          expect(list.sort).to eq 'name' => 'asc'
+        end
+      end
+
+      context 'when there is no value in params' do
+        it 'take the value in options' do
+          options = { default_sort: { 'email' => 'asc' } }
+          list = Base.new(:users, build_values, options)
+          list.setup({}, {})
+
+          expect(list.sort).to eq 'email' => 'asc'
+        end
+      end
+    end
+
     def build_values
-      Kaminari.paginate_array([])
+      User.all
     end
   end
 end
