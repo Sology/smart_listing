@@ -4,7 +4,12 @@
 <td>
   <%= object.email %>
 </td>
-<td class="action">
+<td class="actions">
   <%= smart_listing_item_actions [
-    {name: :edit, url: edit_admin_user_path(object)} ] %>
+    {name: :edit, url: edit_admin_user_path(object)},
+    {name: :destroy, url: admin_user_path(object), confirmation: 'Sure?'},
+    {name: :custom, url: change_name_admin_user_path(object),
+     icon: "glyphicon glyphicon-user",
+     method: :put, remote: true,
+     title: 'Change Name', class: 'change_name'}] %>
 </td>

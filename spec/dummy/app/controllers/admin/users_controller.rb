@@ -27,6 +27,11 @@ class Admin::UsersController < ApplicationController
     @user.destroy
   end
 
+  def change_name
+    @user.update_attribute('name', 'Changed Name')
+    render 'update'
+  end
+
   private
 
   def find_user
