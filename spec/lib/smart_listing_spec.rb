@@ -8,7 +8,7 @@ module SmartListing
         it 'take first value in the page sizes' do
           SmartListing.config.global_options[:page_sizes] = [1]
 
-          list = Base.new(:users, build_values)
+          list = build_list
           list.setup({}, {})
 
           expect(list.per_page).to eq 1
@@ -20,7 +20,7 @@ module SmartListing
           it 'set the per_page as in the value' do
             SmartListing.config.global_options[:page_sizes] = [1, 2]
 
-            list = Base.new(:users, build_values)
+            list = build_list
             list.setup({"users_smart_listing" => {per_page: "2"}}, {})
 
             expect(list.per_page).to eq 2
@@ -31,7 +31,7 @@ module SmartListing
           it 'take first value in the page sizes' do
             SmartListing.config.global_options[:page_sizes] = [1, 2]
 
-            list = Base.new(:users, build_values)
+            list = build_list
             list.setup({"users_smart_listing" => {per_page: "3"}}, {})
 
             expect(list.per_page).to eq 1
@@ -45,7 +45,7 @@ module SmartListing
             SmartListing.config.global_options[:page_sizes] = [1, 2]
             SmartListing.config.global_options[:memorize_per_page] = true
 
-            list = Base.new(:users, build_values)
+            list = build_list
             list.setup({}, {"users_smart_listing" => {per_page: "2"}})
 
             expect(list.per_page).to eq 2
@@ -57,7 +57,7 @@ module SmartListing
             SmartListing.config.global_options[:page_sizes] = [1, 2]
             SmartListing.config.global_options[:memorize_per_page] = false
 
-            list = Base.new(:users, build_values)
+            list = build_list
             list.setup({}, {"users_smart_listing" => {per_page: "2"}})
 
             expect(list.per_page).to eq 1
@@ -71,7 +71,7 @@ module SmartListing
             SmartListing.config.global_options[:page_sizes] = [1, 2]
             SmartListing.config.global_options[:unlimited_per_page] = true
 
-            list = Base.new(:users, build_values)
+            list = build_list
             list.setup({"users_smart_listing" => {per_page: "0"}}, {})
 
             expect(list.per_page).to eq 0
@@ -83,7 +83,7 @@ module SmartListing
             SmartListing.config.global_options[:page_sizes] = [1, 2]
             SmartListing.config.global_options[:unlimited_per_page] = false
 
-            list = Base.new(:users, build_values)
+            list = build_list
             list.setup({}, {})
 
             expect(list.per_page).to eq 1
@@ -95,7 +95,7 @@ module SmartListing
     describe '#sort' do
       context 'when there is a value in params' do
         it 'set sort with the given value' do
-          list = Base.new(:users, build_values)
+          list = build_list
           params = {"users_smart_listing"=>{sort: {"name"=>"asc"}}}
           list.setup(params, {})
 
@@ -116,6 +116,10 @@ module SmartListing
 
     def build_values
       User.all
+    end
+
+    def build_list
+      Base.new(:users, build_values)
     end
   end
 end
