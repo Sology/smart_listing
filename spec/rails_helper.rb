@@ -43,6 +43,8 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   config.before :each do
+    SmartListing.config.global_options = SmartListing::Configuration::DEFAULTS[:global_options]
+    SmartListing.config.global_options[:page_sizes] = SmartListing::Configuration::DEFAULT_PAGE_SIZES
     DatabaseCleaner.start
   end
 
