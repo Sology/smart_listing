@@ -86,6 +86,18 @@ module SmartListing
           end
         end
       end
+
+      context 'when the memorization of per page is enabled' do
+        it 'save the perpage in the cookies' do
+          options = {page_sizes: [1], memorize_per_page: true}
+          list = build_list(options: options)
+          cookies = {}
+
+          list.setup({}, cookies)
+
+          expect(cookies["users_smart_listing"][:per_page]).to eq 1
+        end
+      end
     end
 
     describe '#sort' do
@@ -104,6 +116,7 @@ module SmartListing
         it 'take the value in options' do
           options = { default_sort: { 'email' => 'asc' } }
           list = build_list(options: options)
+
           list.setup({}, {})
 
           expect(list.sort).to eq 'email' => 'asc'
