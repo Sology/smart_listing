@@ -11,4 +11,11 @@ class UsersController < ApplicationController
       default_sort: { name: 'desc' }
     render 'index'
   end
+
+  def searchable
+    users = User.all
+    users = users.search(params[:filter]) if params[:filter]
+    @users = smart_listing_create :users, users, partial: 'users/searchable_list',
+      default_sort: { name: 'desc' }
+  end
 end

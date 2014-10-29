@@ -29,4 +29,21 @@ feature 'View a list of items' do
     expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("aaaName")
     expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("bbbName")
   end
+
+  scenario "The user search user", js: true do
+    User.create(name: "Name1", email: "Email1")
+    User.create(name: "Name2", email: "Email2")
+
+    visit searchable_users_path
+
+    fill_in "filter", with: "1"
+
+    expect(page).to have_content("Name1")
+    expect(page).to_not have_content("Name2")
+
+    fill_in "filter", with: "3"
+
+    expect(page).to_not have_content("Name1")
+    expect(page).to_not have_content("Name2")
+  end
 end
