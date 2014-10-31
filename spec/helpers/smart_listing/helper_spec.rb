@@ -57,5 +57,14 @@ module SmartListing::Helper
         end
       end
     end
+
+    describe '#smart_listing' do
+      it 'give the list with name' do
+        controller = Controller.new
+        list = double
+        controller.smart_listings = { test: list }
+        expect(controller.smart_listing(:test)).to eq list
+      end
+    end
   end
 end
