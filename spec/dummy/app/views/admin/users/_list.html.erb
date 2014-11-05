@@ -7,7 +7,7 @@
   <tbody>
     <% smart_listing.collection.each do |user| %>
       <tr class="editable" data-id="<%= user.id %>">
-        <%= smart_listing.render object: user, partial: "admin/users/user",
+        <%= smart_listing.render object: user, partial: "admin/users/item",
           locals: { object: user } %>
       </tr>
     <% end %>

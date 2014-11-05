@@ -3,11 +3,11 @@ class UsersController < ApplicationController
   helper  SmartListing::Helper
 
   def index
-    smart_listing_create :users, User.all, partial: 'users/list'
+    smart_listing_create partial: 'users/list'
   end
 
   def sortable
-    smart_listing_create :users, User.all, partial: 'users/sortable_list',
+    smart_listing_create partial: 'users/sortable_list',
       default_sort: { name: 'desc' }
     render 'index'
   end
@@ -15,7 +15,19 @@ class UsersController < ApplicationController
   def searchable
     users = User.all
     users = users.search(params[:filter]) if params[:filter]
-    @users = smart_listing_create :users, users, partial: 'users/searchable_list',
+    @users = smart_listing_create collection: users, partial: 'users/searchable_list',
       default_sort: { name: 'desc' }
   end
+
+  private
+
+  def smart_listing_resource
+    @user ||= params[:id] ? User.find(params[:id]) : User.new(params[:user])
+  end
+  helper_method :smart_listing_resource
+
+  def smart_listing_collection
+    @users ||= User.all
+  end
+  helper_method :smart_listing_collection
 end
