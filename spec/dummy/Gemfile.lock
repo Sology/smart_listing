@@ -4,6 +4,7 @@ PATH
     smart_listing (1.0.0)
       bootstrap-sass
       coffee-rails
+      coffee-rails
       jquery-rails
       kaminari (~> 0.16.1)
       rails (>= 3.2)
@@ -127,6 +128,8 @@ GEM
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
+    turbolinks (2.5.1)
+      coffee-rails
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     xpath (2.0.0)
