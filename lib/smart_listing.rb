@@ -1,3 +1,6 @@
+require "jquery-rails"
+require 'coffee-rails'
+require 'bootstrap-sass'
 require 'smart_listing/config'
 require "smart_listing/engine"
 require "kaminari"
@@ -37,7 +40,7 @@ module SmartListing
 
       if @options[:array]
         @collection = collection.to_a
-      else 
+      else
         @collection = collection
       end
     end
@@ -86,8 +89,8 @@ module SmartListing
               else
                 (yval <=> xval) || (yval && !xval ? 1 : -1)
               end
-            end 
-          end 
+            end
+          end
         end
         if @options[:paginate] && @per_page > 0
           @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)
@@ -97,6 +100,7 @@ module SmartListing
         end
       else
         # let's sort by all attributes
+        #
         @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && @sort.any?
 
         if @options[:paginate] && @per_page > 0
