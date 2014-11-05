@@ -2,6 +2,7 @@ PATH
   remote: ../..
   specs:
     smart_listing (1.0.0)
+      bootstrap-sass
       coffee-rails
       jquery-rails
       kaminari (~> 0.16.1)
@@ -135,12 +136,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bootstrap-sass
   capybara
   capybara-webkit
-  coffee-rails
   database_cleaner
-  jquery-rails
   rspec-rails
   smart_listing!
   sqlite3
