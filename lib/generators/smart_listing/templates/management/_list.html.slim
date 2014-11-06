@@ -1,0 +1,16 @@
+table.table.table-striped
+  thead <% columns.each do |arg| %>
+    th <%= arg %> <% end %>
+    th
+  tbody
+    - if smart_listing.empty?
+      tr
+        td
+          = t('smart_listing.no_data')
+    - else
+      - smart_listing.collection.each do |object|
+        tr.editable [data-id="#{object.id}"]
+          = render "item", object: object
+    = smart_listing.item_new link: <%= new_path %>
+= smart_listing.paginate
+= smart_listing.pagination_per_page_links
