@@ -14,27 +14,29 @@ module SmartListing::Helper
     def cookies
       { value: 'cookies' }
     end
+
+    def resource
+      [1, 2]
+    end
   end
 
   describe ControllerExtensions do
     describe "#smart_listing_create" do
       it "create a list with params and cookies" do
         controller = UsersController.new
-        collection = double
-        list = build_list(collection: collection)
+        list = build_list
 
         expect(list).to receive(:setup).with(controller.params,
                                              controller.cookies)
 
-        controller.smart_listing_create(collection)
+        controller.smart_listing_create
       end
 
       it "assign a list in smart listings with the name" do
         controller = UsersController.new
-        collection = double
-        list = build_list(collection: collection)
+        list = build_list
 
-        controller.smart_listing_create(collection)
+        controller.smart_listing_create
 
         expect(controller.smart_listings[:users]).to eq list
       end
@@ -45,7 +47,7 @@ module SmartListing::Helper
         collection2 = double
         build_list(collection: collection1)
 
-        controller.smart_listing_create(collection2)
+        controller.smart_listing_create(collection: collection2)
 
         actual = controller.smart_listings[:users].collection
         expect(actual).to eq collection1

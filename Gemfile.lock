@@ -2,7 +2,6 @@ PATH
   remote: .
   specs:
     smart_listing (1.0.0)
-      bootstrap-sass
       coffee-rails
       jquery-rails
       kaminari (~> 0.16.1)
