@@ -1,8 +1,8 @@
 module SmartListing
   module Helper
     module ControllerExtensions
-      def smart_listing_create name, collection, options = {}
-        name = name.to_sym
+      def smart_listing_create collection, options = {}
+        name = (options[:name] || controller_name).to_sym
 
         list = SmartListing::Base.new(name, collection, options)
         list.setup(params, cookies)
@@ -55,7 +55,7 @@ module SmartListing
         per_page_sizes.push(0) if @smart_listing.unlimited_per_page?
 
         locals = {
-          :container_classes => container_classes, 
+          :container_classes => container_classes,
           :per_page_sizes => per_page_sizes,
         }
 
@@ -68,7 +68,7 @@ module SmartListing
         end
 
         locals = {
-          :page => page, 
+          :page => page,
           :url => url,
         }
 
@@ -77,7 +77,7 @@ module SmartListing
 
       def sortable title, attribute, options = {}
         dirs = options[:sort_dirs] || @smart_listing.sort_dirs || [nil, "asc", "desc"]
-        
+
         next_index = dirs.index(@smart_listing.sort_order(attribute)).nil? ? 0 : (dirs.index(@smart_listing.sort_order(attribute)) + 1) % dirs.length
 
         sort_params = {
@@ -207,7 +207,7 @@ module SmartListing
       output
     end
 
-    def smart_listing_render name, *args
+    def smart_listing_render name = controller_name, *args
       smart_listing_for(name, *args) do |smart_listing|
         concat(smart_listing.render_list)
       end
@@ -233,7 +233,7 @@ module SmartListing
           next unless action.is_a?(Hash)
 
           locals = {
-            :action_if => action.has_key?(:if) ? action[:if] : true, 
+            :action_if => action.has_key?(:if) ? action[:if] : true,
             :url => action.delete(:url),
             :icon => action.delete(:icon),
             :title => action.delete(:title),
@@ -284,8 +284,8 @@ module SmartListing
     # JS helpers:
 
     # Updates the smart list
-    def smart_listing_update name, options = {}
-      name = name.to_sym
+    def smart_listing_update options = {}
+      name = (options[:name] || controller_name).to_sym
       smart_listing = @smart_listings[name]
 
       # don't update list if params are missing (prevents interfering with other lists)
@@ -295,9 +295,9 @@ module SmartListing
 
       builder = Builder.new(name, smart_listing, self, {}, nil)
       render(:partial => 'smart_listing/update_list', :locals => {
-        :name => smart_listing.name, 
-        :part => smart_listing.partial, 
-        :smart_listing => builder, 
+        :name => smart_listing.name,
+        :part => smart_listing.partial,
+        :smart_listing => builder,
         :smart_listing_data => {
           SmartListing.config.data_attributes(:params) => smart_listing.all_params,
           SmartListing.config.data_attributes(:max_count) => smart_listing.max_count,
@@ -307,8 +307,8 @@ module SmartListing
     end
 
     # Renders single item (i.e for create, update actions)
-    def smart_listing_item name, item_action, object = nil, partial = nil, options = {}
-      name = name.to_sym
+    def smart_listing_item item_action, object = nil, partial = nil, options = {}
+      name = (options[:name] || controller_name).to_sym
       type = object.class.name.downcase.to_sym if object
       id = options[:id] || object.try(:id)
       valid = options[:valid] if options.has_key?(:valid)
