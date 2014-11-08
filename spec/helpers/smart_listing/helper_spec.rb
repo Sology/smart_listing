@@ -14,27 +14,29 @@ module SmartListing::Helper
     def cookies
       { value: 'cookies' }
     end
+
+    def resource
+      [1, 2]
+    end
   end
 
   describe ControllerExtensions do
     describe "#smart_listing_create" do
       it "create a list with params and cookies" do
         controller = UsersController.new
-        collection = double
-        list = build_list(collection: collection)
+        list = build_list
 
         expect(list).to receive(:setup).with(controller.params,
                                              controller.cookies)
 
-        controller.smart_listing_create(collection)
+        controller.smart_listing_create
       end
 
       it "assign a list in smart listings with the name" do
         controller = UsersController.new
-        collection = double
-        list = build_list(collection: collection)
+        list = build_list
 
-        controller.smart_listing_create(collection)
+        controller.smart_listing_create
 
         expect(controller.smart_listings[:users]).to eq list
       end
@@ -45,14 +47,39 @@ module SmartListing::Helper
         collection2 = double
         build_list(collection: collection1)
 
-        controller.smart_listing_create(collection2)
+        controller.smart_listing_create(collection: collection2)
 
         actual = controller.smart_listings[:users].collection
         expect(actual).to eq collection1
       end
 
-      def build_list(collection: )
-        double(collection: collection, setup: nil).tap do |list|
+      context 'when the collection if specified' do
+        it 'use the collection sepecified' do
+          controller = UsersController.new
+          collection = double
+          options = { collection: collection }
+          build_list(options)
+
+          expect(SmartListing::Base).to receive(:new).with(:users, collection, options)
+
+          controller.smart_listing_create(options)
+        end
+      end
+
+      context 'when there is no collection specified' do
+        it 'use the resource method' do
+          controller = UsersController.new
+          options = { }
+          build_list(options)
+
+          expect(SmartListing::Base).to receive(:new).with(:users, controller.resource, options)
+
+          controller.smart_listing_create(options)
+        end
+      end
+
+      def build_list(options = {})
+        double(collection: options[:collection], setup: nil).tap do |list|
           allow(SmartListing::Base).to receive(:new).and_return(list)
         end
       end

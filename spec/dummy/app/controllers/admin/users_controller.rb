@@ -5,7 +5,7 @@ class Admin::UsersController < ApplicationController
   before_filter :find_user, except: [:index, :new, :create]
 
   def index
-    smart_listing_create User.all, partial: "admin/users/list"
+    smart_listing_create partial: "admin/users/list"
   end
 
   def new
@@ -42,4 +42,7 @@ class Admin::UsersController < ApplicationController
     params.require(:user).permit(:name, :email)
   end
 
+  def resource
+    @users ||= User.all
+  end
 end

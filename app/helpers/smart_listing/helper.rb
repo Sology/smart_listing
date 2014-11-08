@@ -1,8 +1,9 @@
 module SmartListing
   module Helper
     module ControllerExtensions
-      def smart_listing_create collection, options = {}
+      def smart_listing_create options = {}
         name = (options[:name] || controller_name).to_sym
+        collection = options[:collection] || resource
 
         list = SmartListing::Base.new(name, collection, options)
         list.setup(params, cookies)
