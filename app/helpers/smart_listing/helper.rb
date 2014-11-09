@@ -3,7 +3,7 @@ module SmartListing
     module ControllerExtensions
       def smart_listing_create options = {}
         name = (options[:name] || controller_name).to_sym
-        collection = options[:collection] || resource
+        collection = options[:collection] || smart_listing_collection
 
         list = SmartListing::Base.new(name, collection, options)
         list.setup(params, cookies)

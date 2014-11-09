@@ -15,7 +15,7 @@ module SmartListing::Helper
       { value: 'cookies' }
     end
 
-    def resource
+    def smart_listing_collection
       [1, 2]
     end
   end

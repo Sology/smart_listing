@@ -21,7 +21,13 @@ class UsersController < ApplicationController
 
   private
 
-  def resource
+  def smart_listing_resource
+    @user ||= params[:id] ? User.find(params[:id]) : User.new(params[:user])
+  end
+  helper_method :smart_listing_resource
+
+  def smart_listing_collection
     @users ||= User.all
   end
+  helper_method :smart_listing_collection
 end
