@@ -3,9 +3,15 @@ class Admin::UsersController < ApplicationController
   helper  SmartListing::Helper
 
   before_filter :find_user, except: [:index, :new, :create]
+  before_filter :find_users, only: :index
+  before_filter :build_user, only: [:new, :create]
 
   def index
     smart_listing_create partial: "admin/users/list"
+    respond_to do |format|
+      format.html
+      format.js { render formats: :js }
+    end
   end
 
   def new
@@ -38,11 +44,20 @@ class Admin::UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def find_users
+    @users = User.all
+  end
+
+  def build_user
+    @user = User.new
+  end
+
   def user_params
     params.require(:user).permit(:name, :email)
   end
 
   def resource
-    @users ||= User.all
+    @users || @user
   end
+  helper_method :resource
 end

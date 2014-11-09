@@ -1,2 +1,2 @@
-var smart_listing = $('#<%= name %>').smart_listing();
+var smart_listing = $('#<%= name.to_s %>').smart_listing();
 smart_listing.destroy(<%= id %>, <%= object.destroyed? %>);

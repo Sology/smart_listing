@@ -17,6 +17,10 @@ module SmartListing
       def smart_listing name
         @smart_listings[name.to_sym]
       end
+
+      def _prefixes
+        super << 'smart_listing'
+      end
     end
 
     class Builder
@@ -246,29 +250,29 @@ module SmartListing
           case action_name
           when :show
             locals[:icon] ||= SmartListing.config.classes(:icon_show)
-						template = 'action_show'
+            template = 'action_show'
           when :edit
             locals[:icon] ||= SmartListing.config.classes(:icon_edit)
-						template = 'action_edit'
+            template = 'action_edit'
           when :destroy
             locals[:icon] ||= SmartListing.config.classes(:icon_trash)
             locals.merge!(
               :confirmation => action.delete(:confirmation),
             )
-						template = 'action_delete'
+            template = 'action_delete'
           when :custom
             locals.merge!(
               :html_options => action,
             )
-						template = 'action_custom'
+            template = 'action_custom'
           end
 
           locals[:icon] = [locals[:icon], SmartListing.config.classes(:muted)] if !locals[:action_if]
 
           if template
-						concat(render(:partial => "smart_listing/#{template}", :locals => locals))
+            concat(render(:partial => "smart_listing/#{template}", :locals => locals))
           else
-						concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))
+            concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))
           end
         end
       end
