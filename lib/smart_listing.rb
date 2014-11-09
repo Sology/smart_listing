@@ -1,3 +1,6 @@
+require "jquery-rails"
+require 'coffee-rails'
+require 'bootstrap-sass'
 require 'smart_listing/config'
 require "smart_listing/engine"
 require "kaminari"
