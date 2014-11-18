@@ -1,14 +1,20 @@
 module SmartListing
-  def self.configure(&block)
-    yield @config ||= SmartListing::Configuration.new
+  mattr_reader :configs
+
+  def self.configure profile = nil
+    profile ||= :default
+    @@configs ||= {}
+    yield @@configs[profile] ||= SmartListing::Configuration.new
   end
 
-  def self.config
-    @config ||= SmartListing::Configuration.new
+  def self.config profile = nil
+    profile ||= :default
+    @@configs ||= {}
+    @@configs[profile] ||= SmartListing::Configuration.new
   end
 
   class Configuration
-    DEFAULT_PAGE_SIZES = [10, 20, 50, 100]
+    DEFAULT_PAGE_SIZES = [10, 20, 50, 100].freeze
 
     DEFAULTS = {
       :global_options => {
@@ -22,7 +28,7 @@ module SmartListing
         :unlimited_per_page             => false,                       # allow infinite page size
         :paginate                       => true,                        # allow pagination
         :memorize_per_page              => false,
-        :page_sizes                     => DEFAULT_PAGE_SIZES,          # set available page sizes array
+        :page_sizes                     => DEFAULT_PAGE_SIZES.dup,      # set available page sizes array
         :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
         :sort_dirs                      => [nil, "asc", "desc"],        # Default sorting directions cycle of sortables
       },
@@ -89,10 +95,12 @@ module SmartListing
           :pagination_count => ".pagination-per-page .count",
         }
       }
-    }
+    }.freeze
+
+    attr_reader :options
 
     def initialize
-      @options = DEFAULTS
+      @options = {}
     end
 
     def method_missing(sym, *args, &block)
@@ -100,29 +108,44 @@ module SmartListing
     end
     
     def constants key, value = nil
-      if value
+      if value && !value.empty?
+        @options[:constants] ||= {}
+        @options[:constants][key] ||= {}
         @options[:constants][key].merge!(value)
       end
-      @options[:constants][key]
+      @options[:constants].try(:[], key) || DEFAULTS[:constants][key]
     end
 
     def classes key
-      @options[:constants][:classes][key]
+      @options[:constants].try(:[], :classes).try(:[], key) || DEFAULTS[:constants][:classes][key]
     end
 
     def data_attributes key
-      @options[:constants][:data_attributes][key]
+      @options[:constants].try(:[], :data_attributes).try(:[], key) || DEFAULTS[:constants][:data_attributes][key]
     end
 
     def selectors key
-      @options[:constants][:selectors][key]
+      @options[:constants].try(:[], :selectors).try(:[], key) || DEFAULTS[:constants][:selectors][key]
     end
 
     def global_options value = nil
-      if value
+      if value && !value.empty?
+        @options[:global_options] ||= {}
         @options[:global_options].merge!(value)
       end
-      @options[:global_options]
+      !@options[:global_options].try(:empty?) ? DEFAULTS[:global_options] : DEFAULTS[:global_options].deep_merge(@options[:global_options])
+    end
+    
+    def to_json
+      @options.to_json
+    end
+
+    def dump
+      DEFAULTS.deep_merge(@options)
+    end
+
+    def dump_json
+      dump.to_json
     end
   end
 end

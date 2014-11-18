@@ -1,5 +1,6 @@
+- Config profiles
 - API refactoring [GCorbel]
-- Specs [GCorbel]
+- Feature Specs [GCorbel]
 - Avoid smart listing controls double initialization [lacco]
 - Turbolinks support [wynksaiddestroy]
 - Better form controls handling

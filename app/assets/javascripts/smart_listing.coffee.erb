@@ -1,25 +1,46 @@
 # Useful when SmartListing target url is different than current one
 $.rails.href = (element) ->
-  element.attr('href') || element.data('<%= SmartListing.config.data_attributes(:href) %>')
+  element.attr("href") || element.data("<%= SmartListing.config.data_attributes(:href) %>")
 
-class SmartListing
+class window.SmartListing
+  class Config
+    @options: <%= SmartListing.config.dump_json %>
+
+    @merge: (d) ->
+      $.extend true, @options, d || $("body").data("smart-listing-config")
+
+    @class: (name)->
+      @options["constants"]["classes"][name]
+
+    @class_name: (name) ->
+      ".#{@class(name)}"
+
+    @data_attribute: (name)->
+      @options["constants"]["data_attributes"][name]
+
+    @selector: (name)->
+      @options["constants"]["selectors"][name]
+
+  @config: Config
+
+
   constructor: (e) ->
     @container = e
-    @name = @container.attr('id')
-    @loading = @container.find(".<%= SmartListing.config.classes(:loading) %>")
-    @content = @container.find(".<%= SmartListing.config.classes(:content) %>")
-    @status = $(".<%= SmartListing.config.classes(:status) %>[data-<%= SmartListing.config.data_attributes(:main) %>='#{@name}']")
+    @name = @container.attr("id")
+    @loading = @container.find(SmartListing.config.class_name("loading"))
+    @content = @container.find(SmartListing.config.class_name("content"))
+    @status = $("#{SmartListing.config.class_name("status")} [data-#{SmartListing.config.data_attribute("main")}='#{@name}']")
     @confirmed = null
     @popovers = {}
 
-    @container.on 'ajax:before', (e) =>
+    @container.on "ajax:before", (e) =>
       @fadeLoading()
 
-    @container.on 'ajax:success', (e) =>
-      if $(e.target).is('.<%= SmartListing.config.classes(:item_actions) %> <%= SmartListing.config.selectors(:item_action_destroy) %>')
+    @container.on "ajax:success", (e) =>
+      if $(e.target).is("#{SmartListing.config.class_name("item_actions")} #{SmartListing.config.selector("item_action_destroy")}")
         # handle HEAD OK response for deletion request
-        editable = $(e.target).closest('.<%= SmartListing.config.classes(:editable) %>')
-        if @container.find(".<%= SmartListing.config.classes(:editable) %>").length == 1
+        editable = $(e.target).closest(SmartListing.config.class_name("editable"))
+        if @container.find(SmartListing.config.class_name("editable")).length == 1
           @reload()
           return false
         else
@@ -33,41 +54,41 @@ class SmartListing
         @fadeLoaded()
         return false
 
-    @container.on 'click', '<%= SmartListing.config.selectors(:edit_cancel) %>', (event) =>
-      editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
+    @container.on "click", SmartListing.config.selector("edit_cancel"), (event) =>
+      editable = $(event.currentTarget).closest(SmartListing.config.class_name("editable"))
       if(editable.length > 0)
         # Cancel edit
         @cancelEdit(editable)
       else
         # Cancel new record
-        @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
-        @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class_name("hidden"))
+        @container.find(SmartListing.config.class_name("new_item_action")).removeClass(SmartListing.config.class_name("hidden"))
 
       @setAutoshow(false)
       false
 
-    @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:confirmation) %>]', (event) =>
-      $.fn.smart_listing.confirm $(event.currentTarget), $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:confirmation) %>')
+    @container.on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("confirmation")}]", (event) =>
+      $.fn.smart_listing.confirm $(event.currentTarget), $(event.currentTarget).data(SmartListing.config.data_attribute("confirmation"))
 
-    @container.on 'click', '.<%= SmartListing.config.classes(:item_actions) %> a[data-<%= SmartListing.config.data_attributes(:popover) %>]', (event) =>
-      name = $(event.currentTarget).data('<%= SmartListing.config.data_attributes(:popover) %>')
+    @container.on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("popover")}]", (event) =>
+      name = $(event.currentTarget).data(SmartListing.config.data_attribute("popover"))
       if jQuery.isFunction(@popovers[name])
         @popovers[name]($(event.currentTarget))
         false
 
 
-    @container.on 'click', 'input[type=text].<%= SmartListing.config.classes(:autoselect) %>', (event) ->
+    @container.on "click", "input[type=text]#{SmartListing.config.class_name("autoselect")}", (event) ->
       $(this).select()
 
-    @container.on 'change', '.<%= SmartListing.config.classes(:callback) %>', (event) =>
+    @container.on "change", SmartListing.config.class_name("callback"), (event) =>
       checkbox = $(event.currentTarget)
-      id = checkbox.closest("<%= SmartListing.config.selectors(:row) %>").data("<%= SmartListing.config.data_attributes(:id) %>")
+      id = checkbox.closest(SmartListing.config.selector("row")).data(SmartListing.config.data_attribute("id"))
       data = {}
       data[checkbox.val()] = checkbox.is(":checked")
       $.ajax({
         beforeSend: (xhr, settings) ->
           xhr.setRequestHeader "accept", "*/*;q=0.5, " + settings.accepts.script
-        url: @container.data("<%= SmartListing.config.data_attributes(:callback_href) %>"),
+        url: @container.data(SmartListing.config.data_attribute("callback_href")),
         type: "POST",
         data: data,
       })
@@ -79,31 +100,31 @@ class SmartListing
     $.fn.smart_listing.onLoaded(@content, @loading)
   
   itemCount: =>
-    parseInt(@container.data('<%= SmartListing.config.data_attributes(:item_count) %>'))
+    parseInt(@container.data(SmartListing.config.data_attribute("item_count")))
 
   maxCount: =>
-    parseInt(@container.data('<%= SmartListing.config.data_attributes(:max_count) %>'))
+    parseInt(@container.data(SmartListing.config.data_attribute("max_count")))
 
   setAutoshow: (v) =>
 
-    @container.data('<%= SmartListing.config.data_attributes(:autoshow) %>', v)
+    @container.data(SmartListing.config.data_attribute("autoshow"), v)
 
   changeItemCount: (value) =>
-    count = @container.data('<%= SmartListing.config.data_attributes(:item_count) %>') + value
-    @container.data('<%= SmartListing.config.data_attributes(:item_count) %>', count)
-    @container.find('<%= SmartListing.config.selectors(:pagination_count) %>').html(count)
+    count = @container.data(SmartListing.config.data_attribute("item_count")) + value
+    @container.data(SmartListing.config.data_attribute("item_count"), count)
+    @container.find(SmartListing.config.selector("pagination_count")).html(count)
 
   cancelEdit: (editable) =>
-    if editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
-      editable.html(editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>'))
-      editable.removeClass('<%= SmartListing.config.classes(:inline_editing) %>')
-      editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
+    if editable.data(SmartListing.config.data_attribute("inline_edit_backup"))
+      editable.html(editable.data(SmartListing.config.data_attribute("inline_edit_backup")))
+      editable.removeClass(SmartListing.config.class("inline_editing"))
+      editable.removeData(SmartListing.config.data_attribute("inline_edit_backup"))
   
   # Callback called when record is added/deleted using ajax request
   refresh: () =>
-    header = @content.find('<%= SmartListing.config.selectors(:head) %>')
-    footer = @content.find('.<%= SmartListing.config.classes(:pagination_per_page) %>')
-    no_records = @content.find('.<%= SmartListing.config.classes(:no_records) %>')
+    header = @content.find(SmartListing.config.selector("head"))
+    footer = @content.find(SmartListing.config.class_name("pagination_per_page"))
+    no_records = @content.find(SmartListing.config.class_name("no_records"))
 
     if @itemCount() == 0
       header.hide()
@@ -116,22 +137,22 @@ class SmartListing
 
     if @maxCount()
       if @itemCount() >= @maxCount()
-        @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
-        @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class("hidden"))
+        @container.find(SmartListing.config.class_name("new_item_action")).addClass(SmartListing.config.class("hidden"))
       else
-        if @container.data('<%= SmartListing.config.data_attributes(:autoshow) %>')
-          @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
-          @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+        if @container.data(SmartListing.config.data_attribute("autoshow"))
+          @container.find(SmartListing.config.class_name("new_item_placeholder")).removeClass(SmartListing.config.class("hidden"))
+          @container.find(SmartListing.config.class_name("new_item_action")).addClass(SmartListing.config.class("hidden"))
         else
-          @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
-          @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+          @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class("hidden"))
+          @container.find(SmartListing.config.class_name("new_item_action")).removeClass(SmartListing.config.class("hidden"))
 
     @status.each (index, status) =>
-      $(status).find('.<%= SmartListing.config.classes(:limit) %>').html(@maxCount() - @itemCount())
+      $(status).find(SmartListing.config.class_name("limit")).html(@maxCount() - @itemCount())
       if @maxCount() - @itemCount() == 0
-        $(status).find('.<%= SmartListing.config.classes(:limit_alert) %>').show()
+        $(status).find(SmartListing.config.class_name("limit_alert")).show()
       else
-        $(status).find('.<%= SmartListing.config.classes(:limit_alert) %>').hide()
+        $(status).find(SmartListing.config.class_name("limit_alert")).hide()
   
   # Trigger AJAX request to reload the list
   reload: () =>
@@ -139,44 +160,44 @@ class SmartListing
   
   params: (value) =>
     if value
-      @container.data('<%= SmartListing.config.data_attributes(:params) %>', value)
+      @container.data(SmartListing.config.data_attribute("params"), value)
     else
-      @container.data('<%= SmartListing.config.data_attributes(:params) %>')
+      @container.data(SmartListing.config.data_attribute("params"))
 
   registerPopover: (name, callback) =>
     @popovers[name] = callback
 
   editable: (id) =>
-    @container.find(".<%= SmartListing.config.classes(:editable) %>[data-<%= SmartListing.config.data_attributes(:id) %>=#{id}]")
+    @container.find("#{SmartListing.config.class_name("editable")}[data-#{SmartListing.config.data_attribute("id")}=#{id}]")
 
   #################################################################################################
   # Methods executed by rails UJS:
 
   new_item: (content) =>
     if !@maxCount() || (@itemCount() < @maxCount())
-      new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')
-      new_item_placeholder = @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
+      new_item_action = @container.find(SmartListing.config.class_name("new_item_action"))
+      new_item_placeholder = @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class("hidden"))
 
-      @container.find('.<%= SmartListing.config.classes(:editable) %>').each (i, v) =>
+      @container.find(SmartListing.config.class_name("editable")).each (i, v) =>
         @cancelEdit($(v))
 
-      new_item_action.addClass('<%= SmartListing.config.classes(:hidden) %>')
-      new_item_placeholder.removeClass('<%= SmartListing.config.classes(:hidden) %>')
+      new_item_action.addClass(SmartListing.config.class("hidden"))
+      new_item_placeholder.removeClass(SmartListing.config.class("hidden"))
       new_item_placeholder.html(content)
-      new_item_placeholder.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
+      new_item_placeholder.addClass(SmartListing.config.class("inline_editing"))
 
       @fadeLoaded()
 
   create: (id, success, content) =>
-    new_item_action = @container.find('.<%= SmartListing.config.classes(:new_item_action) %>')
-    new_item_placeholder = @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>')
+    new_item_action = @container.find(SmartListing.config.class_name("new_item_action"))
+    new_item_placeholder = @container.find(SmartListing.config.class_name("new_item_placeholder"))
 
     if success
-      new_item_placeholder.addClass('<%= SmartListing.config.classes(:hidden) %>')
-      new_item_action.removeClass('<%= SmartListing.config.classes(:hidden) %>')
+      new_item_placeholder.addClass(SmartListing.config.class("hidden"))
+      new_item_action.removeClass(SmartListing.config.class("hidden"))
 
-      new_item = $('<tr />').addClass('<%= SmartListing.config.classes(:editable) %>')
-      new_item.attr('data-<%= SmartListing.config.data_attributes(:id) %>', id)
+      new_item = $("<tr />").addClass(SmartListing.config.class("editable"))
+      new_item.attr("data-#{SmartListing.config.data_attribute("id")}", id)
       new_item.html(content)
       new_item_placeholder.before(new_item)
 
@@ -192,15 +213,15 @@ class SmartListing
     @fadeLoaded()
 
   edit: (id, content) =>
-    @container.find('.<%= SmartListing.config.classes(:editable) %>').each (i, v) =>
+    @container.find(SmartListing.config.class_name("editable")).each (i, v) =>
       @cancelEdit($(v))
-    @container.find('.<%= SmartListing.config.classes(:new_item_placeholder) %>').addClass('<%= SmartListing.config.classes(:hidden) %>')
-    @container.find('.<%= SmartListing.config.classes(:new_item_action) %>').removeClass('<%= SmartListing.config.classes(:hidden) %>')
+    @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class("hidden"))
+    @container.find(SmartListing.config.class_name("new_item_action")).removeClass(SmartListing.config.class("hidden"))
 
     editable = @editable(id)
-    editable.data('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>', editable.html())
+    editable.data(SmartListing.config.data_attribute("inline_edit_backup"), editable.html())
     editable.html(content)
-    editable.addClass('<%= SmartListing.config.classes(:inline_editing) %>')
+    editable.addClass(SmartListing.config.class("inline_editing"))
 
     @container.trigger("smart_listing:edit", editable)
 
@@ -209,8 +230,8 @@ class SmartListing
   update: (id, success, content) =>
     editable = @editable(id)
     if success
-      editable.removeClass('<%= SmartListing.config.classes(:inline_editing) %>')
-      editable.removeData('<%= SmartListing.config.data_attributes(:inline_edit_backup) %>')
+      editable.removeClass(SmartListing.config.class("inline_editing"))
+      editable.removeData(SmartListing.config.data_attribute("inline_edit_backup"))
       editable.html(content)
 
       @container.trigger("smart_listing:update:success", editable)
@@ -233,9 +254,9 @@ class SmartListing
     @container.trigger("smart_listing:remove", editable)
   
   update_list: (content, data) =>
-    @container.data("<%= SmartListing.config.data_attributes(:params) %>", $.extend(@container.data("<%= SmartListing.config.data_attributes(:params) %>"), data["<%= SmartListing.config.data_attributes(:params) %>"]))
-    @container.data("<%= SmartListing.config.data_attributes(:max_count) %>", data["<%= SmartListing.config.data_attributes(:max_count) %>"])
-    @container.data("<%= SmartListing.config.data_attributes(:item_count) %>", data["<%= SmartListing.config.data_attributes(:item_count) %>"])
+    @container.data(SmartListing.config.data_attribute("params"), $.extend(@container.data(SmartListing.config.data_attribute("params")), data[SmartListing.config.data_attribute("params")]))
+    @container.data(SmartListing.config.data_attribute("max_count"), data[SmartListing.config.data_attribute("max_count")])
+    @container.data(SmartListing.config.data_attribute("item_count"), data[SmartListing.config.data_attribute("item_count")])
 
     @content.html(content)
 
@@ -246,9 +267,9 @@ class SmartListing
 
 $.fn.smart_listing = () ->
   map = $(this).map () ->
-    if !$(this).data('<%= SmartListing.config.data_attributes(:main) %>')
-      $(this).data('<%= SmartListing.config.data_attributes(:main) %>', new SmartListing($(this)))
-    $(this).data('<%= SmartListing.config.data_attributes(:main) %>')
+    if !$(this).data(SmartListing.config.data_attribute("main"))
+      $(this).data(SmartListing.config.data_attribute("main"), new SmartListing($(this)))
+    $(this).data(SmartListing.config.data_attribute("main"))
   if map.length == 1
     map[0]
   else
@@ -275,9 +296,9 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
  
      options.onChange()
  
-   field.data('<%= SmartListing.config.data_attributes(:observed) %>', true)
+   field.data(SmartListing.config.data_attribute("observed"), true)
  
-   field.bind 'keydown', (e) ->
+   field.bind "keydown", (e) ->
      if(key_timeout)
        clearTimeout(key_timeout)
  
@@ -286,26 +307,26 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      , 400)
 
 $.fn.smart_listing.showPopover = (elem, body) ->
-  elem.popover('destroy')
-  elem.popover(content: body, html: true, trigger: 'manual', title: null)
-  elem.popover('show')
+  elem.popover("destroy")
+  elem.popover(content: body, html: true, trigger: "manual", title: null)
+  elem.popover("show")
 
 $.fn.smart_listing.showConfirmation = (confirmation_elem, msg, confirm_callback) ->
   buildPopover = (confirmation_elem, msg) ->
-    deletion_popover = $('<div/>').addClass('confirmation_box')
-    deletion_popover.append($('<p/>').html(msg))
-    deletion_popover.append($('<p/>')
-      .append($('<button/>').html('Yes').addClass('btn btn-danger ').click (event) =>
+    deletion_popover = $("<div/>").addClass("confirmation_box")
+    deletion_popover.append($("<p/>").html(msg))
+    deletion_popover.append($("<p/>")
+      .append($("<button/>").html("Yes").addClass("btn btn-danger ").click (event) =>
         # set @confirmed element and emulate click on icon
-        editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
+        editable = $(event.currentTarget).closest(SmartListing.config.class_name("editable"))
         confirm_callback(confirmation_elem)
         $(confirmation_elem).click()
-        $(confirmation_elem).popover('destroy')
+        $(confirmation_elem).popover("destroy")
       )
       .append(" ")
-      .append($('<button/>').html('No').addClass('btn btn-small').click (event) =>
-        editable = $(event.currentTarget).closest('.<%= SmartListing.config.classes(:editable) %>')
-        $(confirmation_elem).popover('destroy')
+      .append($("<button/>").html("No").addClass("btn btn-small").click (event) =>
+        editable = $(event.currentTarget).closest(SmartListing.config.class_name("editable"))
+        $(confirmation_elem).popover("destroy")
       )
     )
 
@@ -334,7 +355,7 @@ $.fn.smart_listing.onLoaded = (content, loader) ->
 
 $.fn.smart_listing_controls = () ->
   reload = (controls) ->
-    container = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
+    container = $("##{controls.data(SmartListing.config.data_attribute("main"))}")
     smart_listing = container.smart_listing()
 
     # serialize form and merge it with smart listing params
@@ -344,57 +365,57 @@ $.fn.smart_listing_controls = () ->
     prms = $.extend(smart_listing.params(), prms)
     smart_listing.params(prms)
 
-    container.trigger('ajax:before')
+    container.trigger("ajax:before")
     smart_listing.reload()
 
   $(this).each () ->
     # avoid double initialization
-    return if $(this).data('<%= SmartListing.config.data_attributes(:controls_initialized) %>')
-    $(this).data('<%= SmartListing.config.data_attributes(:controls_initialized) %>', true)
+    return if $(this).data(SmartListing.config.data_attribute("controls_initialized"))
+    $(this).data(SmartListing.config.data_attribute("controls_initialized"), true)
 
     controls = $(this)
-    smart_listing = $("##{controls.data('<%= SmartListing.config.data_attributes(:main) %>')}")
-    reset = controls.find(".<%= SmartListing.config.classes(:controls_reset) %>")
+    smart_listing = $("##{controls.data(SmartListing.config.data_attribute("main"))}")
+    reset = controls.find(SmartListing.config.class_name("controls_reset"))
 
     controls.submit ->
-      # setup smart listing params, reload and don't actually submit controls form
+      # setup smart listing params, reload and don"t actually submit controls form
       reload(controls)
       false
 
-    controls.find('input, select').change () ->
-      unless $(this).data('<%= SmartListing.config.data_attributes(:observed) %>') # do not submit controls form when changed field is observed (observing submits form by itself)
+    controls.find("input, select").change () ->
+      unless $(this).data(SmartListing.config.data_attribute("observed")) # do not submit controls form when changed field is observed (observing submits form by itself)
         reload(controls)
 
-    $.fn.smart_listing_controls.filter(controls.find('.<%= SmartListing.config.classes(:filtering) %>'))
+    $.fn.smart_listing_controls.filter(controls.find(SmartListing.config.class_name("filtering")))
 
 $.fn.smart_listing_controls.filter = (filter) ->
-  form = filter.closest('form')
-  button = form.find('<%= SmartListing.config.selectors(:filtering_button) %>')
-  icon = form.find('<%= SmartListing.config.selectors(:filtering_icon) %>')
-  field = form.find('<%= SmartListing.config.selectors(:filtering_input) %>')
+  form = filter.closest("form")
+  button = form.find(SmartListing.config.selector("filtering_button"))
+  icon = form.find(SmartListing.config.selector("filtering_icon"))
+  field = form.find(SmartListing.config.selector("filtering_input"))
 
   $.fn.smart_listing.observeField(field,
     onFilled: ->
-      icon.removeClass('<%= SmartListing.config.classes(:filtering_search) %>')
-      icon.addClass('<%= SmartListing.config.classes(:filtering_cancel) %>')
-      button.removeClass('<%= SmartListing.config.classes(:filtering_disabled) %>')
+      icon.removeClass(SmartListing.config.class("filtering_search"))
+      icon.addClass(SmartListing.config.class("filtering_cancel"))
+      button.removeClass(SmartListing.config.class("filtering_disabled"))
     onEmpty: ->
-      icon.addClass('<%= SmartListing.config.classes(:filtering_search) %>')
-      icon.removeClass('<%= SmartListing.config.classes(:filtering_cancel) %>')
-      button.addClass('<%= SmartListing.config.classes(:filtering_disabled) %>')
+      icon.addClass(SmartListing.config.class("filtering_search"))
+      icon.removeClass(SmartListing.config.class("filtering_cancel"))
+      button.addClass(SmartListing.config.class("filtering_disabled"))
     onChange: ->
       form.submit()
   )
 
   button.click ->
     if field.val().length > 0
-      field.val('')
-      field.trigger('keydown')
+      field.val("")
+      field.trigger("keydown")
     return false
 
 ready = ->
-  $('.<%= SmartListing.config.classes(:main) %>').smart_listing()
-  $('.<%= SmartListing.config.classes(:controls) %>').smart_listing_controls()
+  $(SmartListing.config.class_name("main")).smart_listing()
+  $(SmartListing.config.class_name("controls")).smart_listing_controls()
 
 $(document).ready ready
 $(document).on "page:load", ready

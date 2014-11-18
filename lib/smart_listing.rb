@@ -26,6 +26,8 @@ module SmartListing
     def initialize name, collection, options = {}
       @name = name
 
+      config_profile = options.delete(:config_profile)
+
       @options = {
         :partial                        => @name,                       # SmartListing partial name
         :sort_attributes                => :implicit,                   # allow implicitly setting sort attributes
@@ -33,7 +35,7 @@ module SmartListing
         :href                           => nil,                         # set SmartListing target url (in case when different than current url)
         :remote                         => true,                        # SmartListing is remote by default
         :callback_href                  => nil,                         # set SmartListing callback url (in case when different than current url)
-      }.merge(SmartListing.config.global_options).merge(options)
+      }.merge(SmartListing.config(config_profile).global_options).merge(options)
 
       if @options[:array]
         @collection = collection.to_a
