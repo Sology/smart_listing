@@ -1,4 +1,5 @@
 - Config profiles
+- Remove duplicate href key [wynksaiddestroy]
 - API refactoring [GCorbel]
 - Feature Specs [GCorbel]
 - Avoid smart listing controls double initialization [lacco]
