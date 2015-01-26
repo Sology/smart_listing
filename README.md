@@ -59,7 +59,7 @@ Next, put following code in controller action you desire:
 @users = smart_listing_create(:users, User.active, partial: "users/listing")
 ```
 
-This will create SmartListing named `:users` consisting of ActiveRecord scope `User.active` elements and rendered by partial `users/listing`. You can also use arrays instead of ActiveRecord collections. Just put @array: true@ option just like for Kaminari.
+This will create SmartListing named `:users` consisting of ActiveRecord scope `User.active` elements and rendered by partial `users/listing`. You can also use arrays instead of ActiveRecord collections. Just put `array: true` option just like for Kaminari.
 
 In the main view (typically something like `index.html.erb` or `index.html.haml`), use this method to render listing:
 
