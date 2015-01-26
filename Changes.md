@@ -1,3 +1,6 @@
+1.1.0
+-----------
+
 - Config profiles
 - Remove duplicate href key [wynksaiddestroy]
 - API refactoring [GCorbel]

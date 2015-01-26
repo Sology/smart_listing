@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Sology"]
   s.email       = ["contact@sology.eu"]
   s.homepage    = "https://github.com/Sology/smart_listing"
+  s.description = "Ruby on Rails data listing gem with built-in sorting, filtering and in-place editing."
   s.summary     = "SmartListing helps creating sortable lists of ActiveRecord collections with pagination, filtering and inline editing."
   s.license     = "MIT"
 
