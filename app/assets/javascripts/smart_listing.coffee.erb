@@ -416,7 +416,7 @@ $.fn.smart_listing_controls.filter = (filter) ->
   button.click ->
     if field.val().length > 0
       field.val("")
-      field.trigger("keydown")
+      field.trigger("keyup")
     return false
   return
 
