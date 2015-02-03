@@ -61,8 +61,8 @@ class window.SmartListing
         @cancelEdit(editable)
       else
         # Cancel new record
-        @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class_name("hidden"))
-        @container.find(SmartListing.config.class_name("new_item_action")).removeClass(SmartListing.config.class_name("hidden"))
+        @container.find(SmartListing.config.class_name("new_item_placeholder")).addClass(SmartListing.config.class("hidden"))
+        @container.find(SmartListing.config.class_name("new_item_action")).removeClass(SmartListing.config.class("hidden"))
 
       @setAutoshow(false)
       false
