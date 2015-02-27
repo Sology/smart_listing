@@ -134,7 +134,7 @@ module SmartListing
         @options[:global_options] ||= {}
         @options[:global_options].merge!(value)
       end
-      !@options[:global_options].try(:empty?) ? DEFAULTS[:global_options] : DEFAULTS[:global_options].deep_merge(@options[:global_options])
+      !@options[:global_options] ? DEFAULTS[:global_options] : DEFAULTS[:global_options].deep_merge(@options[:global_options])
     end
     
     def to_json
