@@ -33,7 +33,7 @@ class window.SmartListing
     @confirmed = null
     @popovers = {}
 
-    @container.on "ajax:before", SmartListing.config.class_name("item_actions"), (e) =>
+    @container.on "ajax:before", "#{SmartListing.config.class_name("item_actions")}, #{SmartListing.config.class_name("pagination_container")}", (e) =>
       @fadeLoading()
 
     @container.on "ajax:success", (e) =>
