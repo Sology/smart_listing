@@ -266,10 +266,10 @@ module SmartListing
           case action_name
           when :show
             locals[:icon] ||= smart_listing_config.classes(:icon_show)
-						template = 'action_show'
+                        template = 'action_show'
           when :edit
             locals[:icon] ||= smart_listing_config.classes(:icon_edit)
-						template = 'action_edit'
+                        template = 'action_edit'
           when :destroy
             locals[:icon] ||= smart_listing_config.classes(:icon_trash)
             locals.merge!(
@@ -355,8 +355,9 @@ module SmartListing
       valid = options[:valid] if options.has_key?(:valid)
       object_key = options.delete(:object_key) || :object
       new = options.delete(:new)
+      real_object = options.delete(:real_object) || object
 
-      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new})
+      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new, :real_object => real_object})
     end
   end
 end
