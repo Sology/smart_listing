@@ -28,7 +28,7 @@ class window.SmartListing
     @container = e
     @name = @container.attr("id")
     @loading = @container.find(SmartListing.config.class_name("loading"))
-    @loading_indicator = @container.find(SmartListing.config.class_name("loading_indicator"))
+    @loading_indicator = $("loading_indicator")
     @content = @container.find(SmartListing.config.class_name("content"))
     @status = $("#{SmartListing.config.class_name("status")} [data-#{SmartListing.config.data_attribute("main")}='#{@name}']")
     @confirmed = null
