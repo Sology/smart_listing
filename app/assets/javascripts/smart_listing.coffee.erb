@@ -351,6 +351,7 @@ $.fn.smart_listing.confirm = (elem, msg) ->
 $.fn.smart_listing.onLoading = (content, loader, loading_indicator) ->
   content.stop(true).fadeTo(500, 0.2)
   loader.show()
+  console.log(loading_indicator)
   loading_indicator.addClass('active')
   loader.stop(true).fadeTo(500, 1)
 
