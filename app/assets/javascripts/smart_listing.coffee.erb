@@ -382,17 +382,9 @@ $.fn.smart_listing_controls = () ->
       reload(controls)
       false
 
-    controls.find("select").change () ->
+    controls.find("input, select").change () ->
       unless $(this).data(SmartListing.config.data_attribute("observed")) # do not submit controls form when changed field is observed (observing submits form by itself)
         reload(controls)
-    
-    controls.find("input").keypress (e) ->
-      unless $(this).data(SmartListing.config.data_attribute("observed")) # do not submit controls form when changed field is observed (observing submits form by itself)
-        regex = new RegExp("^[a-zA-Z0-9]+$")
-        char = if !e.charCode then e.which else e.charCode
-        str = String.fromCharCode(char)
-        if regex.test(str) || char ==  8
-          reload(controls)
 
     $.fn.smart_listing_controls.filter(controls.find(SmartListing.config.class_name("filtering")))
 
