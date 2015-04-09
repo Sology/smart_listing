@@ -389,7 +389,7 @@ $.fn.smart_listing_controls = () ->
     controls.find("input").keypress (e) ->
       unless $(this).data(SmartListing.config.data_attribute("observed")) # do not submit controls form when changed field is observed (observing submits form by itself)
         regex = new RegExp("^[a-zA-Z0-9]+$")
-        char = !e.charCode ? e.which : e.charCode
+        char = if !e.charCode then e.which else e.charCode
         str = String.fromCharCode(char)
         if regex.test(str) || char ===  8
           reload(controls)
