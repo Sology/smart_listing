@@ -391,7 +391,7 @@ $.fn.smart_listing_controls = () ->
         regex = new RegExp("^[a-zA-Z0-9]+$")
         char = if !e.charCode then e.which else e.charCode
         str = String.fromCharCode(char)
-        if regex.test(str) || char ===  8
+        if regex.test(str) || char ==  8
           reload(controls)
 
     $.fn.smart_listing_controls.filter(controls.find(SmartListing.config.class_name("filtering")))
