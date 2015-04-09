@@ -38,6 +38,7 @@ module SmartListing
           :editable => "editable",
           :content => "content",
           :loading => "loading",
+          :loading_indicator => "loading-icon",
           :status => "smart-listing-status",
           :item_actions => "actions",
           :new_item_placeholder => "new-item-placeholder",
