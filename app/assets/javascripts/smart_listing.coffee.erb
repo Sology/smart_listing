@@ -299,8 +299,8 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
    field.data(SmartListing.config.data_attribute("observed"), true)
  
    field.bind "keydown", (e) ->
-    console.log(e)
-    console.log(field)
+     console.log(e)
+     console.log(field)
      if(key_timeout)
        clearTimeout(key_timeout)
  
