@@ -28,7 +28,7 @@ class window.SmartListing
     @container = e
     @name = @container.attr("id")
     @loading = @container.find(SmartListing.config.class_name("loading"))
-    @loading_icon = @container.find(SmartListing.config.class_name("loading-icon"))
+    @loading_indicator = @container.find(SmartListing.config.class_name("loading_indicator"))
     @content = @container.find(SmartListing.config.class_name("content"))
     @status = $("#{SmartListing.config.class_name("status")} [data-#{SmartListing.config.data_attribute("main")}='#{@name}']")
     @confirmed = null
@@ -95,10 +95,10 @@ class window.SmartListing
       })
 
   fadeLoading: =>
-    $.fn.smart_listing.onLoading(@content, @loading, @loading_icon)
+    $.fn.smart_listing.onLoading(@content, @loading, @loading_indicator)
 
   fadeLoaded: =>
-    $.fn.smart_listing.onLoaded(@content, @loading, @loading_icon)
+    $.fn.smart_listing.onLoaded(@content, @loading, @loading_indicator)
   
   itemCount: =>
     parseInt(@container.data(SmartListing.config.data_attribute("item_count")))
@@ -348,17 +348,17 @@ $.fn.smart_listing.confirm = (elem, msg) ->
     elem.data("confirmed", false)
     true
 
-$.fn.smart_listing.onLoading = (content, loader, loading_icon) ->
+$.fn.smart_listing.onLoading = (content, loader, loading_indicator) ->
   content.stop(true).fadeTo(500, 0.2)
   loader.show()
-  loading_icon.show()
+  loading_indicator.show()
   loader.stop(true).fadeTo(500, 1)
 
-$.fn.smart_listing.onLoaded = (content, loader, loading_icon) ->
+$.fn.smart_listing.onLoaded = (content, loader, loading_indicator) ->
   content.stop(true).fadeTo(500, 1)
   loader.stop(true).fadeTo 500, 0, () =>
     loader.hide()
-    loading_icon.hide()
+    loading_indicator.hide()
 
 $.fn.smart_listing_controls = () ->
   reload = (controls) ->
