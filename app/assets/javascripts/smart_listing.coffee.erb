@@ -412,14 +412,7 @@ $.fn.smart_listing_controls.filter = (filter) ->
       icon.removeClass(SmartListing.config.class("filtering_cancel"))
       button.addClass(SmartListing.config.class("filtering_disabled"))
     onChange: ->
-      loading_indicator.addClass('active')
-      $.ajax
-        type: form.attr('method')
-        url: form.attr('action')
-        data: form.serialize()
-        dataType: 'script'
-        success: (data, status, response)->
-          loading_indicator.removeClass('active')
+      form.submit()
   )
 
   button.click ->
