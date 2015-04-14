@@ -401,6 +401,7 @@ $.fn.smart_listing_controls.filter = (filter) ->
   button = form.find(SmartListing.config.selector("filtering_button"))
   icon = form.find(SmartListing.config.selector("filtering_icon"))
   field = form.find(SmartListing.config.selector("filtering_input"))
+  console.log(field)
   loading_indicator = $("#{SmartListing.config.class_name("loading_indicator")}")
 
   $.fn.smart_listing.observeField(field,
@@ -408,10 +409,12 @@ $.fn.smart_listing_controls.filter = (filter) ->
       icon.removeClass(SmartListing.config.class("filtering_search"))
       icon.addClass(SmartListing.config.class("filtering_cancel"))
       button.removeClass(SmartListing.config.class("filtering_disabled"))
+      console.log('filled'+field)
     onEmpty: ->
       icon.addClass(SmartListing.config.class("filtering_search"))
       icon.removeClass(SmartListing.config.class("filtering_cancel"))
       button.addClass(SmartListing.config.class("filtering_disabled"))
+      console.log('empty'+field)
     onChange: ->
       loading_indicator.addClass('active')
       console.log(form.serialize())
