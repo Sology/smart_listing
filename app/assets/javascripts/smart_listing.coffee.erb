@@ -400,7 +400,6 @@ $.fn.smart_listing_controls.filter = (filter) ->
   button = form.find(SmartListing.config.selector("filtering_button"))
   icon = form.find(SmartListing.config.selector("filtering_icon"))
   field = form.find(SmartListing.config.selector("filtering_input"))
-  loading_indicator = $("#{SmartListing.config.class_name("loading_indicator")}")
 
   $.fn.smart_listing.observeField(field,
     onFilled: ->
