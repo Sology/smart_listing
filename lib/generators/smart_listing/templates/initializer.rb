@@ -81,4 +81,8 @@ SmartListing.configure do |config|
     #:filtering_input       => ".filter input",
     #:pagination_count      => ".pagination-per-page .count",
   }
+
+  config.constants :element_templates, {
+    #:row => "<tr />",
+  }
 end
