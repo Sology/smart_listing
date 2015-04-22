@@ -1,3 +1,9 @@
+- Config now includes element templates
+
+1.1.2
+-----------
+- Some bugfixing: #20, #46, #58
+
 1.1.0
 -----------
 

@@ -94,6 +94,9 @@ module SmartListing
           :filtering_icon => "button span",
           :filtering_input => ".filter input",
           :pagination_count => ".pagination-per-page .count",
+        },
+        :element_templates => {
+          :row => "<tr />",
         }
       }
     }.freeze
@@ -127,6 +130,10 @@ module SmartListing
 
     def selectors key
       @options[:constants].try(:[], :selectors).try(:[], key) || DEFAULTS[:constants][:selectors][key]
+    end
+
+    def element_templates key
+      @options[:constants].try(:[], :element_templates).try(:[], key) || DEFAULTS[:constants][:element_templates][key]
     end
 
     def global_options value = nil

@@ -21,6 +21,9 @@ class window.SmartListing
     @selector: (name)->
       @options["constants"]["selectors"][name]
 
+    @element_template: (name)->
+      @options["constants"]["element_templates"][name]
+
   @config: Config
 
 
@@ -196,10 +199,17 @@ class window.SmartListing
       new_item_placeholder.addClass(SmartListing.config.class("hidden"))
       new_item_action.removeClass(SmartListing.config.class("hidden"))
 
-      new_item = $("<tr />").addClass(SmartListing.config.class("editable"))
+      new_item = $(SmartListing.config.element_template("row")).addClass(SmartListing.config.class("editable"))
       new_item.attr("data-#{SmartListing.config.data_attribute("id")}", id)
       new_item.html(content)
-      new_item_placeholder.before(new_item)
+
+      if new_item_placeholder.length != 0
+        if new_item_placeholder.data("insert-mode") == "after"
+          new_item_placeholder.after(new_item)
+        else
+          new_item_placeholder.before(new_item)
+      else
+        @content.append(new_item)
 
       @container.trigger("smart_listing:create:success", new_item)
 
