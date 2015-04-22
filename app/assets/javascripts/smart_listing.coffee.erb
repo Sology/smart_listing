@@ -204,7 +204,10 @@ class window.SmartListing
       new_item.html(content)
 
       if new_item_placeholder.length != 0
-        new_item_placeholder.before(new_item)
+        if new_item_placeholder.data("insert-mode") == "after"
+          new_item_placeholder.after(new_item)
+        else
+          new_item_placeholder.before(new_item)
       else
         @content.append(new_item)
 
