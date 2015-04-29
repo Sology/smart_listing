@@ -25,7 +25,6 @@ class window.SmartListing
 
 
   constructor: (e) ->
-    console.log(e)
     @container = e
     @name = @container.attr("id")
     @loading = @container.find(SmartListing.config.class_name("loading"))
