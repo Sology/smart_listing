@@ -36,6 +36,7 @@ class window.SmartListing
 
     @container.on "ajax:before", "#{SmartListing.config.class_name("item_actions")}, #{SmartListing.config.class_name("pagination_container")}", (e) =>
       @fadeLoading()
+      console.log('ajax before')
 
     @container.on "ajax:success", (e) =>
       if $(e.target).is("#{SmartListing.config.class_name("item_actions")} #{SmartListing.config.selector("item_action_destroy")}")
@@ -53,6 +54,7 @@ class window.SmartListing
         @refresh()
 
         @fadeLoaded()
+        console.log('ajax success')
         return false
 
     @container.on "click", SmartListing.config.selector("edit_cancel"), (event) =>
