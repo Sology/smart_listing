@@ -36,7 +36,6 @@ class window.SmartListing
 
     $(document).on "ajax:before", @container, (e) =>
       @fadeLoading()
-      console.log('ajax before')
 
     $(document).on "ajax:success", @container, (e) =>
       if $(e.target).is("#{SmartListing.config.class_name("item_actions")} #{SmartListing.config.selector("item_action_destroy")}")
@@ -54,10 +53,9 @@ class window.SmartListing
         @refresh()
 
         @fadeLoaded()
-        console.log('ajax success')
         return false
 
-    @container.on "click", SmartListing.config.selector("edit_cancel"), (event) =>
+    $(document).on "click", SmartListing.config.selector("edit_cancel"), (event) =>
       editable = $(event.currentTarget).closest(SmartListing.config.class_name("editable"))
       if(editable.length > 0)
         # Cancel edit
@@ -70,20 +68,20 @@ class window.SmartListing
       @setAutoshow(false)
       false
 
-    @container.on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("confirmation")}]", (event) =>
+    $(document).on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("confirmation")}]", (event) =>
       $.fn.smart_listing.confirm $(event.currentTarget), $(event.currentTarget).data(SmartListing.config.data_attribute("confirmation"))
 
-    @container.on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("popover")}]", (event) =>
+    $(document).on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("popover")}]", (event) =>
       name = $(event.currentTarget).data(SmartListing.config.data_attribute("popover"))
       if jQuery.isFunction(@popovers[name])
         @popovers[name]($(event.currentTarget))
         false
 
 
-    @container.on "click", "input[type=text]#{SmartListing.config.class_name("autoselect")}", (event) ->
+    $(document).on "click", "input[type=text]#{SmartListing.config.class_name("autoselect")}", (event) ->
       $(this).select()
 
-    @container.on "change", SmartListing.config.class_name("callback"), (event) =>
+    $(document).on "change", SmartListing.config.class_name("callback"), (event) =>
       checkbox = $(event.currentTarget)
       id = checkbox.closest(SmartListing.config.selector("row")).data(SmartListing.config.data_attribute("id"))
       data = {}
@@ -375,8 +373,6 @@ $.fn.smart_listing_controls = () ->
     smart_listing.params(prms)
 
     container.trigger("ajax:before")
-    console.log("ajax before triggered")
-    console.log(container)
     smart_listing.reload()
 
   $(this).each () ->
