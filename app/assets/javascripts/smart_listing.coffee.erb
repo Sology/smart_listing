@@ -38,6 +38,7 @@ class window.SmartListing
       @fadeLoading()
 
     $(document).on "ajax:success", @container, (e) =>
+      @fadeLoaded()
       if $(e.target).is("#{SmartListing.config.class_name("item_actions")} #{SmartListing.config.selector("item_action_destroy")}")
         # handle HEAD OK response for deletion request
         editable = $(e.target).closest(SmartListing.config.class_name("editable"))
@@ -52,7 +53,6 @@ class window.SmartListing
         @changeItemCount(-1)
         @refresh()
 
-        @fadeLoaded()
         return false
 
     $(document).on "click", SmartListing.config.selector("edit_cancel"), (event) =>
