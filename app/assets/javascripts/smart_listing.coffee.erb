@@ -375,7 +375,7 @@ $.fn.smart_listing_controls = () ->
     prms = $.extend(smart_listing.params(), prms)
     smart_listing.params(prms)
 
-    container.trigger("ajax:before")
+    smart_listing.fadeLoading()
     smart_listing.reload()
 
   $(this).each () ->
