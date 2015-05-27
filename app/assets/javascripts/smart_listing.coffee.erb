@@ -371,7 +371,12 @@ $.fn.smart_listing_controls = () ->
     # serialize form and merge it with smart listing params
     prms = {}
     $.each controls.serializeArray(), (i, field) ->
-      prms[field.name] = field.value
+      if Array.isArray(prms[field.name])
+        prms[field.name].push field.value
+      else if prms[field.name]
+        prms[field.name] = [prms[field.name], field.value]
+      else
+        prms[field.name] = field.value
     prms = $.extend(smart_listing.params(), prms)
     smart_listing.params(prms)
 

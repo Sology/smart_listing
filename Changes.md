@@ -1,3 +1,4 @@
+- Better handling of nested controls params
 - Fix controls not fading out list. Related to #51
 - Config now includes element templates
 
