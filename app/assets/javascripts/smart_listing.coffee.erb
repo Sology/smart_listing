@@ -189,6 +189,8 @@ class window.SmartListing
       new_item_placeholder.html(content)
       new_item_placeholder.addClass(SmartListing.config.class("inline_editing"))
 
+      @container.trigger("smart_listing:new", new_item_placeholder)
+
       @fadeLoaded()
 
   create: (id, success, content) =>
