@@ -349,12 +349,16 @@ $.fn.smart_listing.confirm = (elem, msg) ->
     true
 
 $.fn.smart_listing.onLoading = (content, loader, loading_indicator) ->
-  loader.addClass('active')
+  content.stop(true).fadeTo(500, 0.2)
+  loader.show()
   loading_indicator.addClass('active')
+  loader.stop(true).fadeTo(500, 1)
 
 $.fn.smart_listing.onLoaded = (content, loader, loading_indicator) ->
-  loader.removeClass('active')
-  loading_indicator.removeClass('active')
+  content.stop(true).fadeTo(500, 1)
+  loader.stop(true).fadeTo 500, 0, () =>
+    loader.hide()
+    loading_indicator.removeClass('active')
 
 $.fn.smart_listing_controls = () ->
   reload = (controls) ->
