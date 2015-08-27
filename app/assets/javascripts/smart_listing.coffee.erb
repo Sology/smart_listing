@@ -95,11 +95,11 @@ class window.SmartListing
       })
 
   fadeLoading: =>
-    $.fn.smart_listing.onLoading(@content, @loading, @loading_indicator)
+    $.fn.smart_listing.onLoading(@loading, @loading_indicator)
 
   fadeLoaded: =>
-    $.fn.smart_listing.onLoaded(@content, @loading, @loading_indicator)
-  
+    $.fn.smart_listing.onLoaded(@loading, @loading_indicator)
+
   itemCount: =>
     parseInt(@container.data(SmartListing.config.data_attribute("item_count")))
 
@@ -120,7 +120,7 @@ class window.SmartListing
       editable.html(editable.data(SmartListing.config.data_attribute("inline_edit_backup")))
       editable.removeClass(SmartListing.config.class("inline_editing"))
       editable.removeData(SmartListing.config.data_attribute("inline_edit_backup"))
-  
+
   # Callback called when record is added/deleted using ajax request
   refresh: () =>
     header = @content.find(SmartListing.config.selector("head"))
@@ -154,11 +154,11 @@ class window.SmartListing
         $(status).find(SmartListing.config.class_name("limit_alert")).show()
       else
         $(status).find(SmartListing.config.class_name("limit_alert")).hide()
-  
+
   # Trigger AJAX request to reload the list
   reload: () =>
     $.rails.handleRemote(@container)
-  
+
   params: (value) =>
     if value
       @container.data(SmartListing.config.data_attribute("params"), value)
@@ -244,7 +244,7 @@ class window.SmartListing
       @container.trigger("smart_listing:update:fail", editable)
 
     @fadeLoaded()
-  
+
   destroy: (id, destroyed) =>
     # No need to do anything here, already handled by ajax:success handler
 
@@ -253,7 +253,7 @@ class window.SmartListing
     editable.remove()
 
     @container.trigger("smart_listing:remove", editable)
-  
+
   update_list: (content, data) =>
     @container.data(SmartListing.config.data_attribute("params"), $.extend(@container.data(SmartListing.config.data_attribute("params")), data[SmartListing.config.data_attribute("params")]))
     @container.data(SmartListing.config.data_attribute("max_count"), data[SmartListing.config.data_attribute("max_count")])
@@ -284,7 +284,7 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      onEmpty: () ->
      onChange: () ->
    options = $.extend(options, opts)
- 
+
    keyChange = () ->
      if field.val().length > 0
        options.onFilled()
@@ -294,15 +294,15 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      if field.val() == last_value && field.val().length != 0
        return
      lastValue = field.val()
- 
+
      options.onChange()
- 
+
    field.data(SmartListing.config.data_attribute("observed"), true)
- 
+
    field.bind "keydown", (e) ->
      if(key_timeout)
        clearTimeout(key_timeout)
- 
+
      regex = new RegExp("^[a-zA-Z0-9]+$")
      char = if !e.charCode then e.which else e.charCode
      str = String.fromCharCode(char)
@@ -348,17 +348,13 @@ $.fn.smart_listing.confirm = (elem, msg) ->
     elem.data("confirmed", false)
     true
 
-$.fn.smart_listing.onLoading = (content, loader, loading_indicator) ->
-  content.stop(true).fadeTo(500, 0.2)
-  loader.show()
+$.fn.smart_listing.onLoading = (loader, loading_indicator) ->
+  loader.addClass('active')
   loading_indicator.addClass('active')
-  loader.stop(true).fadeTo(500, 1)
 
-$.fn.smart_listing.onLoaded = (content, loader, loading_indicator) ->
-  content.stop(true).fadeTo(500, 1)
-  loader.stop(true).fadeTo 500, 0, () =>
-    loader.hide()
-    loading_indicator.removeClass('active')
+$.fn.smart_listing.onLoaded = (loader, loading_indicator) ->
+  loader.removeClass('active')
+  loading_indicator.removeClass('active')
 
 $.fn.smart_listing_controls = () ->
   reload = (controls) ->
