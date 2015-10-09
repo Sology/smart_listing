@@ -180,10 +180,10 @@ New partial for user (`users/user`) may look like this:
 ```haml
 %td= user.name
 %td= user.email
-%td.actions= smart_listing_item_actions [{name: :edit, url: edit_user_path(user)}, {name: :destroy, url: user_path(user)}]
+%td.actions= smart_listing_item_actions [{name: :show, url: user_path(user)}, {name: :edit, url: edit_user_path(user)}, {name: :destroy, url: user_path(user)}]
 ```
 
-`smart_listing_item_actions` renders here links that allow to edit and destroy user item. `:edit` and `:destroy` are built-in actions, you can also define your `:custom` actions. Again. `<td>`'s class `actions` is important.
+`smart_listing_item_actions` renders here links that allow to edit and destroy user item. `:show`, `:edit` and `:destroy` are built-in actions, you can also define your `:custom` actions. Again. `<td>`'s class `actions` is important.
 
 Controller actions referenced by above urls are again plain Ruby on Rails actions that render JS like:
 
