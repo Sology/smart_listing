@@ -115,9 +115,9 @@ module SmartListing
       end
 
       # Renders the main partial (whole list)
-      def render_list
+      def render_list locals = {}
         if @smart_listing.partial
-          @template.render :partial => @smart_listing.partial, :locals => {:smart_listing => self}
+          @template.render :partial => @smart_listing.partial, :locals => {:smart_listing => self}.merge(locals)
         end
       end
 
@@ -229,8 +229,9 @@ module SmartListing
     end
 
     def smart_listing_render name = controller_name, *args
+      options = args.extract_options!
       smart_listing_for(name, *args) do |smart_listing|
-        concat(smart_listing.render_list)
+        concat(smart_listing.render_list(options[:locals]))
       end
     end
 
@@ -328,7 +329,8 @@ module SmartListing
           smart_listing_config.data_attributes(:params) => smart_listing.all_params,
           smart_listing_config.data_attributes(:max_count) => smart_listing.max_count,
           smart_listing_config.data_attributes(:item_count) => smart_listing.count,
-        }
+        },
+        :locals => options[:locals] || {}
       })
     end
 
