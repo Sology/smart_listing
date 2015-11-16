@@ -13,11 +13,7 @@ BANNER
 
       desc ''
       def copy_views
-        filename_pattern = File.join self.class.source_root, "*.html.erb"
-        Dir.glob(filename_pattern).map {|f| File.basename f}.each do |f|
-          copy_file f, "app/views/smart_listing/#{f}"
-        end
-        filename_pattern = File.join self.class.source_root, "*.js.erb"
+        filename_pattern = File.join self.class.source_root, "**/*/"
         Dir.glob(filename_pattern).map {|f| File.basename f}.each do |f|
           copy_file f, "app/views/smart_listing/#{f}"
         end
