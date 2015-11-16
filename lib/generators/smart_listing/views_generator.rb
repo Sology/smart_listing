@@ -13,10 +13,11 @@ BANNER
 
       desc ''
       def copy_views
-        filename_pattern = File.join self.class.source_root, "**/*"
-        Dir.glob(filename_pattern).map {|f| File.basename f}.each do |f|
-          copy_file f, "app/views/smart_listing/#{f}"
-        end
+      	FileUtils.cp_r self.class.source_root, "app/views/smart_listing/"
+        # filename_pattern = File.join self.class.source_root, "**/*"
+        #Dir.glob(filename_pattern).map {|f| File.basename f}.each do |f|
+        #  copy_file f, "app/views/smart_listing/#{f}"
+        #end
       end
 		end
 	end
