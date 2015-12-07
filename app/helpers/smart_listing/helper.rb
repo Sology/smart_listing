@@ -117,7 +117,7 @@ module SmartListing
       # Renders the main partial (whole list)
       def render_list locals = {}
         if @smart_listing.partial
-          @template.render :partial => @smart_listing.partial, :locals => {:smart_listing => self}.merge(locals)
+          @template.render :partial => @smart_listing.partial, :locals => {:smart_listing => self}.merge(locals || {})
         end
       end
 
