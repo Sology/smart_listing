@@ -102,7 +102,8 @@ module SmartListing
           :url => @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:sort => sort_params)))),
           :container_classes => [@template.smart_listing_config.classes(:sortable)],
           :attribute => attribute,
-          :title => title
+          :title => title,
+          :options => options
         }
 
         @template.render(:partial => 'smart_listing/sortable', :locals => default_locals.merge(locals))
