@@ -31,15 +31,17 @@ class window.SmartListing
     @container = e
     @name = @container.attr("id")
     @loading = @container.find(SmartListing.config.class_name("loading"))
+    @loading_indicator = $("#{SmartListing.config.class_name("loading_indicator")}")
     @content = @container.find(SmartListing.config.class_name("content"))
     @status = $("#{SmartListing.config.class_name("status")} [data-#{SmartListing.config.data_attribute("main")}='#{@name}']")
     @confirmed = null
     @popovers = {}
 
-    @container.on "ajax:before", "#{SmartListing.config.class_name("item_actions")}, #{SmartListing.config.class_name("pagination_container")}", (e) =>
+    $(document).on "ajax:before", @container, (e) =>
       @fadeLoading()
 
-    @container.on "ajax:success", (e) =>
+    $(document).on "ajax:success", @container, (e) =>
+      @fadeLoaded()
       if $(e.target).is("#{SmartListing.config.class_name("item_actions")} #{SmartListing.config.selector("item_action_destroy")}")
         # handle HEAD OK response for deletion request
         editable = $(e.target).closest(SmartListing.config.class_name("editable"))
@@ -54,10 +56,9 @@ class window.SmartListing
         @changeItemCount(-1)
         @refresh()
 
-        @fadeLoaded()
         return false
 
-    @container.on "click", SmartListing.config.selector("edit_cancel"), (event) =>
+    $(document).on "click", SmartListing.config.selector("edit_cancel"), (event) =>
       editable = $(event.currentTarget).closest(SmartListing.config.class_name("editable"))
       if(editable.length > 0)
         # Cancel edit
@@ -70,20 +71,20 @@ class window.SmartListing
       @setAutoshow(false)
       false
 
-    @container.on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("confirmation")}]", (event) =>
+    $(document).on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("confirmation")}]", (event) =>
       $.fn.smart_listing.confirm $(event.currentTarget), $(event.currentTarget).data(SmartListing.config.data_attribute("confirmation"))
 
-    @container.on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("popover")}]", (event) =>
+    $(document).on "click", "#{SmartListing.config.class_name("item_actions")} a[data-#{SmartListing.config.data_attribute("popover")}]", (event) =>
       name = $(event.currentTarget).data(SmartListing.config.data_attribute("popover"))
       if jQuery.isFunction(@popovers[name])
         @popovers[name]($(event.currentTarget))
         false
 
 
-    @container.on "click", "input[type=text]#{SmartListing.config.class_name("autoselect")}", (event) ->
+    $(document).on "click", "input[type=text]#{SmartListing.config.class_name("autoselect")}", (event) ->
       $(this).select()
 
-    @container.on "change", SmartListing.config.class_name("callback"), (event) =>
+    $(document).on "change", SmartListing.config.class_name("callback"), (event) =>
       checkbox = $(event.currentTarget)
       id = checkbox.closest(SmartListing.config.selector("row")).data(SmartListing.config.data_attribute("id"))
       data = {}
@@ -97,11 +98,11 @@ class window.SmartListing
       })
 
   fadeLoading: =>
-    $.fn.smart_listing.onLoading(@content, @loading)
+    $.fn.smart_listing.onLoading(@loading, @loading_indicator)
 
   fadeLoaded: =>
-    $.fn.smart_listing.onLoaded(@content, @loading)
-  
+    $.fn.smart_listing.onLoaded(@loading, @loading_indicator)
+
   itemCount: =>
     parseInt(@container.data(SmartListing.config.data_attribute("item_count")))
 
@@ -122,7 +123,7 @@ class window.SmartListing
       editable.html(editable.data(SmartListing.config.data_attribute("inline_edit_backup")))
       editable.removeClass(SmartListing.config.class("inline_editing"))
       editable.removeData(SmartListing.config.data_attribute("inline_edit_backup"))
-  
+
   # Callback called when record is added/deleted using ajax request
   refresh: () =>
     header = @content.find(SmartListing.config.selector("head"))
@@ -156,11 +157,11 @@ class window.SmartListing
         $(status).find(SmartListing.config.class_name("limit_alert")).show()
       else
         $(status).find(SmartListing.config.class_name("limit_alert")).hide()
-  
+
   # Trigger AJAX request to reload the list
   reload: () =>
     $.rails.handleRemote(@container)
-  
+
   params: (value) =>
     if value
       @container.data(SmartListing.config.data_attribute("params"), value)
@@ -255,7 +256,7 @@ class window.SmartListing
       @container.trigger("smart_listing:update:fail", editable)
 
     @fadeLoaded()
-  
+
   destroy: (id, destroyed) =>
     # No need to do anything here, already handled by ajax:success handler
 
@@ -264,7 +265,7 @@ class window.SmartListing
     editable.remove()
 
     @container.trigger("smart_listing:remove", editable)
-  
+
   update_list: (content, data) =>
     @container.data(SmartListing.config.data_attribute("params"), $.extend(@container.data(SmartListing.config.data_attribute("params")), data[SmartListing.config.data_attribute("params")]))
     @container.data(SmartListing.config.data_attribute("max_count"), data[SmartListing.config.data_attribute("max_count")])
@@ -295,7 +296,7 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      onEmpty: () ->
      onChange: () ->
    options = $.extend(options, opts)
- 
+
    keyChange = () ->
      if field.val().length > 0
        options.onFilled()
@@ -305,18 +306,22 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      if field.val() == last_value && field.val().length != 0
        return
      lastValue = field.val()
- 
+
      options.onChange()
- 
+
    field.data(SmartListing.config.data_attribute("observed"), true)
- 
+
    field.bind "keydown", (e) ->
      if(key_timeout)
        clearTimeout(key_timeout)
- 
-     key_timeout = setTimeout(->
-       keyChange()
-     , 400)
+
+     regex = new RegExp("^[a-zA-Z0-9]+$")
+     char = if !e.charCode then e.which else e.charCode
+     str = String.fromCharCode(char)
+     if regex.test(str) || char == 8
+       key_timeout = setTimeout(->
+         keyChange()
+       , 400)
 
 $.fn.smart_listing.showPopover = (elem, body) ->
   elem.popover("destroy")
@@ -355,15 +360,13 @@ $.fn.smart_listing.confirm = (elem, msg) ->
     elem.data("confirmed", false)
     true
 
-$.fn.smart_listing.onLoading = (content, loader) ->
-  content.stop(true).fadeTo(500, 0.2)
-  loader.show()
-  loader.stop(true).fadeTo(500, 1)
+$.fn.smart_listing.onLoading = (loader, loading_indicator) ->
+  loader.addClass('active')
+  loading_indicator.addClass('active')
 
-$.fn.smart_listing.onLoaded = (content, loader) ->
-  content.stop(true).fadeTo(500, 1)
-  loader.stop(true).fadeTo 500, 0, () =>
-    loader.hide()
+$.fn.smart_listing.onLoaded = (loader, loading_indicator) ->
+  loader.removeClass('active')
+  loading_indicator.removeClass('active')
 
 $.fn.smart_listing_controls = () ->
   reload = (controls) ->
