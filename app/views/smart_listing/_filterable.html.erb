@@ -1,0 +1,28 @@
+<% #Filterable attribute listing header. %>
+<% # %>
+<% #Available local variables: %>
+<% #  container_classes:  classes for the main container %>
+<% #  value:              current filter value %>
+<% #  attribute:          current attribute name %>
+<% #  field_type:         type of field %>
+<% #  title:              current attribute title %>
+<% #  smart_listing:      current SmartListing instance %>
+<% #  builder:            current builder instance %>
+<% if field_type == 'text_field' %>
+  <%= smart_listing_controls_for(smart_listing.name, {class: ''}) do %>
+    <div class="form-group filter">
+      <%= text_field_tag attribute, '', class: 'form-control', placeholder: t('search', default: 'Search'), autocomplete: :off, value: value %>
+    </div>
+  <% end %>
+<% end %>
+<% if field_type == 'select' %>
+  <%= smart_listing_controls_for(smart_listing.name, {class: ''}) do %>
+    <div class="form-group filter">
+      <% if options[:select_values].is_a?(ActiveRecord::Relation) %>
+        <%= select_tag attribute, options_from_collection_for_select(options[:select_values], 'id', 'name', value), include_blank: true, class: 'form-control', placeholder: t('search', default: 'Search') %>
+      <% else %>
+        <%= select_tag attribute, options_for_select(options[:select_values], value), include_blank: true, class: 'form-control', placeholder: t('search', default: 'Search') %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

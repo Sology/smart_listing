@@ -156,6 +156,8 @@ class window.SmartListing
         $(status).find(SmartListing.config.class_name("limit_alert")).show()
       else
         $(status).find(SmartListing.config.class_name("limit_alert")).hide()
+
+    $(SmartListing.config.class_name("controls")).smart_listing_controls()
   
   # Trigger AJAX request to reload the list
   reload: () =>
