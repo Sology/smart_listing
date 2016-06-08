@@ -130,11 +130,9 @@ class window.SmartListing
     no_records = @content.find(SmartListing.config.class_name("no_records"))
 
     if @itemCount() == 0
-      header.hide()
       footer.hide()
       no_records.show()
     else
-      header.show()
       footer.show()
       no_records.hide()
 
