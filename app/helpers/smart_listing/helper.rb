@@ -180,6 +180,7 @@ module SmartListing
       private
 
       def sanitize_params params
+        params = params.permit! if params.respond_to?(:permit!)
         params.merge(UNSAFE_PARAMS)
       end
 
