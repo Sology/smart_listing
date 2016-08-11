@@ -180,7 +180,7 @@ module SmartListing
       private
 
       def sanitize_params params
-        params.merge(UNSAFE_PARAMS)
+        params.permit!.merge(UNSAFE_PARAMS)
       end
 
       def default_locals
