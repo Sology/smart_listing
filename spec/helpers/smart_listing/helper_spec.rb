@@ -4,6 +4,7 @@ require 'smart_listing/helper'
 module SmartListing::Helper
   class UsersController < ApplicationController
     include ControllerExtensions
+    helper  SmartListing::Helper
 
     attr_accessor :smart_listings
 
