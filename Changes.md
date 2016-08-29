@@ -1,3 +1,6 @@
+1.2.0
+-----------
+
 - Rails 5 support and Kaminari update [akostadinov]
 - Better handling of nested controls params
 - Fix controls not fading out list. Related to #51
@@ -6,6 +9,7 @@
 
 1.1.2
 -----------
+
 - Some bugfixing: #20, #46, #58
 
 1.1.0
