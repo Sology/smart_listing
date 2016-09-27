@@ -435,7 +435,8 @@ $.fn.smart_listing_controls.filter = (filter) ->
 
 ready = ->
   $(SmartListing.config.class_name("main")).smart_listing()
+  console.log("READY!")
   $(SmartListing.config.class_name("controls")).smart_listing_controls()
 
 $(document).ready ready
-$(document).on "page:load", ready
+$(document).on "turbolinks:load", ready
