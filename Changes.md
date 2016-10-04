@@ -1,3 +1,5 @@
+- Allow to render outside of controllers [bval]
+
 1.2.0
 -----------
 
