@@ -165,7 +165,7 @@ module SmartListing
     end
 
     def sort_order attribute
-      @sort && @sort[attribute].present? ? @sort[attribute] : nil
+      @sort && @sort[attribute.to_sym].present? ? @sort[attribute.to_sym] : nil
     end
 
     def base_param
