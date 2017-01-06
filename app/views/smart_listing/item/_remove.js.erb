@@ -1,2 +1,2 @@
 var smart_listing = $('#<%= name %>').smart_listing();
-smart_listing.remove(<%= id.to_json %>);
+smart_listing.remove(<%= escape_javascript(id.to_json) %>);
