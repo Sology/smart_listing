@@ -85,4 +85,8 @@ SmartListing.configure do |config|
   config.constants :element_templates, {
     #:row => "<tr />",
   }
+
+  config.constants :bootstrap_commands, {
+    #:popover_destroy       => "destroy", # Bootstrap 4 requries dipsose instead of destroy
+  }
 end

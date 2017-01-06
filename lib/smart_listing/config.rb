@@ -97,6 +97,9 @@ module SmartListing
         },
         :element_templates => {
           :row => "<tr />",
+        },
+        :bootstrap_commands => {
+          :popover_destroy => "destroy",
         }
       }
     }.freeze

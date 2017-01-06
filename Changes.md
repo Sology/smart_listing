@@ -1,6 +1,7 @@
 - Allow to render outside of controllers [bval]
 - Documentation fixes [blackcofla]
 - Use id.to_json so integers and uuids will both work [sevgibson]
+- Fix popover in bootstrap 4 [sevgibson]
 
 1.2.0
 -----------
