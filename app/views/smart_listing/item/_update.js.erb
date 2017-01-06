@@ -1,2 +1,2 @@
 var smart_listing = $('#<%= name %>').smart_listing();
-smart_listing.update(<%= id %>, <%= valid.nil? ? object.valid? : valid %>, "<%= escape_javascript(render(:partial => part, :locals => {object_key => object})) %>");
+smart_listing.update(<%= id.to_json.html_safe %>, <%= valid.nil? ? object.valid? : valid %>, "<%= escape_javascript(render(:partial => part, :locals => {object_key => object})) %>");
