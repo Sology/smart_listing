@@ -1,2 +1,2 @@
 var smart_listing = $('#<%= name.to_s %>').smart_listing();
-smart_listing.destroy(<%= id %>, <%= object.destroyed? %>);
+smart_listing.destroy(<%= id.to_json.html_safe %>, <%= object.destroyed? %>);
