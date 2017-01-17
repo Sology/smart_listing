@@ -94,7 +94,7 @@ module SmartListing
         if @options[:paginate] && @per_page > 0
           @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)
           if @collection.length == 0
-            @collection = @collection.page(@collection.num_pages)
+            @collection = @collection.page(@collection.total_pages)
           end
         end
       else

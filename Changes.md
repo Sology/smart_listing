@@ -2,6 +2,7 @@
 - Documentation fixes [blackcofla]
 - Use id.to_json so integers and uuids will both work [sevgibson]
 - Fix popover in bootstrap 4 [sevgibson]
+- Fix Kaminari #num_pages deprecation warning [tylerhunt]
 
 1.2.0
 -----------
