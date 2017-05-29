@@ -1,2 +1,3 @@
 var smart_listing = $('#<%= name %>').smart_listing();
 smart_listing.update_list("<%= escape_javascript(render(:partial => part, :locals => {:smart_listing => smart_listing}.merge(locals))) %>", <%= smart_listing_data.to_json.html_safe %>);
+window.history.pushState({turbolinks: true, url: <%=raw request.original_url.to_json%>}, '', <%=raw request.original_url.to_json %>);
