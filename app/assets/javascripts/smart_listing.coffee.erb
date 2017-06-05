@@ -104,7 +104,7 @@ class window.SmartListing
 
   fadeLoaded: =>
     $.fn.smart_listing.onLoaded(@content, @loading)
-  
+
   itemCount: =>
     parseInt(@container.data(SmartListing.config.data_attribute("item_count")))
 
@@ -112,7 +112,6 @@ class window.SmartListing
     parseInt(@container.data(SmartListing.config.data_attribute("max_count")))
 
   setAutoshow: (v) =>
-
     @container.data(SmartListing.config.data_attribute("autoshow"), v)
 
   changeItemCount: (value) =>
@@ -125,11 +124,11 @@ class window.SmartListing
       editable.html(editable.data(SmartListing.config.data_attribute("inline_edit_backup")))
       editable.removeClass(SmartListing.config.class("inline_editing"))
       editable.removeData(SmartListing.config.data_attribute("inline_edit_backup"))
-  
+
   # Callback called when record is added/deleted using ajax request
   refresh: () =>
-    header = @content.find(SmartListing.config.selector("head"))
-    footer = @content.find(SmartListing.config.class_name("pagination_per_page"))
+    header     = @content.find(SmartListing.config.selector("head"))
+    footer     = @content.find(SmartListing.config.class_name("pagination_per_page"))
     no_records = @content.find(SmartListing.config.class_name("no_records"))
 
     if @itemCount() == 0
@@ -159,11 +158,11 @@ class window.SmartListing
         $(status).find(SmartListing.config.class_name("limit_alert")).show()
       else
         $(status).find(SmartListing.config.class_name("limit_alert")).hide()
-  
+
   # Trigger AJAX request to reload the list
   reload: () =>
     $.rails.handleRemote(@container)
-  
+
   params: (value) =>
     if value
       @container.data(SmartListing.config.data_attribute("params"), value)
@@ -258,7 +257,7 @@ class window.SmartListing
       @container.trigger("smart_listing:update:fail", editable)
 
     @fadeLoaded()
-  
+
   destroy: (id, destroyed) =>
     # No need to do anything here, already handled by ajax:success handler
 
@@ -267,7 +266,7 @@ class window.SmartListing
     editable.remove()
 
     @container.trigger("smart_listing:remove", editable)
-  
+
   update_list: (content, data) =>
     @container.data(SmartListing.config.data_attribute("params"), $.extend(@container.data(SmartListing.config.data_attribute("params")), data[SmartListing.config.data_attribute("params")]))
     @container.data(SmartListing.config.data_attribute("max_count"), data[SmartListing.config.data_attribute("max_count")])
@@ -298,7 +297,7 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      onEmpty: () ->
      onChange: () ->
    options = $.extend(options, opts)
- 
+
    keyChange = () ->
      if field.val().length > 0
        options.onFilled()
@@ -308,18 +307,18 @@ $.fn.smart_listing.observeField = (field, opts = {}) ->
      if field.val() == last_value && field.val().length != 0
        return
      lastValue = field.val()
- 
+
      options.onChange()
- 
+
    field.data(SmartListing.config.data_attribute("observed"), true)
- 
-   field.bind "keydown", (e) ->
+
+   field.bind "keyup", (e) ->
      if(key_timeout)
        clearTimeout(key_timeout)
- 
-     key_timeout = setTimeout(->
+
+     key_timeout = setTimeout ->
        keyChange()
-     , 400)
+     , 400
 
 $.fn.smart_listing.showPopover = (elem, body) ->
   elem.popover(SmartListing.config.bootstrap_commands("popover_destroy"))
@@ -401,31 +400,38 @@ $.fn.smart_listing_controls = () ->
     reset = controls.find(SmartListing.config.class_name("controls_reset"))
 
     controls.submit ->
-      # setup smart listing params, reload and don"t actually submit controls form
+      # setup smart listing params, reload and don't actually submit controls form
       reload(controls)
       false
 
     controls.find("input, select").change () ->
-      unless $(this).data(SmartListing.config.data_attribute("observed")) # do not submit controls form when changed field is observed (observing submits form by itself)
+      # do not submit controls form when changed field is observed (observing submits form by itself)
+      unless $(this).data(SmartListing.config.data_attribute("observed"))
         reload(controls)
 
     $.fn.smart_listing_controls.filter(controls.find(SmartListing.config.class_name("filtering")))
 
 $.fn.smart_listing_controls.filter = (filter) ->
-  form = filter.closest("form")
+  form   = filter.closest("form")
   button = form.find(SmartListing.config.selector("filtering_button"))
-  icon = form.find(SmartListing.config.selector("filtering_icon"))
-  field = form.find(SmartListing.config.selector("filtering_input"))
+  icon   = form.find(SmartListing.config.selector("filtering_icon"))
+  field  = form.find(SmartListing.config.selector("filtering_input"))
 
   $.fn.smart_listing.observeField(field,
     onFilled: ->
+      console.log 'on filled'
       icon.removeClass(SmartListing.config.class("filtering_search"))
-      icon.addClass(SmartListing.config.class("filtering_cancel"))
+          .addClass(SmartListing.config.class("filtering_cancel"))
       button.removeClass(SmartListing.config.class("filtering_disabled"))
+      return
+
     onEmpty: ->
+      console.log 'on empty'
       icon.addClass(SmartListing.config.class("filtering_search"))
-      icon.removeClass(SmartListing.config.class("filtering_cancel"))
+          .removeClass(SmartListing.config.class("filtering_cancel"))
       button.addClass(SmartListing.config.class("filtering_disabled"))
+      return
+
     onChange: ->
       form.submit()
   )
@@ -433,8 +439,9 @@ $.fn.smart_listing_controls.filter = (filter) ->
   button.click ->
     if field.val().length > 0
       field.val("")
-      field.trigger("keydown")
+      field.trigger("keyup")
     return false
+  return
 
 ready = ->
   $(SmartListing.config.class_name("main")).smart_listing()
