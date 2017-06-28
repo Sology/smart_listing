@@ -4,6 +4,7 @@
 - Fix popover in bootstrap 4 [sevgibson]
 - Fix Kaminari #num_pages deprecation warning [tylerhunt]
 - Add support for Turbolinks 5 [wynksaiddestroy]
+- Use #empty? for AC::Params [phoffer]
 
 1.2.0
 -----------
