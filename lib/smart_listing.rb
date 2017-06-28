@@ -68,7 +68,7 @@ module SmartListing
       end
 
       if @options[:array]
-        if @sort && @sort.any? # when array we sort only by first attribute
+        if @sort && !@sort.empty? # when array we sort only by first attribute
           i = sort_keys.index{|x| x[0] == @sort.first[0]}
           @collection = @collection.sort do |x, y|
             xval = x
@@ -100,7 +100,7 @@ module SmartListing
       else
         # let's sort by all attributes
         #
-        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && @sort.any?
+        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && !@sort.empty?
 
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)
