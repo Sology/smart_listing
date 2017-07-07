@@ -69,7 +69,7 @@ module SmartListing
 
       if @options[:array]
         if @sort && !@sort.empty? # when array we sort only by first attribute
-          i = sort_keys.index{|x| x[0] == @sort.first[0]}
+          i = sort_keys.index{|x| x[0] == @sort.to_h.first[0]}
           @collection = @collection.sort do |x, y|
             xval = x
             yval = y
@@ -83,7 +83,7 @@ module SmartListing
             if xval.nil? || yval.nil?
               xval.nil? ? 1 : -1
             else
-              if @sort.first[1] == "asc"
+              if @sort.to_h.first[1] == "asc"
                 (xval <=> yval) || (xval && !yval ? 1 : -1)
               else
                 (yval <=> xval) || (yval && !xval ? 1 : -1)
