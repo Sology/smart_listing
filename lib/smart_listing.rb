@@ -47,7 +47,10 @@ module SmartListing
     def setup params, cookies
       @params = params
 
-      @page = get_param :page
+      @page = get_param(:page)
+      if @page == ""
+        @page = 0
+      end
       @per_page = !get_param(:per_page) || get_param(:per_page).empty? ? (@options[:memorize_per_page] && get_param(:per_page, cookies).to_i > 0 ? get_param(:per_page, cookies).to_i : page_sizes.first) : get_param(:per_page).to_i
       @per_page = page_sizes.first unless page_sizes.include?(@per_page) || (unlimited_per_page? && @per_page == 0)
 
