@@ -48,9 +48,6 @@ module SmartListing
       @params = params
 
       @page = get_param(:page)
-      if @page == ""
-        @page = 1
-      end
       @per_page = !get_param(:per_page) || get_param(:per_page).empty? ? (@options[:memorize_per_page] && get_param(:per_page, cookies).to_i > 0 ? get_param(:per_page, cookies).to_i : page_sizes.first) : get_param(:per_page).to_i
       @per_page = page_sizes.first unless page_sizes.include?(@per_page) || (unlimited_per_page? && @per_page == 0)
 
@@ -94,7 +91,7 @@ module SmartListing
             end
           end
         end
-        if @options[:paginate] && @per_page > 0
+        if @options[:paginate] && @per_page > 0 && no_pages > 0
           @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)
           if @collection.length == 0
             @collection = @collection.page(@collection.num_pages)
