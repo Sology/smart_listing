@@ -5,6 +5,7 @@
 - Fix Kaminari #num_pages deprecation warning [tylerhunt]
 - Add support for Turbolinks 5 [wynksaiddestroy]
 - Use #empty? for AC::Params [phoffer]
+- Fix indentation in some files [boy-papan]
 
 1.2.0
 -----------
