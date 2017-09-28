@@ -1,3 +1,6 @@
+1.2.1
+-----------
+
 - Allow to render outside of controllers [bval]
 - Documentation fixes [blackcofla]
 - Use id.to_json so integers and uuids will both work [sevgibson]
