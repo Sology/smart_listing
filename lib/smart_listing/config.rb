@@ -31,6 +31,7 @@ module SmartListing
         :page_sizes                     => DEFAULT_PAGE_SIZES.dup,      # set available page sizes array
         :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
         :sort_dirs                      => [nil, "asc", "desc"],        # Default sorting directions cycle of sortables
+        :remote                         => true,                        # Default remote mode
       },
       :constants => {
         :classes => {
