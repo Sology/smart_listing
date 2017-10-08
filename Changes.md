@@ -1,3 +1,4 @@
+- Enable to configure global remote option and it to affects sortable helper #131 [kitabatake]
 - Kaminari update [mizinsky]
 - Update Readme for Rails >= 5.1 Users [mizinsky]
 
