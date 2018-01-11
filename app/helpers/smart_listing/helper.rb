@@ -181,7 +181,7 @@ module SmartListing
       private
 
       def sanitize_params params
-        params = params.permit! if params.respond_to?(:permit!)
+        params = params.permit("#{@smart_listing.name}_smart_listing": @smart_listing.options[:param_names].values)
         params.merge(UNSAFE_PARAMS)
       end
 
