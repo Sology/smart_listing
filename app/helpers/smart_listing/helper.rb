@@ -181,7 +181,10 @@ module SmartListing
       private
 
       def sanitize_params params
-        params = params.permit! if params.respond_to?(:permit!)
+        allowed_parameters = @smart_listing.options[:param_names].values
+        sort_key = {sort: params["#{@smart_listing.name}_smart_listing"][:sort].keys[0]}
+        allowed_parameters << sort_key if sort_key
+        params = params.permit("#{@smart_listing.name}_smart_listing": allowed_parameters)
         params.merge(UNSAFE_PARAMS)
       end
 
