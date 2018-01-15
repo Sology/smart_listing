@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    smart_listing (1.2.0)
+    smart_listing (1.2.1)
       coffee-rails
       jquery-rails
       kaminari (~> 0.17)
