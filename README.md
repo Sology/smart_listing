@@ -24,6 +24,12 @@ Also, you need to add SmartListing to your asset pipeline:
 //= require smart_listing
 ```
 
+__Rails >= 5.1 users__: Rails 5.1 has dropped jQuery dependency from the default stack in favour of `rails-ujs`. SmartListing still requires jQuery so make sure that you use `jquery_ujs` from `jquery-rails` gem and have following requires in your asset pipeline before `smart_listing`:
+```
+//= require jquery
+//= require jquery_ujs
+```
+
 ### Initializer
 
 Optionally you can also install some configuration initializer:
