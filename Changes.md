@@ -1,3 +1,4 @@
+- Kaminari update [mizinsky]
 - Update Readme for Rails >= 5.1 Users [mizinsky]
 
 1.2.1
