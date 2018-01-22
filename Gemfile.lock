@@ -4,7 +4,7 @@ PATH
     smart_listing (1.2.1)
       coffee-rails
       jquery-rails
-      kaminari (~> 0.17)
+      kaminari (>= 0.17)
       rails (>= 3.2)
 
 GEM
@@ -49,32 +49,32 @@ GEM
     capybara-webkit (1.3.1)
       capybara (>= 2.0.2, < 2.5.0)
       json
-    coffee-rails (4.1.0)
+    coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.0)
-    coffee-script (2.3.0)
+      railties (>= 4.0.0)
+    coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.8.0)
+    coffee-script-source (1.12.2)
+    concurrent-ruby (1.0.5)
     database_cleaner (1.3.0)
     diff-lcs (1.2.5)
     erubis (2.7.0)
-    execjs (2.2.2)
-    hike (1.2.3)
+    execjs (2.7.0)
     i18n (0.6.11)
-    jquery-rails (3.1.2)
+    jquery-rails (3.1.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    mail (2.6.3)
-      mime-types (>= 1.16, < 3)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     mime-types (2.4.3)
+    mini_mime (1.0.0)
     mini_portile2 (2.1.0)
     minitest (5.4.2)
-    multi_json (1.10.1)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
@@ -115,19 +115,16 @@ GEM
       rspec-support (~> 3.1.0)
     rspec-support (3.1.2)
     sass (3.4.7)
-    sprockets (2.12.3)
-      hike (~> 1.2)
-      multi_json (~> 1.0)
-      rack (~> 1.0)
-      tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.2.0)
+    sprockets (3.7.1)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+    sprockets-rails (2.3.3)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     sqlite3 (1.3.9)
     thor (0.19.1)
     thread_safe (0.3.4)
-    tilt (1.4.1)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     xpath (2.0.0)
@@ -141,9 +138,10 @@ DEPENDENCIES
   capybara (~> 2.4.4)
   capybara-webkit (~> 1.3.1)
   database_cleaner
+  kaminari (= 0.17)
   rspec-rails
   smart_listing!
   sqlite3
 
 BUNDLED WITH
-   1.12.5
+   1.15.4
