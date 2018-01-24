@@ -78,7 +78,7 @@ module SmartListing
 
       def pagination_per_page_link page
         if @smart_listing.per_page.to_i != page
-          url = @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:per_page => page, :page => 1))))
+          url = @template.url_for(@smart_listing.params.merge(@smart_listing.all_params(:per_page => page, :page => 1)))
         end
 
         locals = {
@@ -100,7 +100,7 @@ module SmartListing
 
         locals = {
           :order => @smart_listing.sort_order(attribute),
-          :url => @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:sort => sort_params)))),
+          :url => @template.url_for(@smart_listing.params.merge(@smart_listing.all_params(:sort => sort_params))),
           :container_classes => [@template.smart_listing_config.classes(:sortable)],
           :attribute => attribute,
           :title => title
@@ -179,14 +179,6 @@ module SmartListing
       end
 
       private
-
-      def sanitize_params params
-        allowed_parameters = @smart_listing.options[:param_names].values
-        sort_key = {sort: params["#{@smart_listing.name}_smart_listing"][:sort].keys[0]}
-        allowed_parameters << sort_key if sort_key
-        params = params.permit("#{@smart_listing.name}_smart_listing": allowed_parameters)
-        params.merge(UNSAFE_PARAMS)
-      end
 
       def default_locals
         {:smart_listing => @smart_listing, :builder => self}

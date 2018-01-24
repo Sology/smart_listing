@@ -238,8 +238,9 @@ When form field changes its value, form is submitted and request is made. This n
 ```ruby
 users_scope = User.active.joins(:stats)
 users_scope = users_scope.like(params[:filter]) if params[:filter]
-@users = smart_listing_create :users, users_scope, partial: "users/listing"
+@users = smart_listing_create :users, users_scope, partial: "users/listing", custom_params: [:filter]
 ```
+__smart_listing >= x.x.x__: Important notice: above that version of smart_listing remember to pass __custom_params__ option to smart_listing_create method. Then, your __custom_params__ are permitted to satisfy the strong parameters.
 
 Then, JS view is rendered and your SmartListing updated. That's it!
 
