@@ -133,11 +133,9 @@ class window.SmartListing
     no_records = @content.find(SmartListing.config.class_name("no_records"))
 
     if @itemCount() == 0
-      header.hide()
       footer.hide()
       no_records.show()
     else
-      header.show()
       footer.show()
       no_records.hide()
 
@@ -159,6 +157,8 @@ class window.SmartListing
         $(status).find(SmartListing.config.class_name("limit_alert")).show()
       else
         $(status).find(SmartListing.config.class_name("limit_alert")).hide()
+
+    $(SmartListing.config.class_name("controls")).smart_listing_controls()
   
   # Trigger AJAX request to reload the list
   reload: () =>

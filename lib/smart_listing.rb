@@ -21,7 +21,7 @@ end
 
 module SmartListing
   class Base
-    attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count
+    attr_reader :name, :collection, :options, :per_page, :sort, :filter, :page, :partial, :count
 
     def initialize name, collection, options = {}
       @name = name
@@ -31,6 +31,7 @@ module SmartListing
       @options = {
         :partial                        => @name,                       # SmartListing partial name
         :sort_attributes                => :implicit,                   # allow implicitly setting sort attributes
+        :filter_attributes              => {},                          # set filter attributes
         :default_sort                   => {},                          # default sorting
         :href                           => nil,                         # set SmartListing target url (in case when different than current url)
         :remote                         => true,                        # SmartListing is remote by default
@@ -52,6 +53,7 @@ module SmartListing
       @per_page = page_sizes.first unless page_sizes.include?(@per_page) || (unlimited_per_page? && @per_page == 0)
 
       @sort = parse_sort(get_param(:sort)) || @options[:default_sort]
+      @filter = parse_filter
       sort_keys = (@options[:sort_attributes] == :implicit ? @sort.keys.collect{|s| [s, s]} : @options[:sort_attributes])
 
       set_param(:per_page, @per_page, cookies) if @options[:memorize_per_page]
@@ -161,6 +163,7 @@ module SmartListing
           ap[base_param][v] = self.send(k)
         end
       end
+      ap.merge(@filter)
       ap
     end
 
@@ -211,6 +214,16 @@ module SmartListing
       end
 
       sort
+    end
+
+    def parse_filter
+      sp = {}
+      if @options[:filter_attributes]
+        @options[:filter_attributes].each do |f|
+          sp[f.to_s] = @params[f]
+        end
+      end
+      sp
     end
   end
 end

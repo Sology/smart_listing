@@ -103,10 +103,25 @@ module SmartListing
           :url => @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:sort => sort_params)))),
           :container_classes => [@template.smart_listing_config.classes(:sortable)],
           :attribute => attribute,
-          :title => title
+          :title => title,
+          :options => options
         }
 
         @template.render(:partial => 'smart_listing/sortable', :locals => default_locals.merge(locals))
+      end
+
+      def filterable attribute, field_type = 'text_field', options = {}
+        value = @smart_listing.filter[attribute.to_s]
+
+        locals = {
+            :value => value,
+            :field_type => field_type,
+            :container_classes => [@template.smart_listing_config.classes(:filterable)],
+            :attribute => attribute,
+            :options => options
+        }
+
+        @template.render(:partial => 'smart_listing/filterable', :locals => default_locals.merge(locals))
       end
 
       def update options = {}
