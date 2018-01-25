@@ -2,7 +2,7 @@ class Admin::UsersController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
-  before_filter :find_user, except: [:index, :new, :create]
+  before_action :find_user, except: [:index, :new, :create]
 
   def index
     smart_listing_create partial: "admin/users/list"
