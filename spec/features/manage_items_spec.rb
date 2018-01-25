@@ -41,6 +41,6 @@ feature "Manage items" do
     visit admin_users_path
     find('.change_name').click
 
-    expect(page).to_not have_content("Changed Name")
+    expect(page).to have_content("Changed Name")
   end
 end

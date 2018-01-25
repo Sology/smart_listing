@@ -15,3 +15,11 @@
  */
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+// This is needed to fix overlapping icons of items on the capybara-webkit.
+// https://github.com/thoughtbot/capybara-webkit/issues/494
+td.actions {
+  i, a, span {
+    min-width: 20px;
+  }
+}

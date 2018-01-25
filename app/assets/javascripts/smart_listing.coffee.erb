@@ -1,3 +1,10 @@
+# endsWith polyfill
+if !String::endsWith
+  String::endsWith = (search, this_len) ->
+    if this_len == undefined or this_len > @length
+      this_len = @length
+    @substring(this_len - (search.length), this_len) == search
+
 # Useful when SmartListing target url is different than current one
 $.rails.href = (element) ->
   element.attr("href") || element.data("<%= SmartListing.config.data_attributes(:href) %>") || window.location.pathname

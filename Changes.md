@@ -1,3 +1,4 @@
+- Development environment update #140 [mizinsky]
 - Fix sanitize_params method #137 [mizinsky]
 - Enable to configure global remote option and it to affects sortable helper #131 [kitabatake]
 - Kaminari update [mizinsky]
