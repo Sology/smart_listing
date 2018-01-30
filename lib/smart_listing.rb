@@ -23,7 +23,7 @@ module SmartListing
   class Base
     attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
     # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
-    UNSAFE_PARAMS = {:authenticity_token => nil, :utf8 => nil}
+    UNSAFE_PARAMS = [:authenticity_token, :commit, :utf8, :_method, :script_name].freeze
 
     def initialize name, collection, options = {}
       @name = name
@@ -47,13 +47,10 @@ module SmartListing
     end
 
     def setup params, cookies
-      if params.respond_to?(:permit)
-        sort_key = params["#{@name}_smart_listing"].try(:[], :sort).try(:keys).try(:[], 0)
-        custom_params = @options[:custom_params]
-        @params = params.permit(:controller, :action, custom_params, "#{name}_smart_listing": [options[:param_names][:page], options[:param_names][:per_page], { "#{options[:param_names][:sort]}": sort_key }])
-      else
-        @params = params.merge(UNSAFE_PARAMS)
-      end
+      @params = params
+      @params = @params.to_unsafe_h if @params.respond_to?(:to_unsafe_h)
+      @params = @params.with_indifferent_access
+      @params.except!(*UNSAFE_PARAMS)
 
       @page = get_param :page
       @per_page = !get_param(:per_page) || get_param(:per_page).empty? ? (@options[:memorize_per_page] && get_param(:per_page, cookies).to_i > 0 ? get_param(:per_page, cookies).to_i : page_sizes.first) : get_param(:per_page).to_i
