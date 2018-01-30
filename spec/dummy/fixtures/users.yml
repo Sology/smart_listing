@@ -1,0 +1,40 @@
+user1:
+  id: 1
+  name: "Betty"
+  email: "betty@email.com"
+  boolean: false
+user2:
+  id: 2
+  name: "Aaron"
+  email: "aaron@email.com"
+  boolean: true
+user3:
+  id: 3
+  name: "Jane"
+  email: "jane@test.eu"
+  boolean: false
+user4:
+  id: 4
+  name: "Edward"
+  email: "edward@test.eu"
+  boolean: true
+user5:
+  id: 5
+  name: "Nicholas"
+  email: "salohcin@email.com"
+  boolean: false
+user6:
+  id: 6
+  name: "Lisa"
+  email: "asil@email.com"
+  boolean: true
+user7:
+  id: 7
+  name: "Sara"
+  email: "aras@test.eu"
+  boolean: false
+user8:
+  id: 8
+  name: "Robin"
+  email: "nibor@test.eu"
+  boolean: true

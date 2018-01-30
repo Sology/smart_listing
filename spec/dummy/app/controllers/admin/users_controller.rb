@@ -2,10 +2,14 @@ class Admin::UsersController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
-  before_filter :find_user, except: [:index, :new, :create]
+  before_action :find_user, except: [:index, :new, :create]
 
   def index
-    smart_listing_create partial: "admin/users/list"
+    @users = User.all
+    @users = @users.like(params[:filter]) if params[:filter]
+    @users = @users.by_boolean if params[:boolean] == "1"
+    smart_listing_create(:users, @users, partial: "admin/users/list")
+
     respond_to do |format|
       format.html
       format.js { render formats: :js }

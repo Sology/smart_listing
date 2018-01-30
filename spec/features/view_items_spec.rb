@@ -1,49 +1,44 @@
 require 'rails_helper'
 
 feature 'View a list of items' do
+  fixtures :users
   scenario 'The user navigate through users', js: true do
-    11.times { |i| User.create!(name: "Name#{i}", email: "Email#{i}") }
 
     visit root_path
-
-    expect(page).to have_content("Name0")
-    expect(page).to_not have_content("Name10")
+    #page_sizes => [3, 10]
+    expect(page).to have_content("Betty")
+    expect(page).to_not have_content("Edward")
 
     within(".pagination") { click_on "2" }
 
-    expect(page).to have_content("Name10")
-    expect(page).to_not have_content("Name0")
+    expect(page).to have_content("Edward")
+    expect(page).to_not have_content("Betty")
   end
 
   scenario "The user sort users", js: true do
-    User.create(name: "aaaName", email: "bbbEmail")
-    User.create(name: "bbbName", email: "aaaEmail")
 
     visit sortable_users_path
 
-    expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("bbbName")
-    expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("aaaName")
+    find('.name a').click
+    expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("Aaron")
+    expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("Betty")
 
     find('.name a').click
-
-    expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("aaaName")
-    expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("bbbName")
+    expect(find(:xpath, "//table/tbody/tr[1]")).to have_content("Sara")
+    expect(find(:xpath, "//table/tbody/tr[2]")).to have_content("Robin")
   end
 
   scenario "The user search user", js: true do
-    User.create(name: "Name1", email: "Email1")
-    User.create(name: "Name2", email: "Email2")
+    visit admin_users_path
 
-    visit searchable_users_path
+    fill_in "filter", with: "ja"
 
-    fill_in "filter", with: "1"
+    expect(page).to have_content("Jane")
+    expect(page).to_not have_content("Aaron")
 
-    expect(page).to have_content("Name1")
-    expect(page).to_not have_content("Name2")
+    fill_in "filter", with: "ni"
 
-    fill_in "filter", with: "3"
-
-    expect(page).to_not have_content("Name1")
-    expect(page).to_not have_content("Name2")
+    expect(page).to_not have_content("Nicholas")
+    expect(page).to_not have_content("Jane")
   end
 end
