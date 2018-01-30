@@ -1,0 +1,8 @@
+User.find_or_create_by(id: 1, name: "Betty", email: "betty@email.com", boolean: false)
+User.find_or_create_by(id: 2, name: "Aaron", email: "aaron@email.com", boolean: true)
+User.find_or_create_by(id: 3, name: "Jane", email: "jane@test.eu", boolean: false)
+User.find_or_create_by(id: 4, name: "Edward", email: "edward@test.eu", boolean: true)
+User.find_or_create_by(id: 5, name: "Nicholas", email: "salohcin@email.com", boolean: false)
+User.find_or_create_by(id: 6, name: "Lisa", email: "asil@email.com", boolean: true)
+User.find_or_create_by(id: 7, name: "Sara", email: "aras@test.eu", boolean: false)
+User.find_or_create_by(id: 8, name: "Robin", email: "nibor@test.eu", boolean: true)

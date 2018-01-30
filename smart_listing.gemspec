@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"
+  s.add_development_dependency "guard-rspec"
+  s.add_development_dependency "byebug"
 
   s.add_development_dependency "capybara", "< 2.14"
   s.add_development_dependency "capybara-webkit", "~> 1.14"

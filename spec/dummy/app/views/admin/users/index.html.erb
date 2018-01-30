@@ -1,1 +1,18 @@
+<%= smart_listing_controls_for(:users, {:class => "form-inline text-right"}) do %>
+  <div class="checkbox">
+    <label class="checkbox inline" for="boolean">
+      <%= hidden_field_tag :boolean, "0", :id => "boolean" %>
+      <%= check_box_tag :boolean %>
+      <%= "Boolean?" %>
+    </label>
+  </div>
+  &nbsp;
+  <div class="form-group filter input-append">
+    <%= text_field_tag :filter, '', :class => "search form-control", :placeholder => "Search...", :autocomplete => :off %>
+  </div>
+  <button class="btn btn-primary disabled" type="submit">
+    <span class="glyphicon glyphicon-search"></span>
+  </button>
+<% end %>
+
 <%= smart_listing_render %>
