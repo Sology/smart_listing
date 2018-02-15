@@ -312,7 +312,7 @@ module SmartListing
       smart_listing = @smart_listings[name]
 
       # don't update list if params are missing (prevents interfering with other lists)
-      if params.keys.select{|k| k.include?("smart_listing")}.any? && !params[smart_listing.base_param]
+      if params.keys.select{|k| k.include?("smart_listing")}.present? && !params[smart_listing.base_param]
         return unless options[:force]
       end
 
