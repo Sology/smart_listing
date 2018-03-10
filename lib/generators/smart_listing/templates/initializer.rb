@@ -65,7 +65,6 @@ SmartListing.configure do |config|
     #:inline_edit_backup    => "smart-listing-edit-backup",
     #:params                => "params",
     #:observed              => "observed",
-    #:href                  => "href",
     #:autoshow              => "autoshow",
     #:popover               => "slpopover",
   }
