@@ -1,3 +1,4 @@
+- Remove duplicated href key from config template #146 [nfilzi]
 - Replace deprecated .any? with .present? #143 [AakLak]
 - Development environment update #140 [mizinsky]
 - Fix sanitize_params method #137 [mizinsky]
