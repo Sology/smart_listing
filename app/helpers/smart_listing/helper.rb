@@ -33,8 +33,6 @@ module SmartListing
     end
 
     class Builder
-      # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
-      UNSAFE_PARAMS = {:authenticity_token => nil, :utf8 => nil}
 
       class_attribute :smart_listing_helpers
 
@@ -48,7 +46,7 @@ module SmartListing
 
       def paginate options = {}
         if @smart_listing.collection.respond_to? :current_page
-          @template.paginate @smart_listing.collection, {:remote => @smart_listing.remote?, :param_name => @smart_listing.param_name(:page), :params => UNSAFE_PARAMS}.merge(@smart_listing.kaminari_options)
+          @template.paginate @smart_listing.collection, {:remote => @smart_listing.remote?, :param_name => @smart_listing.param_name(:page)}.merge(@smart_listing.kaminari_options)
         end
       end
 
@@ -78,7 +76,7 @@ module SmartListing
 
       def pagination_per_page_link page
         if @smart_listing.per_page.to_i != page
-          url = @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:per_page => page, :page => 1))))
+          url = @template.url_for(@smart_listing.params.merge(@smart_listing.all_params(:per_page => page, :page => 1)))
         end
 
         locals = {
@@ -100,7 +98,7 @@ module SmartListing
 
         locals = {
           :order => @smart_listing.sort_order(attribute),
-          :url => @template.url_for(sanitize_params(@template.params.merge(@smart_listing.all_params(:sort => sort_params)))),
+          :url => @template.url_for(@smart_listing.params.merge(@smart_listing.all_params(:sort => sort_params))),
           :container_classes => [@template.smart_listing_config.classes(:sortable)],
           :attribute => attribute,
           :title => title,
@@ -180,11 +178,6 @@ module SmartListing
       end
 
       private
-
-      def sanitize_params params
-        params = params.permit! if params.respond_to?(:permit!)
-        params.merge(UNSAFE_PARAMS)
-      end
 
       def default_locals
         {:smart_listing => @smart_listing, :builder => self}
