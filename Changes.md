@@ -1,3 +1,6 @@
+1.2.2
+-----------
+
 - Remove duplicated href key from config template #146 [nfilzi]
 - Replace deprecated .any? with .present? #143 [AakLak]
 - Development environment update #140 [mizinsky]
