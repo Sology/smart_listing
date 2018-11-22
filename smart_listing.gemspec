@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.files = Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
 
-  s.add_dependency "rails", ">=3.2"
+  s.add_dependency "rails", ">=4.2"
   s.add_dependency "coffee-rails"
   s.add_dependency "kaminari", ">= 0.17"
   s.add_dependency "jquery-rails"
