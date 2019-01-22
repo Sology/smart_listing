@@ -57,11 +57,10 @@ module SmartListing
       @per_page = page_sizes.first unless page_sizes.include?(@per_page) || (unlimited_per_page? && @per_page == 0)
 
       @sort = parse_sort(get_param(:sort)) || parse_sort((JSON.parse(get_param(:sort,cookies)).symbolize_keys rescue nil)) || @options[:default_sort]
-
       sort_keys = (@options[:sort_attributes] == :implicit ? @sort.keys.collect{|s| [s, s]} : @options[:sort_attributes])
 
       set_param(:per_page, @per_page, cookies) if @options[:memorize_per_page]
-      set_param(:sort, JSON.generate(@sort), cookies) unless @sort.empty?
+      set_param(:sort, JSON.generate(@sort), cookies) if @options[:memorize_per_page] && !@sort.empty?
 
       @count = @collection.size
       @count = @count.length if @count.is_a?(Hash)
