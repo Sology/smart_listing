@@ -101,25 +101,119 @@ module SmartListing
     end
 
     describe '#sort' do
-      context 'when there is a value in params' do
-        it 'set sort with the given value' do
-          list = build_list
-          params = { "users_smart_listing" => { sort: { "name" => "asc" } } }
+      context 'with :implicit attributes' do
+        context 'when there is a value in params' do
+          it 'set sort with the given value' do
+            list = build_list
+            params = { "users_smart_listing" => { sort: { "name" => "asc" } } }
 
-          list.setup(params, {})
+            list.setup(params, {})
 
-          expect(list.sort).to eq 'name' => 'asc'
+            expect(list.sort).to eq 'name' => 'asc'
+            expect(list.collection.order_values).to match_array(['name asc'])
+          end
+
+          it 'set sort with the given value without direction' do
+            list = build_list
+            params = { 'users_smart_listing' => { sort: { 'name' => '' } } }
+
+            list.setup(params, {})
+
+            expect(list.sort).to eq 'name' => ''
+            expect(list.collection.order_values).to match_array(['name '])
+          end
+
+          it 'does not set sort with the unknown given value' do
+            list = build_list
+            params = { 'users_smart_listing' => { sort: { 'login' => '' } } }
+
+            list.setup(params, {})
+
+            expect(list.sort).to eq({})
+            expect(list.collection.order_values).to match_array([])
+          end
+
+          it 'does not set sort with the given value with unknown direction' do
+            list = build_list
+            params = { 'users_smart_listing' => { sort: { 'name' => 'dasc' } } }
+
+            list.setup(params, {})
+
+            expect(list.sort).to eq({})
+            expect(list.collection.order_values).to match_array([])
+          end
+        end
+
+        context 'when there is no value in params' do
+          it 'take the value in options' do
+            options = { default_sort: { 'email' => 'asc' } }
+            list = build_list(options: options)
+
+            list.setup({}, {})
+
+            expect(list.sort).to eq 'email' => 'asc'
+            expect(list.collection.order_values).to match_array(['email asc'])
+          end
         end
       end
 
-      context 'when there is no value in params' do
-        it 'take the value in options' do
-          options = { default_sort: { 'email' => 'asc' } }
-          list = build_list(options: options)
+      context 'with sort_attributes' do
+        context 'when there is a value in params' do
+          it 'set sort with the given value' do
+            options = { sort_attributes: [[:username, 'users.name']] }
+            list = build_list(options: options)
+            params = { 'users_smart_listing' => { sort: { 'username' => 'asc' } } }
 
-          list.setup({}, {})
+            list.setup(params, {})
 
-          expect(list.sort).to eq 'email' => 'asc'
+            expect(list.sort).to eq username: 'asc'
+            expect(list.collection.order_values).to match_array(['users.name asc'])
+          end
+
+          it 'set sort with the given value without direction' do
+            options = { sort_attributes: [[:username, 'users.name']] }
+            list = build_list(options: options)
+            params = { 'users_smart_listing' => { sort: { 'username' => '' } } }
+
+            list.setup(params, {})
+
+            expect(list.sort).to eq username: ''
+            expect(list.collection.order_values).to match_array(['users.name '])
+          end
+
+          it 'does not set sort with the unknown given value' do
+            options = { sort_attributes: [[:username, 'users.name']] }
+            list = build_list(options: options)
+            params = { 'users_smart_listing' => { sort: { 'login' => 'asc' } } }
+
+            list.setup(params, {})
+
+            expect(list.sort).to eq({})
+            expect(list.collection.order_values).to match_array([])
+          end
+
+          it 'does not set sort with the given value with unknown direction' do
+            options = { sort_attributes: [[:username, 'users.name']] }
+            list = build_list(options: options)
+            params = { 'users_smart_listing' => { sort: { 'username' => 'dasc' } } }
+
+            list.setup(params, {})
+
+            expect(list.sort).to eq({})
+            expect(list.collection.order_values).to match_array([])
+          end
+        end
+
+        context 'when there is no value in params' do
+          it 'take the value in options' do
+            options = { default_sort: { username: 'desc' }, sort_attributes: [[:username, 'users.name']] }
+            list = build_list(options: options)
+
+            list.setup({}, {})
+
+            expect(list.sort).to eq username: 'desc'
+            expect(list.collection.order_values).to match_array(['users.name desc'])
+          end
         end
       end
     end
