@@ -201,21 +201,32 @@ module SmartListing
 
       if @options[:sort_attributes] == :implicit
         sort = sort_params.dup if sort_params.present?
-      elsif @options[:sort_attributes]
-        @options[:sort_attributes].each do |a|
-          k, v = a
-          if sort_params && sort_params[k.to_s]
-            dir = ["asc", "desc", ""].delete(sort_params[k.to_s])
+      elsif @options[:sort_attributes] && sort_params.present?
+        @options[:sort_attributes].each do |attribute|
+          direction = attribute.first.nil? ? nil : sort_params[attribute.first.to_s]
 
-            if dir
-              sort ||= {}
-              sort[k] = dir
-            end
-          end
+          next if nil_or_not_a_safe_sort_direction?(direction)
+
+          sort ||= {}
+          sort[attribute.first] = direction
         end
       end
 
       sort
+    end
+
+    SAFE_SORT_DIRECTIONS = [
+      'asc',
+      'desc',
+      'asc nulls first',
+      'desc nulls first',
+      'asc nulls last',
+      'desc nulls last',
+      ''
+    ].freeze
+
+    def nil_or_not_a_safe_sort_direction?(direction)
+      direction.nil? || !SAFE_SORT_DIRECTIONS.include?(direction.downcase)
     end
   end
 end

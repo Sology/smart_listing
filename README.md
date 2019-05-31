@@ -149,7 +149,16 @@ Implicit mode is convenient with simple data sets. In case you want to sort by j
 
 Note that `:sort_attributes` are array which of course means, that order of attributes matters.
 
-There's also a possibility to specify available sort directions using `:sort_dirs` option which is by default `[nil, "asc", "desc"]`.
+There is a possibility to specify available sort directions using `:sort_dirs` option which is by default `[nil, "asc", "desc"]`.
+So if you need, for example, order your data by `NULLS LAST` , you may pass it simply like that:
+
+```haml
+  ...
+    %th= smart_listing.sortable "User name", :name, { sort_dirs: ['asc', 'desc NULLS LAST']}
+    %th= smart_listing.sortable "Email", :email, { sort_dirs: [nil, 'ASC NULLS FIRST', 'desc']}
+  ...
+```
+**Be careful:** *`NULLS FIRST/LAST` may be not supported by your database (i.e. SQLite, Oracle < 8, some MySQL versions). However, you may use `COALESCE` directly in SQL as the most universal method in such cases.*
 
 ### List item management and in-place editing
 
