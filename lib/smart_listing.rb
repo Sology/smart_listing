@@ -105,12 +105,27 @@ module SmartListing
       else
         # let's sort by all attributes
         #
-        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && !@sort.empty?
+        @collection = @collection.order(applied_sortings(sort_keys, @sort)) if @sort && !@sort.empty?
 
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)
         end
       end
+    end
+
+    def applied_sortings(keys, sort)
+      keys.map do |row|
+        key = row[0]
+        condition = row[1]
+        direction = sort[key]
+        next unless direction
+
+        if condition.include?('%s')
+          format condition, direction
+        else 
+          "#{condition} #{direction}"
+        end
+      end.compact
     end
 
     def partial
