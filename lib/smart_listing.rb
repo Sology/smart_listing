@@ -120,7 +120,7 @@ module SmartListing
         direction = sort[key]
         next unless direction
 
-        if condition.include?('%s')
+        if condition.to_s.include?('%s')
           format condition, direction
         else 
           "#{condition} #{direction}"
