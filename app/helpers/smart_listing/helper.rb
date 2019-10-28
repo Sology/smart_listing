@@ -348,13 +348,15 @@ module SmartListing
         object = args[1]
         partial = args[2]
       end
+
+
       type = object.class.name.downcase.to_sym if object
       id = options[:id] || object.try(:id)
       valid = options[:valid] if options.has_key?(:valid)
       object_key = options.delete(:object_key) || :object
       new = options.delete(:new)
 
-      render(:partial => "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new})
+      render(:partial =>  "smart_listing/item/#{item_action.to_s}", :locals => {:name => name, :id => id, :valid => valid, :object_key => object_key, :object => object, :part => partial, :new => new })
     end
   end
 end
