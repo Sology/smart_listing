@@ -29,4 +29,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "capybara", "< 2.14"
   s.add_development_dependency "capybara-webkit", "~> 1.14"
   s.add_development_dependency "database_cleaner"
+  s.add_development_dependency "rubocop"
+  s.add_development_dependency "pronto"
+  s.add_development_dependency "pronto-rubocop"
 end
