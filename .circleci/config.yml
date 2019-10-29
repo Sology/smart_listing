@@ -61,6 +61,3 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results
           destination: test-results
-    branches:
-      - master
-      - rubocop
