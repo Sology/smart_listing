@@ -29,6 +29,10 @@ jobs:
       - run:
           name: install dependencies
           command: |
+            apt-get update
+            apt-get install -y software-properties-common
+            apt install -y gcc g++ make qt5-default libqt5webkit5-dev ruby-dev zlib1g-dev
+            apt-get install cmake
             bundle install --jobs=4 --retry=3 --path vendor/bundle
 
       - save_cache:
