@@ -221,8 +221,14 @@ Partial name supplied to `smart_listing_item` (`users/form`) references `@user` 
 And one last thing are `create` and `update` controller actions JS view:
 
 ```ruby
+<%# create.js.erb %>
 <%= smart_listing_item :users, :create, @user, @user.persisted? ? "users/user" : "users/form" %>
-<%= smart_listing_item :users, :update, @user, @user.valid? ? "users/user" : "users/form" %>
+```
+```ruby
+<%# update.js.erb %>
+<% if @user.valid? %>
+  <%= smart_listing_item :users, :update, @user, "users/user" %>
+<% end %>
 ```
 
 ### Controls (filtering)
