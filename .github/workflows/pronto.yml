@@ -1,7 +1,6 @@
-name: Pronto
+name: Pronto Review
 
 on:
-  - push
   - pull_request
 
 jobs:
