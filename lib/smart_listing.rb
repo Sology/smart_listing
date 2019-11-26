@@ -23,7 +23,7 @@ module SmartListing
   class Base
     attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
     # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
-    UNSAFE_PARAMS = [:authenticity_token, :commit, :utf8, :_method, :script_name].freeze
+    UNSAFE_PARAMS = [:authenticity_token,   :commit, :utf8, :_method, :script_name ].freeze
 
     def initialize name, collection, options = {}
       @name = name
