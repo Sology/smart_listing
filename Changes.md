@@ -1,3 +1,8 @@
+1.2.3
+-----------
+
+- Fix sorting to mitigate possible SQL-injection and improve tests [Ivan Korunkov]
+
 1.2.2
 -----------
 
