@@ -110,7 +110,7 @@ module SmartListing
         # let's sort by all attributes
         #
         if @sort && !@sort.empty?
-          sorting = sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact
+          sorting = sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}".strip if @sort[s[0]]}.compact
           @collection = @collection.order(sorting)
         end
 
