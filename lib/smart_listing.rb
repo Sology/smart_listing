@@ -203,6 +203,16 @@ module SmartListing
       end
     end
 
+    def attribute_method?(klass, attr)
+      klass_name = klass.name.to_s.camelize
+
+      attr = if attr.starts_with?(klass_name) && attr.include?('.')
+               attr.split('.')[1]
+             end
+
+      klass.attribute_method?(attr)
+    end
+
     def parse_sort sort_params
       sort = nil
 
@@ -210,7 +220,8 @@ module SmartListing
         return sort if sort_params.blank?
 
         sort_params.map do |attr, dir|
-          key = attr.to_s if @options[:array] || @collection.klass.attribute_method?(attr)
+          key = attr.to_s if @options[:array] || attribute_method?(@collection.klass, attr)
+
           if key && ALLOWED_DIRECTIONS[dir.to_s]
             sort ||= {}
             sort[key] = dir.to_s
