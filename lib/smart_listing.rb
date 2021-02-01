@@ -206,7 +206,7 @@ module SmartListing
     def attribute_method?(klass, attr)
       klass_name = klass.name.to_s.camelize
 
-      attr = attr.split('.')[1] if attr.starts_with?(klass_name) && attr.include?('.')
+      attr = attr.split('.')[1] if attr.starts_with?("#{klass_name}.")
 
       klass.attribute_method?(attr)
     end
