@@ -109,7 +109,10 @@ module SmartListing
       else
         # let's sort by all attributes
         #
-        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && !@sort.empty?
+        if @sort && !@sort.empty?
+          sorting = sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}".strip if @sort[s[0]]}.compact
+          @collection = @collection.order(sorting)
+        end
 
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)
@@ -200,6 +203,14 @@ module SmartListing
       end
     end
 
+    def attribute_method?(klass, attr)
+      klass_name = klass.name.to_s.camelize
+
+      attr = attr.split('.')[1] if attr.starts_with?("#{klass_name}.")
+
+      klass.attribute_method?(attr)
+    end
+
     def parse_sort sort_params
       sort = nil
 
@@ -207,7 +218,8 @@ module SmartListing
         return sort if sort_params.blank?
 
         sort_params.map do |attr, dir|
-          key = attr.to_s if @options[:array] || @collection.klass.attribute_method?(attr)
+          key = attr.to_s if @options[:array] || attribute_method?(@collection.klass, attr)
+
           if key && ALLOWED_DIRECTIONS[dir.to_s]
             sort ||= {}
             sort[key] = dir.to_s
