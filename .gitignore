@@ -10,5 +10,8 @@
 /spec/dummy/tmp/
 .byebug_history
 
-.ruby-version
-.ruby-gemset
+/node_modules
+
+/.ruby-version
+/.ruby-gemset
+/.nvmrc

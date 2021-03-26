@@ -1,0 +1,22 @@
+{
+  "name": "smart_listing",
+  "version": "1.0.0",
+  "description": "JS package for SmartListing - Ruby on Rails data listing gem",
+  "main": "app/javascript/smart_listing/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sology/smart_listing.git"
+  },
+  "author": "Sology",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sology/smart_listing/issues"
+  },
+  "homepage": "https://github.com/Sology/smart_listing#readme"
+}
