@@ -1,0 +1,19 @@
+<%# 
+  Pagination per-page links.
+
+  Available local variables:
+    container_classes:  classes for the main container
+    per_page_sizes:     array of available per-page sizes
+    smart_listing:      current SmartListing instance
+    builder:            current builder instance
+-%>
+
+<%= content_tag(:div, :class => container_classes ) do %>
+  <% if smart_listing.options[:paginate] && (smart_listing.count > smart_listing.page_sizes.first) %>
+    <%= t('views.pagination.per_page') %>
+    <% per_page_sizes.each do |p| %><%= builder.pagination_per_page_link p %><% break if p >= smart_listing.count %><% end %>
+    |
+  <% end %>
+  <%= t('views.pagination.total') %>
+  <%= content_tag(:span, smart_listing.count, :class => "count") %>
+<% end %>

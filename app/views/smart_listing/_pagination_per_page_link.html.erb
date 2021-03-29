@@ -1,0 +1,12 @@
+<%# 
+  Pagination single per-page link.
+
+  Available local variables:
+    page:           page number
+    url:            page url (if page is not selected)
+    smart_listing:  current SmartListing instance
+    builder:        current builder instance
+-%>
+
+<% name = page == 0 ? t('views.pagination.unlimited') : page %>
+<%= url ? link_to(name, url, :remote => smart_listing.remote?) : content_tag(:span, name) %>
