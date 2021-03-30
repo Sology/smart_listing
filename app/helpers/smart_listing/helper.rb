@@ -209,6 +209,7 @@ module SmartListing
       data[smart_listing_config.data_attributes(:item_count)] = @smart_listings[name].count
       data[smart_listing_config.data_attributes(:href)] = @smart_listings[name].href if @smart_listings[name].href
       data[smart_listing_config.data_attributes(:callback_href)] = @smart_listings[name].callback_href if @smart_listings[name].callback_href
+      data[:controller] = 'smart_listing'
       data.merge!(options[:data]) if options[:data]
 
       if bare
