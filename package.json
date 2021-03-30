@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Sology/smart_listing/issues"
   },
-  "homepage": "https://github.com/Sology/smart_listing#readme"
+  "homepage": "https://github.com/Sology/smart_listing#readme",
+  "dependencies": {
+    "stimulus": "^2.0.0"
+  }
 }
