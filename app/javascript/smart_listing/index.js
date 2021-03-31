@@ -1,9 +1,12 @@
-import Controller from './controller'
+import Controller from './controller';
 
 const SmartListing = {
-  controller: Controller
-}
+  controller: Controller,
+  registry: {},
+};
 
-window.SmartListing = SmartListing
+window.SmartListing = SmartListing;
 
-export default SmartListing
+console.log(SmartListing);
+
+export default SmartListing;
