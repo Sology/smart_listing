@@ -1,8 +1,8 @@
 class SmartListingRegistry {
   static registryList = {};
 
-  static register(name, stimulusController) {
-    this.registryList[name] = stimulusController;
+  static register(name, controllerInstance) {
+    this.registryList[name] = controllerInstance;
   }
 
   static get(name) {
