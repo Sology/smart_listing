@@ -1,11 +1,10 @@
 import { Controller } from 'stimulus';
-import SmartListingRegistry from './register';
+import SmartListingRegistry from './registry';
 
 export default class extends Controller {
-  static targets = [ "name", "output", "boobzz" ]
+  static values = { name: String };
 
   connect() {
-    console.log(this);
-    SmartListingRegistry.register(this.element);
+    SmartListingRegistry.register(this.nameValue, this);
   }
 }

@@ -2,13 +2,11 @@
   "name": "smart_listing",
   "version": "1.0.0",
   "description": "JS package for SmartListing - Ruby on Rails data listing gem",
-
   "source": "app/javascript/smart_listing/index.js",
   "main": "dist/smart_listing.js",
-  "exports": "dist/smart_listing.modern.js",
+  "exports": "./dist/smart_listing.modern.js",
   "module": "dist/smart_listing.module.js",
   "unpkg": "dist/smart_listing.umd.js",
-
   "directories": {
     "lib": "lib"
   },
