@@ -7,7 +7,6 @@
     per_page:      number of items to fetch per page
     remote:        data-remote
 -%>
-<li class="page<%= ' active' if page.current? %>">
-  CHANGEME
-  <%= link_to page, url, opts = {:remote => remote, :rel => page.next? ? 'next' : page.prev? ? 'prev' : nil} %>
+<li class="<%= smart_listing_config.classes(:pagination_list_item) %>">
+  <%= link_to page, url, opts = {:remote => remote, :rel => page.next? ? 'next' : page.prev? ? 'prev' : nil, :class => "#{smart_listing_config.classes(:pagination_page)} #{'active' if page.current?}"} %>
 </li>
