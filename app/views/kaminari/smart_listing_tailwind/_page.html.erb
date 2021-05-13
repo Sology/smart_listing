@@ -8,5 +8,5 @@
     remote:        data-remote
 -%>
 <li class="<%= smart_listing_config.classes(:pagination_list_item) %>">
-  <%= link_to page, url, opts = {:remote => remote, :rel => page.next? ? 'next' : page.prev? ? 'prev' : nil, :class => "#{smart_listing_config.classes(:pagination_page)} #{'active' if page.current?}"} %>
+  <%= link_to page, url, opts = {:remote => remote, :rel => page.next? ? 'next' : page.prev? ? 'prev' : nil, :class => "block relative text-sm border -ml-px px-3 py-1.5 #{smart_listing_config.classes(:pagination_page)} #{'active' if page.current?}"} %>
 </li>
