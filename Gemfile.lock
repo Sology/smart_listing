@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    smart_listing (0.1.0)
+    smart_listing (2.0)
       rails (>= 6.1)
 
 GEM
@@ -229,4 +229,4 @@ DEPENDENCIES
   smart_listing!
 
 BUNDLED WITH
-   2.2.3
+   2.2.15

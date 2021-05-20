@@ -10,7 +10,15 @@ export default class extends Controller {
     Registry.register(this.nameValue, this);
   }
 
+  beforeSend(e) {
+    console.log('before');
+    e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing.html');
+
+    return true;
+  }
+
   update(e) {
+    console.log('update');
     const [xhr, status] = e.detail;
     const tableBody = this.element.querySelector('tbody');
 
