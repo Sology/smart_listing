@@ -49,7 +49,7 @@ module SmartListing
           :callback => "callback",
           # :pagination_wrapper => "text-center",
           # :pagination_container => "pagination",
-          :pagination_per_page => "text-center text-sm",
+          # :pagination_per_page => "text-center text-sm",
           :inline_editing => "info",
           :no_records => "no-records",
           :limit => "smart-listing-limit",
