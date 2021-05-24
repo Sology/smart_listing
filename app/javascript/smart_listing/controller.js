@@ -17,15 +17,38 @@ export default class extends Controller {
     return true;
   }
 
+  makeAction(action, target, template) {
+    switch (action) {
+      case 'index':
+        if (target && template) {
+          return (target.innerHTML = template.innerHTML);
+        }
+        throw new Error(`Target: ${target}, template: ${template}`);
+      default:
+        throw new Error(`Unknown action: ${action}`);
+    }
+  }
+
   update(e) {
     console.log('update');
     const [xhr, status] = e.detail;
-    const tableBody = this.element.querySelector('tbody');
 
     if (status === STATUS_OK) {
-      this.element.outerHTML = xhr.response;
+      const parser = new DOMParser();
+      const tempDoc = parser.parseFromString(xhr.response, 'text/html');
+
+      const smartListingActionNodes = tempDoc.querySelectorAll('smart-listing-action');
+
+      smartListingActionNodes.forEach((element) => {
+        const actionName = element.getAttribute('name');
+        const targetId = element.getAttribute('target');
+        const target = document.getElementById(`${targetId}`);
+        const template = element.querySelector('template');
+
+        this.makeAction(actionName, target, template);
+      });
     } else {
-      tableBody.textContent = 'Failed to load data!';
+      console.error(`Status ${xhr.status}`);
     }
   }
 }
