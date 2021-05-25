@@ -9,4 +9,4 @@
 -%>
 
 <% name = page == 0 ? t('views.pagination.unlimited') : page %>
-<%= url ? link_to(name, url, :remote => smart_listing.remote?, class: "#{smart_listing_config.classes(:pagination_per_page_link)}") : content_tag(:span, name) %>
+<%= url ? link_to(name, url, :remote => smart_listing.remote?) : content_tag(:span, name) %>
