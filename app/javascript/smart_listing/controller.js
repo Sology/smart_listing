@@ -6,13 +6,18 @@ const STATUS_OK = 'OK';
 export default class extends Controller {
   static values = { name: String };
 
+  content;
+
   connect() {
     Registry.register(this.nameValue, this);
+    this.content = this.element.querySelector('.content');
   }
 
   beforeSend(e) {
     console.log('before');
     e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing.html');
+
+    this.content.classList.add('opacity-20', 'pointer-events-none', 'transition-opacity');
 
     return true;
   }
@@ -50,5 +55,7 @@ export default class extends Controller {
     } else {
       console.error(`Status ${xhr.status}`);
     }
+
+    this.content.classList.remove('opacity-20', 'pointer-events-none');
   }
 }
