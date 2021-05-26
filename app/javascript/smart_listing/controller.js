@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
 import Registry from './registry';
-import { eventsName, dispatchBeforeSendEvent, dispatchAfterCompleteEvent } from './events';
+import { dispatchBeforeSendEvent, dispatchAfterCompleteEvent } from './events';
 
 const STATUS_OK = 'OK';
 
@@ -12,22 +12,13 @@ export default class extends Controller {
   connect() {
     Registry.register(this.nameValue, this);
     this.content = this.element.querySelector('.content');
-
-    this.content.addEventListener(eventsName.BEFORE_SEND, (e) => {
-      e.target.classList.add(...e.detail.classList);
-    });
-    this.content.addEventListener(eventsName.AFTER_COMPLETE, (e) => {
-      e.target.classList.remove(...e.detail.classList);
-    });
   }
 
   beforeSend(e) {
     console.log('before');
     e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing.html');
 
-    dispatchBeforeSendEvent(this.content, {
-      classList: ['opacity-20', 'pointer-events-none', 'transition-opacity'],
-    });
+    dispatchBeforeSendEvent(this.content);
 
     return true;
   }
@@ -66,6 +57,6 @@ export default class extends Controller {
       console.error(`Status ${xhr.status}`);
     }
 
-    dispatchAfterCompleteEvent(this.content, { classList: ['opacity-20', 'pointer-events-none'] });
+    dispatchAfterCompleteEvent(this.content);
   }
 }

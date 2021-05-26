@@ -3,16 +3,12 @@ export const eventsName = {
   AFTER_COMPLETE: 'aftercomplete',
 };
 
-export const dispatchBeforeSendEvent = (htmlElement, data) => {
-  const beforeSendEvent = new CustomEvent(eventsName.BEFORE_SEND, {
-    detail: data,
-  });
+export const dispatchBeforeSendEvent = (htmlElement) => {
+  const beforeSendEvent = new Event(eventsName.BEFORE_SEND);
   htmlElement.dispatchEvent(beforeSendEvent);
 };
 
-export const dispatchAfterCompleteEvent = (htmlElement, data) => {
-  const afterCompleteEvent = new CustomEvent(eventsName.AFTER_COMPLETE, {
-    detail: data,
-  });
+export const dispatchAfterCompleteEvent = (htmlElement) => {
+  const afterCompleteEvent = new Event(eventsName.AFTER_COMPLETE);
   htmlElement.dispatchEvent(afterCompleteEvent);
 };
