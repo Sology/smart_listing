@@ -7,18 +7,15 @@ const STATUS_OK = 'OK';
 export default class extends Controller {
   static values = { name: String };
 
-  content;
-
   connect() {
     Registry.register(this.nameValue, this);
-    this.content = this.element.querySelector('.content');
   }
 
   beforeSend(e) {
     console.log('before');
     e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing.html');
 
-    dispatchBeforeSendEvent(this.content);
+    dispatchBeforeSendEvent(this.element);
 
     return true;
   }
@@ -57,6 +54,6 @@ export default class extends Controller {
       console.error(`Status ${xhr.status}`);
     }
 
-    dispatchAfterCompleteEvent(this.content);
+    dispatchAfterCompleteEvent(this.element);
   }
 }
