@@ -8,7 +8,7 @@
 -%>
 <%= paginator.render do -%>
   <div class="flex justify-center items-center mb-1">
-    <ul class="pagination flex items-center">
+    <ul class="flex items-center">
       <%= first_page_tag unless current_page.first? %>
       <%= prev_page_tag unless current_page.first? %>
       <% each_page do |page| -%>
