@@ -1,6 +1,7 @@
 import { Controller } from 'stimulus';
 import Registry from '../registry';
 import { dispatchBeforeSendEvent, dispatchAfterCompleteEvent } from '../events';
+import { actionNames, actionsList } from '../actions';
 
 const STATUS_OK = 'OK';
 
@@ -8,7 +9,7 @@ export default class extends Controller {
   static values = { name: String };
 
   connect() {
-    debugger;
+    // debugger;
     Registry.register(this.nameValue, this);
   }
 
@@ -21,13 +22,10 @@ export default class extends Controller {
     return true;
   }
 
-  makeAction(action, target, template) {
+  performAction(action, target, template) {
     switch (action) {
-      case 'index':
-        if (target && template) {
-          return (target.innerHTML = template.innerHTML);
-        }
-        throw new Error(`Target: ${target}, template: ${template}`);
+      case actionNames.INDEX:
+        return actionsList.reloadList(target, template);
       default:
         throw new Error(`Unknown action: ${action}`);
     }
@@ -49,7 +47,7 @@ export default class extends Controller {
         const target = document.getElementById(`${targetId}`);
         const template = element.querySelector('template');
 
-        this.makeAction(actionName, target, template);
+        this.performAction(actionName, target, template);
       });
     } else {
       console.error(`Status ${xhr.status}`);
