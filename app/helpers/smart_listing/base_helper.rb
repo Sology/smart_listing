@@ -8,8 +8,8 @@ module SmartListing
       Builder.new(base, options)
     end
 
-    def smart_listing_dom_id **args
-      SmartListing::Builder.dom_id **args
+    def smart_listing_dom_id *args
+      SmartListing::Builder.dom_id *args
     end
 
     def smart_listing_controls_for name, *args, &block

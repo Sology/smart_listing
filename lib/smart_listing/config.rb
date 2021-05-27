@@ -18,6 +18,7 @@ module SmartListing
 
     DEFAULTS = {
       :global_options => {
+        :stimulus_controller            => 'smart-listing',
         :param_names  => {                                      # param names
           :page                         => :page,
           :per_page                     => :per_page,

@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = spec.homepage + '/blob/master/Changes.md'
 
 
-  spec.add_dependency "rails", ">= 6.1"
+  spec.add_dependency "rails", ">= 6.0"
 
   spec.add_development_dependency "pg"
   spec.add_development_dependency "rspec-rails"

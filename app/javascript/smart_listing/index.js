@@ -1,8 +1,12 @@
-import Controller from './controller';
+import BaseController from './controllers/base';
+import TailwindController from './controllers/tailwind';
 import Registry from './registry';
 
 const SmartListing = {
-  controller: Controller,
+  controllers: {
+    base: BaseController,
+    tailwind: TailwindController
+  },
   registry: Registry,
 };
 

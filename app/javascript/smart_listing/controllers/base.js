@@ -1,6 +1,6 @@
 import { Controller } from 'stimulus';
-import Registry from './registry';
-import { dispatchBeforeSendEvent, dispatchAfterCompleteEvent } from './events';
+import Registry from '../registry';
+import { dispatchBeforeSendEvent, dispatchAfterCompleteEvent } from '../events';
 
 const STATUS_OK = 'OK';
 
@@ -8,6 +8,7 @@ export default class extends Controller {
   static values = { name: String };
 
   connect() {
+    debugger;
     Registry.register(this.nameValue, this);
   }
 

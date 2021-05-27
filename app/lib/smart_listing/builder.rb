@@ -35,9 +35,9 @@ module SmartListing
           config.data_attributes(:item_count) => base.count,
           config.data_attributes(:href) => base.href,
           config.data_attributes(:callback_href) => base.callback_href,
-          controller: 'smart-listing',
-          smart_listing_name_value: name,
-          action: 'ajax:beforeSend->smart-listing#beforeSend ajax:complete->smart-listing#update',
+          "#{stimulus_controller}_name_value" => name,
+          controller: stimulus_controller,
+          action: "ajax:beforeSend->#{stimulus_controller}#beforeSend ajax:complete->#{stimulus_controller}#update",
         }.merge(options[:data] || {})
 
         content_tag(:div, class: config.classes(:main), id: self.class.dom_id(self), data: data) do
@@ -89,12 +89,8 @@ module SmartListing
 
     # Basic render block wrapper that adds smart_listing reference to local variables
     def render options = {}, locals = {}, &block
-      if locals.empty?
-        options[:locals] ||= {}
-        options[:locals].merge!(:smart_listing => self)
-      else
-        locals.merge!({:smart_listing => self})
-      end
+      locals.merge(smart_listing: self)
+      options[:locals].merge(smart_listing: self) if options.is_a?(Hash)
 
       view_context.render options, locals, &block
     end
@@ -219,6 +215,10 @@ module SmartListing
 
     def default_locals
       {:smart_listing => base, :builder => self}
+    end
+
+    def stimulus_controller
+      config.global_options[:stimulus_controller]
     end
   end
 end
