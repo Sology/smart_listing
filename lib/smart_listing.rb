@@ -21,7 +21,7 @@ end
 
 module SmartListing
   class Base
-    attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
+    attr_reader :name, :config, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
     # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
     UNSAFE_PARAMS = [:authenticity_token, :commit, :utf8, :_method, :script_name].freeze
     # For fast-check, like:
@@ -30,9 +30,9 @@ module SmartListing
     private_constant :ALLOWED_DIRECTIONS
 
     def initialize name, collection, options = {}
-      @name = name
+      @name = name.to_s.dasherize
 
-      config_profile = options.delete(:config_profile)
+      @config = SmartListing.config(options.delete(:config_profile) || :default)
 
       @options = {
         :partial                        => @name,                       # SmartListing partial name
@@ -41,13 +41,17 @@ module SmartListing
         :href                           => nil,                         # set SmartListing target url (in case when different than current url)
         :remote                         => true,                        # SmartListing is remote by default
         :callback_href                  => nil,                         # set SmartListing callback url (in case when different than current url)
-      }.merge(SmartListing.config(config_profile).global_options).merge(options)
+      }.merge(config.global_options).merge(options)
 
       if @options[:array]
         @collection = collection.to_a
       else
         @collection = collection
       end
+    end
+
+    def to_key
+      @name
     end
 
     def setup params, cookies
@@ -108,8 +112,8 @@ module SmartListing
         end
       else
         # let's sort by all attributes
-        #
-        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && !@sort.empty?
+
+        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]].present?}.compact) if @sort && !@sort.empty?
 
         if @options[:paginate] && @per_page > 0
           @collection = @collection.page(@page).per(@per_page)

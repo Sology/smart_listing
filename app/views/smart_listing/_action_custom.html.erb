@@ -1,0 +1,10 @@
+<%# 
+  Custom action.
+
+  Available local variables:
+    url
+    icon
+    html_options:       custom html options
+-%>
+
+<%= link_to_if(action_if, content_tag(:span, '', :class => icon, :title => title), url, html_options) %>

@@ -11,6 +11,7 @@
 .byebug_history
 
 /node_modules
+/dist
 
 /.ruby-version
 /.ruby-gemset

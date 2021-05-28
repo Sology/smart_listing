@@ -2,12 +2,18 @@
   "name": "smart_listing",
   "version": "1.0.0",
   "description": "JS package for SmartListing - Ruby on Rails data listing gem",
-  "main": "app/javascript/smart_listing/index.js",
+  "source": "app/javascript/smart_listing/index.js",
+  "main": "dist/smart_listing.js",
+  "exports": "./dist/smart_listing.modern.js",
+  "module": "dist/smart_listing.module.js",
+  "unpkg": "dist/smart_listing.umd.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "microbundle",
+    "dev": "microbundle watch"
   },
   "repository": {
     "type": "git",
@@ -18,5 +24,11 @@
   "bugs": {
     "url": "https://github.com/Sology/smart_listing/issues"
   },
-  "homepage": "https://github.com/Sology/smart_listing#readme"
+  "homepage": "https://github.com/Sology/smart_listing#readme",
+  "dependencies": {
+    "stimulus": "^2.0.0"
+  },
+  "devDependencies": {
+    "microbundle": "^0.13.0"
+  }
 }

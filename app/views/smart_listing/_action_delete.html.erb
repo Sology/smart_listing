@@ -1,0 +1,12 @@
+<%# 
+  Delete action.
+
+  Available local variables:
+    action_if:          false if action is disabled
+    url:                destroy url
+    icon:               icon css classes
+    confirmation:       confrimation text
+    title
+-%>
+
+<%= link_to_if(action_if, content_tag(:span, "&#128465;".html_safe, :class => icon), url, :remote => true, :class => "destroy", :method => :delete, :title => title || t("smart_listing.actions.destroy"), :data => {:confirmation => confirmation || t("smart_listing.msgs.destroy_confirmation")} ) %>
