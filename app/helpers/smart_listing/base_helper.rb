@@ -1,11 +1,12 @@
 module SmartListing
   module BaseHelper
-    def smart_listing name = controller_name, options
+    def smart_listing name = controller_name, options = {}
       name = name.to_sym
 
+      @_smart_listings ||= {}
       base = @_smart_listings[name] || SmartListing::Base.new(name, nil, options)
 
-      Builder.new(base, options)
+      Builder.new(base, self, options)
     end
 
     def smart_listing_dom_id *args
@@ -13,7 +14,7 @@ module SmartListing
     end
 
     def smart_listing_controls_for name, *args, &block
-      smart_listing = @smart_listings.try(:[], name)
+      smart_listing = @_smart_listings.try(:[], name)
 
       classes = [smart_listing_config.classes(:controls), args.first.try(:[], :class)]
 
@@ -22,53 +23,6 @@ module SmartListing
           concat(hidden_field_tag("#{smart_listing.try(:base_param)}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
         end)
         concat(capture(&block))
-      end
-    end
-
-    # Render item action buttons (ie. edit, destroy and custom ones)
-    def smart_listing_item_actions actions = []
-      content_tag(:span) do
-        actions.each do |action|
-          next unless action.is_a?(Hash)
-
-          locals = {
-            :action_if => action.has_key?(:if) ? action[:if] : true,
-            :url => action.delete(:url),
-            :icon => action.delete(:icon),
-            :title => action.delete(:title),
-          }
-
-          template = nil
-          action_name = action[:name].to_sym
-
-          case action_name
-          when :show
-            locals[:icon] ||= smart_listing_config.classes(:icon_show)
-            template = 'action_show'
-          when :edit
-            locals[:icon] ||= smart_listing_config.classes(:icon_edit)
-            template = 'action_edit'
-          when :destroy
-            locals[:icon] ||= smart_listing_config.classes(:icon_trash)
-            locals.merge!(
-              :confirmation => action.delete(:confirmation),
-            )
-            template = 'action_delete'
-          when :custom
-            locals.merge!(
-              :html_options => action,
-            )
-            template = 'action_custom'
-          end
-
-          locals[:icon] = [locals[:icon], smart_listing_config.classes(:muted)] if !locals[:action_if]
-
-          if template
-            concat(render(:partial => "smart_listing/#{template}", :locals => locals))
-          else
-            concat(render(:partial => "smart_listing/action_#{action_name}", :locals => {:action => action}))
-          end
-        end
       end
     end
 
@@ -90,7 +44,7 @@ module SmartListing
     def smart_listing_update *args
       options = args.extract_options!
       name = (args[0] || options[:name] || controller_name).to_sym
-      smart_listing = @smart_listings[name]
+      smart_listing = @_smart_listings[name]
 
       # don't update list if params are missing (prevents interfering with other lists)
       if params.keys.select{|k| k.include?("smart_listing")}.present? && !params[smart_listing.base_param]

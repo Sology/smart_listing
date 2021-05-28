@@ -22,8 +22,12 @@ module SmartListing
       @options = options
     end
 
-    def actions
-      @actions ||= Actions.new(self)
+    def remote
+      @remote ||= Remote.new(self)
+    end
+
+    def actions specs = []
+      Actions.new(self, specs)
     end
 
     def container &block
@@ -52,7 +56,11 @@ module SmartListing
     def wrapper target, options = {}, &block
       name = options.delete(:name) || 'smart-listing-wrapper'
 
-      content_tag(name, {id: self.class.dom_id(self, target)}, &block)
+      content_tag(name, {id: dom_id(target)}, &block)
+    end
+
+    def dom_id(target)
+      self.class.dom_id(self, target)
     end
 
     def render_in *args
@@ -89,8 +97,8 @@ module SmartListing
 
     # Basic render block wrapper that adds smart_listing reference to local variables
     def render options = {}, locals = {}, &block
-      locals.merge(smart_listing: self)
-      options[:locals].merge(smart_listing: self) if options.is_a?(Hash)
+      locals.merge!(smart_listing: self)
+      options[:locals].merge!(smart_listing: self, foo: 1) if options.is_a?(Hash)
 
       view_context.render options, locals, &block
     end
@@ -152,7 +160,7 @@ module SmartListing
       locals = {
         :order => base.sort_order(attribute),
         :url => view_context.url_for(base.params.merge(base.all_params(:sort => sort_params))),
-        :container_classes => [view_context.smart_listing_config.classes(:sortable)],
+        :container_classes => [config.classes(:sortable)],
         :attribute => attribute,
         :title => title,
         :remote => base.remote?

@@ -1,5 +1,5 @@
 export const actionNames = {
-  INDEX: 'index',
+  REPLACE: 'replace',
 };
 
 export const actionsList = {

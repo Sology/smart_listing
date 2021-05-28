@@ -15,7 +15,7 @@ export default class extends Controller {
 
   beforeSend(e) {
     console.log('before');
-    e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing.html');
+    e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing-remote.html');
 
     dispatchBeforeSendEvent(this.element);
 
@@ -24,7 +24,7 @@ export default class extends Controller {
 
   performAction(action, target, template) {
     switch (action) {
-      case actionNames.INDEX:
+      case actionNames.REPLACE:
         return actionsList.reloadList(target, template);
       default:
         throw new Error(`Unknown action: ${action}`);

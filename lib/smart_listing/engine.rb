@@ -20,13 +20,13 @@ module SmartListing
     end
 
     initializer "smart_listing.mimetype" do
-      Mime::Type.register "text/vnd.smart-listing.html", :smart_listing
+      Mime::Type.register "text/vnd.smart-listing-remote.html", :smart_listing_remote
     end
 
     initializer "smart_listing.renderer" do
       ActiveSupport.on_load(:action_controller) do
-        ActionController::Renderers.add :smart_listing do |smart_listing_html, options|
-          self.content_type = Mime[:smart_listing] if media_type.nil?
+        ActionController::Renderers.add :smart_listing_remote do |smart_listing_html, options|
+          self.content_type = Mime[:smart_listing_remote] if media_type.nil?
           smart_listing_html
         end
       end
