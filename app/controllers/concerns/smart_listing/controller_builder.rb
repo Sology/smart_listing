@@ -5,7 +5,7 @@ module SmartListing
     def smart_listing *args
       options = args.extract_options!
       name = (args[0] || options[:name] || controller_name).to_sym
-      collection = args[1] || options[:collection] || smart_listing_collection
+      collection = args[1] || options[:collection] || (defined?(smart_listing_collection) ? smart_listing_collection : nil)
 
       options = {:config_profile => smart_listing_config_profile}.merge(options)
 
