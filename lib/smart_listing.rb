@@ -20,6 +20,8 @@ module Kaminari
 end
 
 module SmartListing
+  extend ActiveSupport::Autoload
+
   class Base
     attr_reader :name, :config, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
     # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
