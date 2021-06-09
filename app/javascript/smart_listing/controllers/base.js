@@ -26,6 +26,8 @@ export default class extends Controller {
     switch (action) {
       case actionNames.REPLACE:
         return actionsList.reloadList(target, template);
+      case actionNames.REMOVE:
+        return actionsList.remove(target);
       default:
         throw new Error(`Unknown action: ${action}`);
     }

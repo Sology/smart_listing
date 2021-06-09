@@ -1,5 +1,6 @@
 export const actionNames = {
   REPLACE: 'replace',
+  REMOVE: 'remove',
 };
 
 export const actionsList = {
@@ -8,5 +9,11 @@ export const actionsList = {
       return (target.innerHTML = template.innerHTML);
     }
     throw new Error(`Target: ${target}, template: ${template}`);
+  },
+  remove: (target) => {
+    if (target) {
+      return target.remove();
+    }
+    throw new Error(`Target: ${target}`);
   },
 };
