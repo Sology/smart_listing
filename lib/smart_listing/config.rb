@@ -18,6 +18,7 @@ module SmartListing
 
     DEFAULTS = {
       :global_options => {
+        :stimulus_controller            => 'smart-listing',
         :param_names  => {                                      # param names
           :page                         => :page,
           :per_page                     => :per_page,
@@ -47,9 +48,9 @@ module SmartListing
           :hidden => "hidden",
           :autoselect => "autoselect",
           :callback => "callback",
-          :pagination_wrapper => "text-center",
-          :pagination_container => "pagination",
-          :pagination_per_page => "pagination-per-page text-center",
+          # :pagination_wrapper => "text-center",
+          # :pagination_container => "pagination",
+          # :pagination_per_page => "text-center text-sm",
           :inline_editing => "info",
           :no_records => "no-records",
           :limit => "smart-listing-limit",
