@@ -20,7 +20,7 @@ export default class extends Controller {
         e.detail[0].setRequestHeader('Accept', 'text/vnd.smart-listing-remote.html');
         break;
       case 'turbo:before-fetch-request':
-        Turbo.navigator.history.push(new URL(e.detail.url))
+        Turbo.navigator.history.replace(new URL(e.detail.url))
         break;
     }
 
