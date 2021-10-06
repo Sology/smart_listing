@@ -1,5 +1,5 @@
 import BaseController from './base';
-import { eventsName } from '../events';
+import { eventsName } from '../../events';
 
 export default class TailwindSmartListingController extends BaseController {
   connect() {

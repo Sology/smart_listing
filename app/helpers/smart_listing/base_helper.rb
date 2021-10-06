@@ -13,19 +13,6 @@ module SmartListing
       SmartListing::Builder.dom_id *args
     end
 
-    def smart_listing_controls_for name, *args, &block
-      smart_listing = @_smart_listings.try(:[], name)
-
-      classes = [smart_listing_config.classes(:controls), args.first.try(:[], :class)]
-
-      form_tag(smart_listing.try(:href) || {}, :remote => smart_listing.try(:remote?) || true, :method => :get, :class => classes, :data => {smart_listing_config.data_attributes(:main) => name}) do
-        concat(content_tag(:div, :style => "margin:0;padding:0;display:inline") do
-          concat(hidden_field_tag("#{smart_listing.try(:base_param)}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
-        end)
-        concat(capture(&block))
-      end
-    end
-
     def smart_listing_limit_left name
       name = name.to_sym
       smart_listing = @smart_listings[name]

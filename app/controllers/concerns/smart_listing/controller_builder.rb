@@ -22,6 +22,10 @@ module SmartListing
       :default
     end
 
+    def smart_listing_remote
+      SmartListing::Remote::TagBuilder.new(view_context)
+    end
+
     # TODO prepend `smart_listing` view paths
   end
 end

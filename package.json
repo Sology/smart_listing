@@ -26,7 +26,8 @@
   },
   "homepage": "https://github.com/Sology/smart_listing#readme",
   "dependencies": {
-    "stimulus": "^2.0.0"
+    "@hotwired/stimulus": "^3.0.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "microbundle": "^0.13.0"

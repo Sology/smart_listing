@@ -3,7 +3,7 @@ module SmartListing
     class << self
       def dom_id name_or_instance, item = nil
         instance_key = name_or_instance.respond_to?(:to_key) ? name_or_instance.to_key : name_or_instance.to_s.dasherize
-        item_key = item && (item.respond_to?(:to_key) ? item.to_key : item.to_s.dasherize)
+        item_key = item && (item.respond_to?(:to_key) ? ActionView::RecordIdentifier.dom_id(item) : item.to_s.dasherize)
 
         ['smart-listing', instance_key, item_key].compact.join('-')
       end
@@ -30,10 +30,29 @@ module SmartListing
       Actions.new(self, specs)
     end
 
+    def controls
+      @controls ||= Controls.new(self)
+    end
+
     def container &block
       if options[:bare]
         capture(builder, &block)
       else
+        case base.config.global_options[:remote_mode]
+        when :turbo
+          content_element = :"turbo-frame"
+          event_names = {
+            before: 'turbo:before-fetch-request',
+            complete: 'turbo:frame-load'
+          }
+        when :ujs
+          content_element = :div
+          event_names = {
+            before: 'ajax:beforeSend',
+            complete: 'ajax:complete',
+          }
+        end
+
         data = {
           config.data_attributes(:max_count) => (base.max_count if base.max_count&.positive?),
           config.data_attributes(:item_count) => base.count,
@@ -41,12 +60,11 @@ module SmartListing
           config.data_attributes(:callback_href) => base.callback_href,
           "#{stimulus_controller}_name_value" => name,
           controller: stimulus_controller,
-          action: "ajax:beforeSend->#{stimulus_controller}#beforeSend ajax:complete->#{stimulus_controller}#update",
+          action: "#{event_names[:before]}->#{stimulus_controller}#beforeSend #{event_names[:complete]}->#{stimulus_controller}#update",
         }.merge(options[:data] || {})
 
-        content_tag(:div, class: config.classes(:main), id: self.class.dom_id(self), data: data) do
-          concat(content_tag(:div, "", class: config.classes(:loading)))
-          concat(content_tag(:div, class: config.classes(:content)) do
+        content_tag(:div, class: config.classes(:main), id: dom_id, data: data) do
+          concat(content_tag(content_element, id: dom_id(:content)) do
             concat(capture(self, &block))
           end)
         end
@@ -59,7 +77,7 @@ module SmartListing
       content_tag(name, {id: dom_id(target)}, &block)
     end
 
-    def dom_id(target)
+    def dom_id(target = nil)
       self.class.dom_id(self, target)
     end
 
@@ -226,7 +244,7 @@ module SmartListing
     end
 
     def stimulus_controller
-      config.global_options[:stimulus_controller]
+      config.global_options[:stimulus_controllers][:main]
     end
   end
 end

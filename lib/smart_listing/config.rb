@@ -18,7 +18,10 @@ module SmartListing
 
     DEFAULTS = {
       :global_options => {
-        :stimulus_controller            => 'smart-listing',
+        stimulus_controllers: {
+          main:                         'smart-listing',
+          controls:                     'smart-listing-controls',
+        },
         :param_names  => {                                      # param names
           :page                         => :page,
           :per_page                     => :per_page,
@@ -32,7 +35,7 @@ module SmartListing
         :page_sizes                     => DEFAULT_PAGE_SIZES.dup,      # set available page sizes array
         :kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
         :sort_dirs                      => [nil, "asc", "desc"],        # Default sorting directions cycle of sortables
-        :remote                         => true,                        # Default remote mode
+        :remote_mode                    => :turbo,                      # Default remote mode. Can be either null, :turbo or :ujs
       },
       :constants => {
         :classes => {
@@ -86,22 +89,6 @@ module SmartListing
           :observed => "observed",
           :autoshow => "autoshow",
           :popover => "slpopover",
-        },
-        :selectors => {
-          :item_action_destroy => "a.destroy",
-          :edit_cancel => "button.cancel",
-          :row => "tr",
-          :head => "thead",
-          :filtering_button => "button",
-          :filtering_icon => "button span",
-          :filtering_input => ".filter input",
-          :pagination_count => ".pagination-per-page .count",
-        },
-        :element_templates => {
-          :row => "<tr />",
-        },
-        :bootstrap_commands => {
-          :popover_destroy => "destroy",
         }
       }
     }.freeze
@@ -135,10 +122,6 @@ module SmartListing
 
     def selectors key
       @options[:constants].try(:[], :selectors).try(:[], key) || DEFAULTS[:constants][:selectors][key]
-    end
-
-    def element_templates key
-      @options[:constants].try(:[], :element_templates).try(:[], key) || DEFAULTS[:constants][:element_templates][key]
     end
 
     def global_options value = nil

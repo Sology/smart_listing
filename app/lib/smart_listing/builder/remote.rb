@@ -1,8 +1,9 @@
 module SmartListing
   class Builder
+    # To be used in views responding to `smart_listing_remote` request type 
+    # i.e. `index.smart_listing.erb`.
     class Remote
-      include SmartListing::ActionHelper
-
+      include SmartListing::Remote::ActionHelper 
       attr_reader :builder
 
       delegate :base, :view_context, to: :builder

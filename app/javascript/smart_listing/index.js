@@ -1,12 +1,20 @@
-import BaseController from './controllers/base';
-import TailwindController from './controllers/tailwind';
+import MainBaseController from './controllers/main/base';
+import MainTailwindController from './controllers/main/tailwind';
+import ControlsBaseController from './controllers/controls/base';
+import ControlsTailwindController from './controllers/controls/tailwind';
 import Registry from './registry';
 import { actionsList } from './actions';
 
 const SmartListing = {
   controllers: {
-    base: BaseController,
-    tailwind: TailwindController,
+    main: {
+      base: MainBaseController,
+      tailwind: MainTailwindController
+    },
+    controls: {
+      base: ControlsBaseController,
+      tailwind: ControlsTailwindController
+    }
   },
   registry: Registry,
   actions: actionsList,
