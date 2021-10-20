@@ -24,7 +24,7 @@ export default class extends Controller {
   //}
 
   refresh(e) {
-    console.log('refresh');
+    console.log('smart listing controls: refresh', e);
     this.element.requestSubmit();
   }
 

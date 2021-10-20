@@ -13,7 +13,7 @@ export default class extends Controller {
   }
 
   beforeSend(e) {
-    console.log('before', e);
+    console.log('smart_listing: before', e);
 
     switch(e.type) {
       case 'ajax:beforeSend':
@@ -41,7 +41,7 @@ export default class extends Controller {
   }
 
   update(e) {
-    console.log('update', e);
+    console.log('smart_listing: update', e);
     if(e.type == 'ajax:complete') {
       // UJS mode
       const [xhr, status] = e.detail;

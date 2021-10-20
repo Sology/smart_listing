@@ -32,7 +32,7 @@ module SmartListing
       def observable_field_data initial_data = {}
         initial_data["#{stimulus_controller}_target"] = 'observable'
         initial_data.merge!(
-          action: "change->#{stimulus_controller}#refresh keyup->#{stimulus_controller}#refresh"
+          action: "input->#{stimulus_controller}#refresh"
         ) do |key, old, new|
           [old, new].join(' ')
         end
