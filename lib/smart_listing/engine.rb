@@ -6,11 +6,12 @@ module SmartListing
     config.eager_load_namespaces << SmartListing
     config.smart_listing = ActiveSupport::OrderedOptions.new
 
-    #config.autoload_once_paths = %W(
-      ##{root}/app/controllers
-      ##{root}/app/helpers
-      ##{root}/app/lib
-    #)
+    config.autoload_once_paths = %W(
+      #{root}/app/controllers
+      #{root}/app/controllers/concerns
+      #{root}/app/helpers
+      #{root}/app/lib
+    )
 
     initializer "smart_listing.helpers", before: :load_config_initializers do
       ActiveSupport.on_load(:action_controller_base) do
