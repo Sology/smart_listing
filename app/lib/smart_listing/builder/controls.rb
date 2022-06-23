@@ -20,12 +20,12 @@ module SmartListing
           turbo_frame: builder.dom_id('content')
         }
 
-        view.form_tag(base.try(:href) || {}, :remote => base.config.global_options[:remote_mode] == :ujs, method: :get, class: classes, :data => datas) do
+        view.form_with(url: base.try(:href) || {}, :remote => base.config.global_options[:remote_mode] == :ujs, method: :get, class: classes, :data => datas) do |f|
           # TODO: not sure if we need that?
           #view.concat(view.content_tag(:div, :style => "margin:0;padding:0;display:inline") do
             #view.concat(view.hidden_field_tag("#{base.try(:base_param)}[_]", 1, :id => nil)) # this forces smart_listing_update to refresh the list
           #end)
-          view.concat(view.capture(self, &block))
+          view.concat(view.capture(self, f, &block))
         end
       end
 
