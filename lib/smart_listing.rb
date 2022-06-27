@@ -20,8 +20,10 @@ module Kaminari
 end
 
 module SmartListing
+  extend ActiveSupport::Autoload
+
   class Base
-    attr_reader :name, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
+    attr_reader :name, :config, :collection, :options, :per_page, :sort, :page, :partial, :count, :params
     # Params that should not be visible in pagination links (pages, per-page, sorting, etc.)
     UNSAFE_PARAMS = [:authenticity_token, :commit, :utf8, :_method, :script_name].freeze
     # For fast-check, like:
@@ -30,9 +32,9 @@ module SmartListing
     private_constant :ALLOWED_DIRECTIONS
 
     def initialize name, collection, options = {}
-      @name = name
+      @name = name.to_s.dasherize
 
-      config_profile = options.delete(:config_profile)
+      @config = SmartListing.config(options.delete(:config_profile) || :default)
 
       @options = {
         :partial                        => @name,                       # SmartListing partial name
@@ -41,13 +43,17 @@ module SmartListing
         :href                           => nil,                         # set SmartListing target url (in case when different than current url)
         :remote                         => true,                        # SmartListing is remote by default
         :callback_href                  => nil,                         # set SmartListing callback url (in case when different than current url)
-      }.merge(SmartListing.config(config_profile).global_options).merge(options)
+      }.merge(config.global_options).merge(options)
 
       if @options[:array]
         @collection = collection.to_a
       else
         @collection = collection
       end
+    end
+
+    def to_key
+      @name
     end
 
     def setup params, cookies
@@ -65,54 +71,56 @@ module SmartListing
 
       set_param(:per_page, @per_page, cookies) if @options[:memorize_per_page]
 
-      @count = @collection.size
-      @count = @count.length if @count.is_a?(Hash)
+      if @collection
+        @count = @collection.size
+        @count = @count.length if @count.is_a?(Hash)
 
-      # Reset @page if greater than total number of pages
-      if @per_page > 0
-        no_pages = (@count.to_f / @per_page.to_f).ceil.to_i
-        if @page.to_i > no_pages
-          @page = no_pages
+        # Reset @page if greater than total number of pages
+        if @per_page > 0
+          no_pages = (@count.to_f / @per_page.to_f).ceil.to_i
+          if @page.to_i > no_pages
+            @page = no_pages
+          end
         end
-      end
 
-      if @options[:array]
-        if @sort && !@sort.empty? # when array we sort only by first attribute
-          i = sort_keys.index{|x| x[0] == @sort.to_h.first[0]}
-          @collection = @collection.sort do |x, y|
-            xval = x
-            yval = y
-            sort_keys[i][1].split(".").each do |m|
-              xval = xval.try(m)
-              yval = yval.try(m)
-            end
-            xval = xval.upcase if xval.is_a?(String)
-            yval = yval.upcase if yval.is_a?(String)
+        if @options[:array]
+          if @sort && !@sort.empty? # when array we sort only by first attribute
+            i = sort_keys.index{|x| x[0] == @sort.to_h.first[0]}
+            @collection = @collection.sort do |x, y|
+              xval = x
+              yval = y
+              sort_keys[i][1].split(".").each do |m|
+                xval = xval.try(m)
+                yval = yval.try(m)
+              end
+              xval = xval.upcase if xval.is_a?(String)
+              yval = yval.upcase if yval.is_a?(String)
 
-            if xval.nil? || yval.nil?
-              xval.nil? ? 1 : -1
-            else
-              if @sort.to_h.first[1] == "asc"
-                (xval <=> yval) || (xval && !yval ? 1 : -1)
+              if xval.nil? || yval.nil?
+                xval.nil? ? 1 : -1
               else
-                (yval <=> xval) || (yval && !xval ? 1 : -1)
+                if @sort.to_h.first[1] == "asc"
+                  (xval <=> yval) || (xval && !yval ? 1 : -1)
+                else
+                  (yval <=> xval) || (yval && !xval ? 1 : -1)
+                end
               end
             end
           end
-        end
-        if @options[:paginate] && @per_page > 0
-          @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)
-          if @collection.length == 0
-            @collection = @collection.page(@collection.total_pages)
+          if @options[:paginate] && @per_page > 0
+            @collection = ::Kaminari.paginate_array(@collection).page(@page).per(@per_page)
+            if @collection.length == 0
+              @collection = @collection.page(@collection.total_pages)
+            end
           end
-        end
-      else
-        # let's sort by all attributes
-        #
-        @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]]}.compact) if @sort && !@sort.empty?
+        else
+          # let's sort by all attributes
 
-        if @options[:paginate] && @per_page > 0
-          @collection = @collection.page(@page).per(@per_page)
+          @collection = @collection.order(sort_keys.collect{|s| "#{s[1]} #{@sort[s[0]]}" if @sort[s[0]].present?}.compact) if @sort && !@sort.empty?
+
+          if @options[:paginate] && @per_page > 0
+            @collection = @collection.page(@page).per(@per_page)
+          end
         end
       end
     end

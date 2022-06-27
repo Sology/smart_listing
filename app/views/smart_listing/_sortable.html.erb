@@ -14,8 +14,8 @@
 <%= link_to url, :class => container_classes, :data => {:attr => attribute}, :remote => remote do %>
   <%= title %>
   <% if order %>
-    <span class="<%= order == "asc" ? smart_listing_config.classes(:icon_sort_up) : smart_listing_config.classes(:icon_sort_down) %>"></span>
+    <span><%= order == 'asc' ? '&#8679;'.html_safe : '&#8681;'.html_safe %></span>
   <% else %>
-    <span class="<%= smart_listing_config.classes(:icon_sort_none) %>"></span>
+    <span>&#8691;</span>
   <% end %>
 <% end %>

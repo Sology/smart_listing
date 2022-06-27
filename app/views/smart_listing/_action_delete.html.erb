@@ -9,4 +9,4 @@
     title
 -%>
 
-<%= link_to_if(action_if, content_tag(:i, "", :class => icon), url, :remote => true, :class => "destroy", :method => :delete, :title => title || t("smart_listing.actions.destroy"), :data => {:confirmation => confirmation || t("smart_listing.msgs.destroy_confirmation")} ) %>
+<%= link_to_if(action_if, content_tag(:span, "&#128465;".html_safe, :class => icon), url, :remote => true, :class => "destroy", :method => :delete, :title => title || t("smart_listing.actions.destroy"), :data => {:confirmation => confirmation || t("smart_listing.msgs.destroy_confirmation")} ) %>

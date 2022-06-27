@@ -1,5 +1,9 @@
 SmartListing.configure do |config|
   config.global_options({
+    #stimulus_controllers: {
+      #main:                         'smart-listing',
+      #controls:                     'smart-listing-controls',
+    #},
     #:param_names  => {                                              # param names
       #:page                         => :page,
       #:per_page                     => :per_page,
@@ -13,6 +17,7 @@ SmartListing.configure do |config|
     #:page_sizes                     => DEFAULT_PAGE_SIZES,          # set available page sizes array
     #:kaminari_options               => {:theme => "smart_listing"}, # Kaminari's paginate helper options
     #:sort_dirs                      => [nil, "asc", "desc"],        # Default sorting directions cycle of sortables
+    #:remote_mode                    => :turbo,                      # Default remote mode. Can be either null, :turbo or :ujs
   })
 
   config.constants :classes, {

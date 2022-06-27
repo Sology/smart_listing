@@ -1,3 +1,3 @@
 module SmartListing
-  VERSION = "1.2.3"
+  VERSION = "2.0"
 end
